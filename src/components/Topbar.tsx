@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./Topbar.module.css";
 import { useState } from "react";
+import InstallButton from "./InstallButton";
 
 export default function Topbar() {
   const { user } = useAuth();
@@ -24,6 +25,7 @@ export default function Topbar() {
       </Link>
 
       <div className={styles.actions}>
+        <InstallButton />
         <button className={styles.searchTrigger} onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}>
           <span className={styles.searchIcon}>🔍</span>
           <span className={styles.searchText}>Search (⌘K)</span>
