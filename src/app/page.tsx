@@ -4,6 +4,10 @@ import styles from "./page.module.css";
 import LaunchSequence from "@/components/LaunchSequence";
 import LiveTelemetry from "@/components/LiveTelemetry";
 import ActivityFeed from "@/components/ActivityFeed";
+import {
+  CodeIcon, BrainIcon, CloudIcon, PaletteIcon, ShieldIcon, ChartIcon,
+  SignalIcon, CpuIcon, ZapIcon,
+} from "@/components/Icons";
 
 const ecosystemApps = [
   { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Smart Road Safety", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
@@ -17,45 +21,45 @@ const services = [
   {
     title: "Software Development",
     description: "Custom enterprise applications, mobile apps, and cloud-native solutions built with cutting-edge technology.",
-    icon: "💻",
+    IconComponent: CodeIcon,
     price: "From KES 150,000",
   },
   {
     title: "AI & Machine Learning",
     description: "Intelligent automation, predictive analytics, and computer vision solutions for your business.",
-    icon: "🧠",
+    IconComponent: BrainIcon,
     price: "Custom Quote",
   },
   {
     title: "Cloud Infrastructure",
     description: "Scalable, secure cloud architecture design, migration, and managed services.",
-    icon: "☁️",
+    IconComponent: CloudIcon,
     price: "From KES 50,000/mo",
   },
   {
     title: "UI/UX Design",
     description: "Premium interface design, brand identity systems, and user experience consulting.",
-    icon: "🎨",
+    IconComponent: PaletteIcon,
     price: "From KES 80,000",
   },
   {
     title: "Cybersecurity",
     description: "Penetration testing, security audits, compliance frameworks, and threat monitoring.",
-    icon: "🛡️",
+    IconComponent: ShieldIcon,
     price: "From KES 120,000",
   },
   {
     title: "Consulting & Strategy",
     description: "Digital transformation roadmaps, technology advisory, and innovation workshops.",
-    icon: "📊",
+    IconComponent: ChartIcon,
     price: "From KES 75,000",
   },
 ];
 
 const comingSoon = [
-  { title: "IoT Telemetry", description: "Connected device monitoring & analytics", icon: "📡" },
-  { title: "Robotics Platform", description: "Autonomous systems management", icon: "🤖" },
-  { title: "Energy Grid", description: "Smart energy distribution & monitoring", icon: "⚡" },
+  { title: "IoT Telemetry", description: "Connected device monitoring & analytics", IconComponent: SignalIcon },
+  { title: "Robotics Platform", description: "Autonomous systems management", IconComponent: CpuIcon },
+  { title: "Energy Grid", description: "Smart energy distribution & monitoring", IconComponent: ZapIcon },
 ];
 
 export default function Home() {
@@ -142,7 +146,9 @@ export default function Home() {
         <div className={styles.servicesGrid}>
           {services.map((svc) => (
             <div key={svc.title} className={`${styles.serviceCard} glass-panel`}>
-              <span className={styles.serviceIcon}>{svc.icon}</span>
+              <div className={styles.serviceIconWrapper}>
+                <svc.IconComponent size={24} color="#B14CFF" />
+              </div>
               <h3 className={styles.serviceTitle}>{svc.title}</h3>
               <p className={styles.serviceDesc}>{svc.description}</p>
               <div className={styles.serviceFooter}>
@@ -166,7 +172,9 @@ export default function Home() {
         <div className={styles.comingSoonGrid}>
           {comingSoon.map((item) => (
             <div key={item.title} className={`${styles.comingSoonCard} glass-panel`}>
-              <span className={styles.comingSoonIcon}>{item.icon}</span>
+              <div className={styles.comingSoonIconWrapper}>
+                <item.IconComponent size={28} color="#B14CFF" />
+              </div>
               <h3 className={styles.comingSoonTitle}>{item.title}</h3>
               <p className={styles.comingSoonDesc}>{item.description}</p>
               <span className={styles.comingSoonBadge}>In Development</span>

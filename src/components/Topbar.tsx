@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import styles from "./Topbar.module.css";
 import { useState } from "react";
 import InstallButton from "./InstallButton";
+import { BellIcon, SearchIcon } from "./Icons";
 
 export default function Topbar() {
   const { user } = useAuth();
@@ -27,7 +28,7 @@ export default function Topbar() {
       <div className={styles.actions}>
         <InstallButton />
         <button className={styles.searchTrigger} onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}>
-          <span className={styles.searchIcon}>🔍</span>
+          <SearchIcon size={16} color="rgba(255,255,255,0.5)" className={styles.searchIcon} />
           <span className={styles.searchText}>Search (⌘K)</span>
         </button>
 
@@ -36,7 +37,7 @@ export default function Topbar() {
             className={styles.iconBtn} 
             onClick={() => setShowNotifications(!showNotifications)}
           >
-            🔔
+            <BellIcon size={20} />
             <span className={styles.badge}>2</span>
           </button>
           

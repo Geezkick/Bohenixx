@@ -1,27 +1,43 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import styles from "./ActivityFeed.module.css";
 
-const MOCK_ACTIVITIES = [
-  { id: 1, app: "Safura", action: "Generated AI health report for User #891", time: "2 mins ago", color: "#00E5FF" },
-  { id: 2, app: "System", action: "Global telemetry synchronization completed", time: "15 mins ago", color: "#8B2EFF" },
-  { id: 3, app: "NjiaSafe", action: "Issued route advisory for Region B", time: "1 hour ago", color: "#00C853" },
-  { id: 4, app: "Mboka", action: "15 new skilled workers verified", time: "3 hours ago", color: "#FF6D00" },
-];
+interface Activity {
+  id: string;
+  app: string;
+  action: string;
+  color: string;
+  createdAt: string;
+}
 
 export default function ActivityFeed() {
+  const [activities, setActivities] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    fetch('/api/activity')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setActivities(data);
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <div className={`${styles.feedCard} glass-panel`}>
       <div className={styles.header}>
         <h3>Ecosystem Activity</h3>
       </div>
       <div className={styles.feedList}>
-        {MOCK_ACTIVITIES.map((activity) => (
+        {activities.length === 0 && <p style={{color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem'}}>No recent activity.</p>}
+        {activities.map((activity) => (
           <div key={activity.id} className={styles.feedItem}>
             <div className={styles.dot} style={{ backgroundColor: activity.color, boxShadow: `0 0 8px ${activity.color}` }}></div>
             <div className={styles.content}>
               <p className={styles.action}>
                 <strong>{activity.app}:</strong> {activity.action}
               </p>
-              <span className={styles.time}>{activity.time}</span>
+              <span className={styles.time}>{new Date(activity.createdAt).toLocaleTimeString()}</span>
             </div>
           </div>
         ))}

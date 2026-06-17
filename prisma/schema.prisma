@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ServiceRequest {
+  id          String   @id @default(cuid())
+  service     String
+  budget      String
+  timeline    String
+  details     String
+  email       String
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  app         String
+  action      String
+  color       String
+  createdAt   DateTime @default(now())
+}
+
+model Telemetry {
+  id          String   @id @default(cuid())
+  activeDevices Int
+  bandwidth   Float
+  latency     Int
+  updatedAt   DateTime @updatedAt
+}

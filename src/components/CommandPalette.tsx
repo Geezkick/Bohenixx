@@ -3,17 +3,21 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./CommandPalette.module.css";
+import { 
+  SearchIcon, ShieldIcon, ShoppingBagIcon, FileTextIcon, 
+  SettingsIcon, BookOpenIcon, ZapIcon, SignalIcon 
+} from "./Icons";
 
 const MOCK_LINKS = [
-  { name: "NjiaSafe Dashboard", href: "https://njiasafe.six.vercel.app", icon: "🛡️", category: "Apps" },
-  { name: "Mboka Marketplace", href: "https://mboka.vercel.app", icon: "🛒", category: "Apps" },
-  { name: "Fixxo Repairs", href: "https://fixxo.vercel.app", icon: "🔧", category: "Apps" },
-  { name: "Vuna AgriTech", href: "https://vunashorts.vercel.app", icon: "🌱", category: "Apps" },
-  { name: "Safura Health", href: "https://safura-ai.vercel.app", icon: "⚕️", category: "Apps" },
-  { name: "Product Catalog", href: "/store", icon: "🛍️", category: "Store" },
-  { name: "Service Request", href: "/services/request", icon: "📝", category: "Services" },
-  { name: "Settings", href: "/settings", icon: "⚙️", category: "System" },
-  { name: "Documentation", href: "/docs", icon: "📚", category: "System" },
+  { name: "NjiaSafe Dashboard", href: "https://njiasafe.six.vercel.app", icon: <ShieldIcon size={18} color="#00C853" />, category: "Apps" },
+  { name: "Mboka Marketplace", href: "https://mboka.vercel.app", icon: <ShoppingBagIcon size={18} color="#FF6D00" />, category: "Apps" },
+  { name: "Fixxo Repairs", href: "https://fixxo.vercel.app", icon: <SettingsIcon size={18} color="#2979FF" />, category: "Apps" },
+  { name: "Vuna AgriTech", href: "https://vunashorts.vercel.app", icon: <SignalIcon size={18} color="#76FF03" />, category: "Apps" },
+  { name: "Safura Health", href: "https://safura-ai.vercel.app", icon: <ZapIcon size={18} color="#00E5FF" />, category: "Apps" },
+  { name: "Product Catalog", href: "/store", icon: <ShoppingBagIcon size={18} color="#B14CFF" />, category: "Store" },
+  { name: "Service Request", href: "/services/request", icon: <FileTextIcon size={18} color="#B14CFF" />, category: "Services" },
+  { name: "Settings", href: "/settings", icon: <SettingsIcon size={18} color="#B14CFF" />, category: "System" },
+  { name: "Documentation", href: "/docs", icon: <BookOpenIcon size={18} color="#B14CFF" />, category: "System" },
 ];
 
 export default function CommandPalette() {
@@ -56,7 +60,7 @@ export default function CommandPalette() {
     <div className={styles.overlay} onClick={() => setIsOpen(false)}>
       <div className={styles.palette} onClick={(e) => e.stopPropagation()}>
         <div className={styles.searchHeader}>
-          <span className={styles.searchIcon}>🔍</span>
+          <SearchIcon size={20} color="rgba(255,255,255,0.5)" className={styles.searchIcon} />
           <input
             autoFocus
             type="text"

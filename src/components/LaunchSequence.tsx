@@ -7,6 +7,7 @@ import styles from "./LaunchSequence.module.css";
 export default function LaunchSequence() {
   const [show, setShow] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [statusText, setStatusText] = useState("Getting started...");
 
   useEffect(() => {
     const hasSeen = sessionStorage.getItem("bx_launch_seen");
@@ -15,19 +16,30 @@ export default function LaunchSequence() {
       return;
     }
 
+    const stages = [
+      { at: 0, text: "Getting started..." },
+      { at: 20, text: "Initializing core systems..." },
+      { at: 45, text: "Loading ecosystem modules..." },
+      { at: 70, text: "Syncing applications..." },
+      { at: 90, text: "Almost ready..." },
+      { at: 100, text: "Welcome to Bohenix ONE" },
+    ];
+
     let interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        const next = Math.min(100, prev + 2);
+        const stage = [...stages].reverse().find(s => next >= s.at);
+        if (stage) setStatusText(stage.text);
+        if (next >= 100) {
           clearInterval(interval);
           setTimeout(() => {
             setShow(false);
             sessionStorage.setItem("bx_launch_seen", "true");
-          }, 500);
-          return 100;
+          }, 800);
         }
-        return prev + 5;
+        return next;
       });
-    }, 50);
+    }, 40);
 
     return () => clearInterval(interval);
   }, []);
@@ -35,21 +47,36 @@ export default function LaunchSequence() {
   if (!show) return null;
 
   return (
-    <div className={styles.overlay}>
+    <div className={`${styles.overlay} ${progress >= 100 ? styles.fadeOut : ''}`}>
+      {/* Ambient glow effects */}
+      <div className={styles.glowOrb1} />
+      <div className={styles.glowOrb2} />
+
       <div className={styles.container}>
-        <Image src="/bohenixx.png" alt="Bohenix Logo" width={100} height={100} className={styles.logo} />
-        <h1 className={styles.title}>BOHENIX <span className={styles.gradient}>ONE</span></h1>
-        <p className={styles.subtitle}>INITIALIZING ECOSYSTEM</p>
-        
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: `${progress}%` }}></div>
+        {/* App Icon */}
+        <div className={styles.appIconWrapper}>
+          <div className={styles.appIconGlow} />
+          <div className={styles.appIcon}>
+            <Image
+              src="/bohenixx.png"
+              alt="Bohenix"
+              width={80}
+              height={80}
+              className={styles.logoImage}
+              priority
+            />
+          </div>
         </div>
-        
-        <div className={styles.logs}>
-          {progress > 10 && <p>&#62; loading telemetry modules...</p>}
-          {progress > 40 && <p>&#62; authenticating secure connection...</p>}
-          {progress > 70 && <p>&#62; syncing ecosystem applications...</p>}
-          {progress >= 100 && <p className={styles.success}>&#62; SYSTEM READY</p>}
+
+        {/* Brand */}
+        <h1 className={styles.title}>BOHENIX <span className={styles.gradient}>ONE</span></h1>
+
+        {/* Status */}
+        <p className={styles.statusText}>{statusText}</p>
+
+        {/* Progress */}
+        <div className={styles.progressTrack}>
+          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
         </div>
       </div>
     </div>

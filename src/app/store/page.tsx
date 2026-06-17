@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./store.module.css";
+import ThreeDPreview from "@/components/ThreeDPreview";
 
 const PRODUCTS = [
   {
@@ -30,6 +33,21 @@ const PRODUCTS = [
 ];
 
 export default function Store() {
+  const handleCheckout = async (productName: string, priceStr: string) => {
+    const priceAmount = parseInt(priceStr.replace(/[^0-9]/g, ''));
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemName: productName, priceAmount, type: 'store' })
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch (error) {
+      console.error('Checkout failed', error);
+    }
+  };
+
   return (
     <main className={styles.main}>
       <header className={styles.header}>
@@ -47,8 +65,7 @@ export default function Store() {
                 </div>
               ) : (
                 <div className={styles.modelPlaceholder} style={{ borderColor: product.color, boxShadow: `inset 0 0 50px ${product.color}40` }}>
-                  <span className={styles.modelIcon}>📦</span>
-                  <p>Interactive 3D Preview Available Soon</p>
+                  <ThreeDPreview color={product.color} type={product.id.includes("ev") ? "ev" : "drone"} />
                 </div>
               )}
             </div>
@@ -65,7 +82,13 @@ export default function Store() {
               
               <div className={styles.footer}>
                 <span className={styles.price}>{product.price}</span>
-                <button className={styles.orderBtn} style={{ backgroundColor: product.color }}>Order Now</button>
+                <button 
+                  className={styles.orderBtn} 
+                  style={{ backgroundColor: product.color }}
+                  onClick={() => handleCheckout(product.name, product.price)}
+                >
+                  Order Now
+                </button>
               </div>
             </div>
           </div>

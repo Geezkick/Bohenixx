@@ -25,9 +25,19 @@ export default function ServiceRequest() {
   const nextStep = () => setStep(s => Math.min(4, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    nextStep(); // Move to success step
+    try {
+      await fetch('/api/services/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      // Optionally redirect to checkout for a consultation fee, or just show success
+      nextStep(); // Move to success step
+    } catch (error) {
+      console.error('Failed to submit request', error);
+    }
   };
 
   return (

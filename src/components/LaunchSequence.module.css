@@ -4,16 +4,48 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: var(--color-black);
+  background: #000;
   z-index: 99999;
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: fadeOut 0.5s ease 2.5s forwards;
+  overflow: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
-@keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
+.fadeOut {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Ambient purple glow orbs */
+.glowOrb1 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 46, 255, 0.15) 0%, transparent 70%);
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.glowOrb2 {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 46, 255, 0.06) 0%, transparent 70%);
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: breathe 4s ease-in-out infinite reverse;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
 }
 
 .container {
@@ -21,69 +53,87 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 400px;
+  position: relative;
+  z-index: 2;
 }
 
-.logo {
-  margin-bottom: 20px;
-  animation: pulseLogo 2s infinite alternate;
+/* App Icon — rounded square like a real app icon */
+.appIconWrapper {
+  position: relative;
+  margin-bottom: 32px;
 }
 
-@keyframes pulseLogo {
-  from { filter: drop-shadow(0 0 10px rgba(139, 46, 255, 0.5)); transform: scale(1); }
-  to { filter: drop-shadow(0 0 30px rgba(177, 76, 255, 1)); transform: scale(1.05); }
+.appIconGlow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 32px;
+  background: radial-gradient(circle, rgba(139, 46, 255, 0.35) 0%, transparent 70%);
+  filter: blur(20px);
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.appIcon {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #1a1a2e, #0d0d1a);
+  border: 1px solid rgba(139, 46, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(139, 46, 255, 0.15),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 60px rgba(139, 46, 255, 0.1);
+}
+
+.logoImage {
+  border-radius: 20px;
+  object-fit: cover;
 }
 
 .title {
-  font-size: 2.5rem;
-  letter-spacing: 2px;
-  margin-bottom: 5px;
+  font-size: 1.8rem;
+  letter-spacing: 3px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #fff;
 }
 
 .gradient {
-  background: linear-gradient(135deg, var(--color-purple-primary), var(--color-purple-neon));
+  background: linear-gradient(135deg, #8B2EFF, #B14CFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.subtitle {
-  font-family: monospace;
-  color: var(--color-silver);
-  letter-spacing: 4px;
-  font-size: 0.8rem;
-  margin-bottom: 40px;
-  opacity: 0.7;
+.statusText {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 1px;
+  margin-bottom: 28px;
+  min-height: 1.2em;
+  transition: opacity 0.3s ease;
 }
 
-.progressBar {
-  width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 20px;
-  position: relative;
+.progressTrack {
+  width: 200px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: var(--color-purple-neon);
-  transition: width 0.1s linear;
-  box-shadow: 0 0 10px var(--color-purple-neon);
-}
-
-.logs {
-  font-family: monospace;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
-  text-align: left;
-  width: 100%;
-  min-height: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.success {
-  color: #00FF9D;
-  font-weight: bold;
+  background: linear-gradient(90deg, #8B2EFF, #B14CFF);
+  border-radius: 4px;
+  transition: width 0.08s linear;
+  box-shadow: 0 0 12px rgba(139, 46, 255, 0.5);
 }
