@@ -80,7 +80,7 @@
 .appIcon {
   width: 96px;
   height: 96px;
-  border-radius: 24px;
+  border-radius: 50%;
   background: linear-gradient(145deg, #1a1a2e, #0d0d1a);
   border: 1px solid rgba(139, 46, 255, 0.3);
   display: flex;
@@ -95,7 +95,7 @@
 }
 
 .logoImage {
-  border-radius: 20px;
+  border-radius: 50%;
   object-fit: cover;
 }
 

@@ -21,7 +21,7 @@ export default function Topbar() {
   return (
     <nav className={styles.topbar}>
       <Link href="/" className={styles.brand}>
-        <Image src="/bohenixx.png" alt="Bohenix" width={32} height={32} />
+        <Image src="/bohenixx.png" alt="Bohenix" width={32} height={32} className={styles.brandLogo} />
         <span className={styles.brandName}>BOHENIX ONE</span>
       </Link>
 

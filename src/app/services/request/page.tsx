@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./request.module.css";
+import { ArrowRightIcon, ArrowLeftIcon, CheckIcon } from "@/components/Icons";
 
 const SERVICES = [
   "Software Development",
@@ -69,7 +70,9 @@ export default function ServiceRequest() {
                 ))}
               </div>
               <div className={styles.navButtons}>
-                <button type="button" className={styles.nextBtn} onClick={nextStep} disabled={!formData.service}>Next →</button>
+                <button type="button" className={styles.nextBtn} onClick={nextStep} disabled={!formData.service}>
+                  Next <ArrowRightIcon size={16} />
+                </button>
               </div>
             </div>
           )}
@@ -109,8 +112,12 @@ export default function ServiceRequest() {
               </div>
 
               <div className={styles.navButtons}>
-                <button type="button" className={styles.prevBtn} onClick={prevStep}>← Back</button>
-                <button type="button" className={styles.nextBtn} onClick={nextStep} disabled={!formData.budget || !formData.timeline}>Next →</button>
+                <button type="button" className={styles.prevBtn} onClick={prevStep}>
+                  <ArrowLeftIcon size={16} /> Back
+                </button>
+                <button type="button" className={styles.nextBtn} onClick={nextStep} disabled={!formData.budget || !formData.timeline}>
+                  Next <ArrowRightIcon size={16} />
+                </button>
               </div>
             </div>
           )}
@@ -143,7 +150,9 @@ export default function ServiceRequest() {
               </div>
 
               <div className={styles.navButtons}>
-                <button type="button" className={styles.prevBtn} onClick={prevStep}>← Back</button>
+                <button type="button" className={styles.prevBtn} onClick={prevStep}>
+                  <ArrowLeftIcon size={16} /> Back
+                </button>
                 <button type="submit" className={styles.submitBtn} disabled={!formData.details || !formData.email}>Submit Request</button>
               </div>
             </div>
@@ -151,7 +160,9 @@ export default function ServiceRequest() {
 
           {step === 4 && (
             <div className={styles.stepSuccess}>
-              <div className={styles.successIcon}>✓</div>
+              <div className={styles.successIcon}>
+                <CheckIcon size={48} color="#00E5FF" />
+              </div>
               <h2>Request Received</h2>
               <p>Thank you for choosing Bohenix. Our engineering team will review your request for <strong>{formData.service}</strong> and contact you at {formData.email} within 24 hours.</p>
               <button type="button" className={styles.nextBtn} onClick={() => window.location.href = '/'}>Return Home</button>

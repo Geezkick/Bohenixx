@@ -21,6 +21,11 @@
   text-decoration: none;
 }
 
+.brandLogo {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .brandName {
   font-weight: 700;
   letter-spacing: 2px;

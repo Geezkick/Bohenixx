@@ -6,7 +6,7 @@ import LiveTelemetry from "@/components/LiveTelemetry";
 import ActivityFeed from "@/components/ActivityFeed";
 import {
   CodeIcon, BrainIcon, CloudIcon, PaletteIcon, ShieldIcon, ChartIcon,
-  SignalIcon, CpuIcon, ZapIcon,
+  SignalIcon, CpuIcon, ZapIcon, ArrowRightIcon,
 } from "@/components/Icons";
 
 const ecosystemApps = [
@@ -96,7 +96,9 @@ export default function Home() {
         </p>
         <div className={styles.heroCta}>
           <a href="#apps" className={styles.primaryAction}>Explore Ecosystem</a>
-          <a href="#services" className={styles.secondaryAction}>Our Services →</a>
+          <a href="#services" className={styles.secondaryAction}>
+            Our Services <ArrowRightIcon size={16} />
+          </a>
         </div>
 
         {/* Live Telemetry & Feed */}
@@ -153,7 +155,9 @@ export default function Home() {
               <p className={styles.serviceDesc}>{svc.description}</p>
               <div className={styles.serviceFooter}>
                 <span className={styles.servicePrice}>{svc.price}</span>
-                <button className={styles.serviceBtn}>Inquire →</button>
+                <button className={styles.serviceBtn}>
+                  Inquire <ArrowRightIcon size={16} />
+                </button>
               </div>
             </div>
           ))}
@@ -189,7 +193,9 @@ export default function Home() {
         <p>Partner with Bohenix Technologies for world-class digital solutions.</p>
         <div className={styles.ctaActions}>
           <button className={styles.primaryAction}>Start a Project</button>
-          <button className={styles.secondaryAction}>Schedule a Call →</button>
+          <button className={styles.secondaryAction}>
+            Schedule a Call <ArrowRightIcon size={16} />
+          </button>
         </div>
       </section>
 
@@ -197,7 +203,7 @@ export default function Home() {
       <footer className={styles.footer}>
         <div className={styles.footerTop}>
           <div className={styles.footerBrand}>
-            <Image src="/bohenixx.png" alt="Bohenix" width={28} height={28} />
+            <Image src="/bohenixx.png" alt="Bohenix" width={28} height={28} className={styles.logo} />
             <span>BOHENIX</span>
           </div>
           <p className={styles.footerTagline}>Engineering the future, one product at a time.</p>
