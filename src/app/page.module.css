@@ -1,0 +1,641 @@
+.main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  overflow-x: hidden;
+}
+
+/* Ambient background */
+.main::before {
+  content: '';
+  position: fixed;
+  top: -30%;
+  left: -15%;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 46, 255, 0.12) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+  animation: ambientDrift 20s infinite ease-in-out alternate;
+}
+
+.main::after {
+  content: '';
+  position: fixed;
+  bottom: -30%;
+  right: -15%;
+  width: 70vw;
+  height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(177, 76, 255, 0.08) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+  animation: ambientDrift 25s infinite ease-in-out alternate-reverse;
+}
+
+@keyframes ambientDrift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, -30px); }
+}
+
+/* ─── NAVIGATION ─── */
+
+.nav {
+  width: 100%;
+  max-width: 1280px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  z-index: 100;
+  position: sticky;
+  top: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  object-fit: contain;
+}
+
+.brandName {
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-size: 1.1rem;
+}
+
+.navLinks {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLink {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+.navLink:hover {
+  color: var(--color-white);
+}
+
+.contactBtn {
+  padding: 0.6rem 1.5rem;
+  border-radius: 30px;
+  background: var(--color-purple-primary);
+  color: var(--color-white);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(139, 46, 255, 0.25);
+}
+
+.contactBtn:hover {
+  background: var(--color-purple-neon);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 46, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+  .navLinks { display: none; }
+  .contactBtn { display: none; }
+}
+
+/* ─── HERO ─── */
+
+.hero {
+  width: 100%;
+  max-width: 1280px;
+  padding: 6rem 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 1.2rem;
+  border-radius: 30px;
+  background: rgba(139, 46, 255, 0.1);
+  border: 1px solid rgba(139, 46, 255, 0.2);
+  font-size: 0.8rem;
+  color: var(--color-purple-neon);
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-purple-neon);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(177, 76, 255, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(177, 76, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(177, 76, 255, 0); }
+}
+
+.title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  max-width: 600px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.7;
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+}
+
+.heroCta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.primaryAction {
+  padding: 0.9rem 2.5rem;
+  border-radius: 30px;
+  background: linear-gradient(135deg, var(--color-purple-primary), var(--color-purple-neon));
+  color: var(--color-white);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(139, 46, 255, 0.3);
+  display: inline-block;
+  text-align: center;
+}
+
+.primaryAction:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(139, 46, 255, 0.5);
+}
+
+.secondaryAction {
+  padding: 0.9rem 2.5rem;
+  border-radius: 30px;
+  background: transparent;
+  color: var(--color-white);
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+.secondaryAction:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Stats */
+.statsStrip {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 3rem;
+  border-radius: 20px;
+  background: rgba(26, 26, 26, 0.4);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-white), var(--color-purple-neon));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat p {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboardContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 2rem;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .dashboardContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .statsStrip {
+    gap: 1rem;
+    padding: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .statDivider { display: none; }
+}
+
+/* ─── SECTIONS ─── */
+
+.section {
+  width: 100%;
+  max-width: 1280px;
+  padding: 5rem 2rem;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionLabel {
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--color-purple-neon);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.sectionSubtitle {
+  max-width: 500px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ─── ECOSYSTEM APPS ─── */
+
+.ecosystemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.appCard {
+  padding: 2.5rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.appCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-purple-primary), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.appCard:hover::before {
+  opacity: 1;
+}
+
+.appCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 46, 255, 0.1);
+  background: rgba(30, 30, 30, 0.6);
+}
+
+.appIconContainer {
+  width: 80px;
+  height: 80px;
+  border-radius: 22px;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  transition: transform 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.appCard:hover .appIconContainer {
+  transform: scale(1.1);
+}
+
+.appIcon {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.appName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-top: 0.25rem;
+}
+
+.appTagline {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.3px;
+}
+
+.launchBtn {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1.8rem;
+  border-radius: 20px;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.appCard:hover .launchBtn {
+  background: rgba(139, 46, 255, 0.15);
+}
+
+/* ─── SERVICES ─── */
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .servicesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.serviceCard {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.serviceCard::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-purple-primary), var(--color-purple-neon), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+.serviceCard:hover::after {
+  transform: scaleX(1);
+}
+
+.serviceCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  background: rgba(30, 30, 30, 0.5);
+}
+
+.serviceIcon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(139, 46, 255, 0.08);
+  border: 1px solid rgba(139, 46, 255, 0.12);
+}
+
+.serviceTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.serviceDesc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.serviceFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 0.5rem;
+}
+
+.servicePrice {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-purple-neon);
+}
+
+.serviceBtn {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.serviceBtn:hover {
+  color: var(--color-white);
+}
+
+/* ─── COMING SOON ─── */
+
+.comingSoonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.comingSoonCard {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+  position: relative;
+}
+
+.comingSoonCard:hover {
+  opacity: 0.75;
+}
+
+.comingSoonIcon {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.comingSoonTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.comingSoonDesc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.comingSoonBadge {
+  margin-top: 0.5rem;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ─── CTA BANNER ─── */
+
+.ctaBanner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 2rem 2rem 4rem;
+  padding: 4rem 2rem;
+  text-align: center;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(139, 46, 255, 0.12) 0%, rgba(177, 76, 255, 0.06) 100%);
+  border: 1px solid rgba(139, 46, 255, 0.15);
+}
+
+.ctaBanner h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.ctaBanner p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.ctaActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ─── FOOTER ─── */
+
+.footer {
+  width: 100%;
+  max-width: 1280px;
+  padding: 3rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footerTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 1rem;
+}
+
+.footerTagline {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+}
+
+.footerBottom {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.footerBottom p {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.2);
+}

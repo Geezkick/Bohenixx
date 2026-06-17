@@ -1,0 +1,89 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--color-black);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeOut 0.5s ease 2.5s forwards;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 400px;
+}
+
+.logo {
+  margin-bottom: 20px;
+  animation: pulseLogo 2s infinite alternate;
+}
+
+@keyframes pulseLogo {
+  from { filter: drop-shadow(0 0 10px rgba(139, 46, 255, 0.5)); transform: scale(1); }
+  to { filter: drop-shadow(0 0 30px rgba(177, 76, 255, 1)); transform: scale(1.05); }
+}
+
+.title {
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.gradient {
+  background: linear-gradient(135deg, var(--color-purple-primary), var(--color-purple-neon));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-family: monospace;
+  color: var(--color-silver);
+  letter-spacing: 4px;
+  font-size: 0.8rem;
+  margin-bottom: 40px;
+  opacity: 0.7;
+}
+
+.progressBar {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-purple-neon);
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px var(--color-purple-neon);
+}
+
+.logs {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: left;
+  width: 100%;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.success {
+  color: #00FF9D;
+  font-weight: bold;
+}
