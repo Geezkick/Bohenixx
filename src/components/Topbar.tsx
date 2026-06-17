@@ -25,6 +25,10 @@ export default function Topbar() {
         <span className={styles.brandName}>BOHENIX ONE</span>
       </Link>
 
+      <div className={styles.navLinks}>
+        <Link href="/store" className={styles.navLink}>Store</Link>
+      </div>
+
       <div className={styles.actions}>
         <InstallButton />
         <button className={styles.searchTrigger} onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}>

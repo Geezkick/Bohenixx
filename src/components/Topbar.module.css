@@ -33,6 +33,23 @@
   color: var(--color-white);
 }
 
+.navLinks {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navLink {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navLink:hover {
+  color: var(--color-white);
+}
+
 .actions {
   display: flex;
   align-items: center;

@@ -73,6 +73,7 @@ export default function Home() {
           <span className={styles.brandName}>BOHENIX</span>
         </div>
         <div className={styles.navLinks}>
+          <Link href="/store" className={styles.navLink}>Store</Link>
           <a href="#apps" className={styles.navLink}>Apps</a>
           <a href="#services" className={styles.navLink}>Services</a>
           <a href="#coming-soon" className={styles.navLink}>Labs</a>
@@ -95,7 +96,8 @@ export default function Home() {
           premium technology services across Africa and beyond.
         </p>
         <div className={styles.heroCta}>
-          <a href="#apps" className={styles.primaryAction}>Explore Ecosystem</a>
+          <Link href="/store" className={styles.primaryAction}>Visit Store</Link>
+          <a href="#apps" className={styles.secondaryAction}>Explore Ecosystem</a>
           <a href="#services" className={styles.secondaryAction}>
             Our Services <ArrowRightIcon size={16} />
           </a>
