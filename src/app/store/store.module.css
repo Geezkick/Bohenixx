@@ -1,184 +1,92 @@
-.main {
-  padding: 4rem 2rem;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-
-.header h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  letter-spacing: -1px;
-}
-
-.header p {
-  color: var(--color-silver);
-  font-size: 1.2rem;
-  margin-top: 10px;
-}
-
-.catalog {
+.screen {
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 1.25rem;
 }
 
 .productCard {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 3rem;
-  align-items: center;
-  background: rgba(10, 10, 10, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  padding: 3rem;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.productCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  background: rgba(20, 20, 20, 0.6);
-}
-
-@media (max-width: 900px) {
-  .productCard {
-    grid-template-columns: 1fr;
-  }
-}
-
-.imagePlaceholder {
+.imageWrap {
   width: 100%;
-  aspect-ratio: 16/9;
-  perspective: 1000px;
-}
-
-.modelPlaceholder {
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  border: 2px dashed;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  background: rgba(0, 0, 0, 0.5);
-  transform: rotateX(10deg) rotateY(15deg);
-  transition: transform 0.5s ease;
-  box-shadow: 0 30px 40px rgba(0,0,0,0.5);
-}
-
-.productCard:hover .modelPlaceholder {
-  transform: rotateX(0deg) rotateY(0deg) scale(1.02);
-}
-
-.modelIcon {
-  font-size: 4rem;
-  opacity: 0.8;
-  animation: float 4s infinite ease-in-out;
-}
-
-.productImageContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
+  height: 200px;
+  background: rgba(0, 0, 0, 0.4);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 0 20px rgba(139, 46, 255, 0.3));
-  transition: transform 0.5s ease, filter 0.5s ease;
-}
-
-.productCard:hover .productImageContainer {
-  transform: scale(1.05);
-  filter: drop-shadow(0 0 40px rgba(139, 46, 255, 0.6));
 }
 
 .productImage {
-  object-fit: contain;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
-.modelPlaceholder p {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
-  letter-spacing: 1px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .productInfo {
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 8px;
 }
 
-.productInfo h2 {
-  font-size: 2.5rem;
+.productName {
+  font-size: 1.2rem;
   font-weight: 700;
+  color: #fff;
 }
 
-.tagline {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 1.1rem;
+.productTagline {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
 }
 
-.specs {
-  list-style: none;
+.specsList {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 1rem 0;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-.specs li {
-  padding-left: 1.5rem;
-  position: relative;
-  color: var(--color-silver);
+.specBadge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.3px;
 }
 
-.specs li::before {
-  content: "✔";
-  position: absolute;
-  left: 0;
-  color: var(--color-purple-neon);
-}
-
-.footer {
+.priceRow {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  justify-content: space-between;
+  margin-top: 12px;
 }
 
 .price {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  font-family: var(--font-secondary);
+  color: #fff;
 }
 
 .orderBtn {
-  padding: 1rem 2.5rem;
-  border-radius: 30px;
-  color: #fff;
-  font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 1px;
-  transition: filter 0.3s ease, transform 0.2s ease;
+  padding: 10px 24px;
+  border-radius: 12px;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: opacity 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.orderBtn:hover {
-  filter: brightness(1.2);
-  transform: scale(1.05);
+.orderBtn:active {
+  opacity: 0.85;
+  transform: scale(0.97);
 }

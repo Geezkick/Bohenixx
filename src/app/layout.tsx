@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/context/AuthContext";
-import Topbar from "@/components/Topbar";
-import CommandPalette from "@/components/CommandPalette";
+import MobileShell from "@/components/MobileShell";
+import { NotificationProvider } from "@/context/NotificationContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,11 +11,21 @@ export const metadata: Metadata = {
   icons: {
     icon: '/bohenixx.png',
     apple: '/apple-touch-icon.png'
-  }
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Bohenix ONE',
+  },
 };
 
 export const viewport: Viewport = {
   themeColor: '#000000',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -25,12 +35,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AuthProvider>
-          <Topbar />
-          <CommandPalette />
-          {children}
-        </AuthProvider>
+      <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', overflow: 'hidden' }}>
+        <NotificationProvider>
+          <AuthProvider>
+            <MobileShell>{children}</MobileShell>
+          </AuthProvider>
+        </NotificationProvider>
       </body>
     </html>
   );

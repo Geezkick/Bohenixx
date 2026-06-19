@@ -1,0 +1,150 @@
+.wrapper {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    display: block;
+    width: 100%;
+  }
+
+  .track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 1.25rem 1rem;
+    scroll-padding-left: 1.25rem;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    scroll-snap-align: start;
+    flex: 0 0 calc(75vw);
+    max-width: 280px;
+    padding: 1.75rem 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    background: rgba(26, 26, 26, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card:active {
+    transform: scale(0.97);
+  }
+
+  .cardGlow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    pointer-events: none;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .iconContainer {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+    z-index: 1;
+  }
+
+  .icon {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .info {
+    position: relative;
+    z-index: 1;
+  }
+
+  .nameRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-white);
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tagline {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+  }
+
+  .openBtn {
+    margin-top: 0.5rem;
+    padding: 0.45rem 2rem;
+    border-radius: 20px;
+    background: transparent;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── Page Indicator Dots ─── */
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 0.75rem;
+  }
+
+  .dotIndicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+  }
+
+  .dotActive {
+    background: var(--color-purple-neon);
+    box-shadow: 0 0 8px var(--color-purple-neon);
+    width: 18px;
+    border-radius: 3px;
+  }
+}

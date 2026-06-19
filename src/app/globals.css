@@ -11,6 +11,21 @@
 
   --font-primary: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-secondary: 'Inter', sans-serif;
+
+  /* Safe areas */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Bottom nav height */
+  --bottom-nav-height: 0px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --bottom-nav-height: calc(56px + var(--safe-bottom));
+  }
 }
 
 * {
@@ -22,12 +37,79 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  height: 100%;
+  height: 100dvh; /* Strict height for App Shell */
+  overflow: hidden; /* Prevent body scrolling */
   background-color: var(--color-black);
   color: var(--color-white);
   font-family: var(--font-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── App Shell Architecture ─── */
+.app-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Native momentum scrolling */
+  position: relative;
+  /* Ensure content padding clears the bottom nav */
+  padding-bottom: var(--bottom-nav-height);
+}
+
+/* Hide web scrollbars completely */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* ─── Mobile-Native Behaviors ─── */
+
+html {
+  /* Smooth native scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent overscroll bounce (the pull-to-refresh is custom) */
+  overscroll-behavior-y: none;
+}
+
+body {
+  /* Remove tap highlight on all elements */
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent text selection on interactive areas (native-app feel) */
+  -webkit-touch-callout: none;
+}
+
+/* Disable drag and drop on images */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Standalone PWA: add status bar padding */
+@media all and (display-mode: standalone) {
+  body {
+    padding-top: var(--safe-top);
+  }
+}
+
+/* Disable user-select on buttons and nav for native feel, keep it on text */
+button, nav, a {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Ensure all interactive elements meet minimum tap target */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 a {
@@ -57,9 +139,31 @@ button {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+/* On mobile, disable hover transforms (they cause jank on touch) */
+@media (max-width: 768px) {
+  .glass-panel:hover {
+    background: rgba(26, 26, 26, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+  }
+
+  .glass-panel:active {
+    background: rgba(36, 36, 36, 0.5);
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
 .text-gradient {
   background: linear-gradient(135deg, var(--color-purple-primary) 0%, var(--color-purple-neon) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ─── Smooth scroll for anchor links ─── */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }

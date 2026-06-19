@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./LaunchSequence.module.css";
+import HapticEngine from "@/lib/HapticEngine";
 
 export default function LaunchSequence() {
   const [show, setShow] = useState(true);
@@ -33,6 +34,7 @@ export default function LaunchSequence() {
         if (next >= 100) {
           clearInterval(interval);
           setTimeout(() => {
+            HapticEngine.heavy(); // Cinematic thump
             setShow(false);
             sessionStorage.setItem("bx_launch_seen", "true");
           }, 800);

@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import styles from "./command.module.css";
 import { revalidatePath } from "next/cache";
+import NativeHeader from "@/components/NativeHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -24,8 +25,10 @@ export default async function CommandCenter() {
   };
 
   return (
-    <main className={styles.main}>
-      <header className={styles.header}>
+    <>
+      <NativeHeader title="Command Center" />
+      <main className={styles.main}>
+        <header className={styles.header}>
         <h1>God Mode <span className="text-gradient">Command Center</span></h1>
         <p>Manage the Bohenix ONE Ecosystem</p>
       </header>
@@ -80,5 +83,6 @@ export default async function CommandCenter() {
         </section>
       </div>
     </main>
+    </>
   );
 }

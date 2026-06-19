@@ -3,10 +3,16 @@
   "short_name": "Bohenix",
   "description": "The official digital ecosystem of Bohenix Technologies.",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#000000",
-  "theme_color": "#8B2EFF",
+  "theme_color": "#000000",
   "orientation": "portrait",
+  "categories": ["technology", "business", "productivity"],
+  "dir": "ltr",
+  "lang": "en",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -24,5 +30,25 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Store",
+      "short_name": "Store",
+      "description": "Browse Bohenix hardware & products",
+      "url": "/store",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Request Service",
+      "short_name": "Services",
+      "description": "Request a technology service",
+      "url": "/services/request",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ],
+  "handle_links": "preferred",
+  "scope_extensions": [
+    { "origin": "*.vercel.app" }
   ]
 }

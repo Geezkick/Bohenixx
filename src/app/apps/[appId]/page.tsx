@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./app.module.css";
+import NativeHeader from "@/components/NativeHeader";
 
 const appData: Record<string, any> = {
   safura: { name: "Safura Health", icon: "safura.png", color: "#00E5FF", desc: "AI Health & Wellness platform." },
@@ -23,9 +24,11 @@ export default function AppDashboard({ params }: { params: { appId: string } }) 
   }
 
   return (
-    <main className={styles.main}>
-      <header className={styles.header}>
-        <div className={styles.appTitle}>
+    <>
+      <NativeHeader title={data.name} />
+      <main className={styles.main}>
+        <header className={styles.header}>
+          <div className={styles.appTitle}>
           <Image src={`/${data.icon}`} alt={data.name} width={48} height={48} className={styles.icon} />
           <div>
             <h1>{data.name}</h1>
@@ -72,5 +75,6 @@ export default function AppDashboard({ params }: { params: { appId: string } }) 
         </div>
       </section>
     </main>
+    </>
   );
 }

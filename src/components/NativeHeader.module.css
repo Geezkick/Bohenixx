@@ -1,0 +1,65 @@
+/* Only visible on mobile/tablet */
+.header {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.88);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Account for PWA standalone status bar */
+  @media all and (display-mode: standalone) {
+    .header {
+      padding-top: env(safe-area-inset-top, 0px);
+      height: calc(52px + env(safe-area-inset-top, 0px));
+    }
+  }
+
+  .backBtn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-purple-neon);
+    font-size: 1.05rem;
+    font-weight: 500;
+    -webkit-tap-highlight-color: transparent;
+    padding: 8px 8px 8px 0;
+    margin-left: -4px;
+    transition: opacity 0.2s;
+    width: 80px; /* fixed width to keep title centered */
+  }
+
+  .backBtn:active {
+    opacity: 0.5;
+  }
+
+  .title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-white);
+    letter-spacing: 0.5px;
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rightAction {
+    width: 80px; /* Match back button width to keep title centered */
+    display: flex;
+    justify-content: flex-end;
+  }
+}

@@ -1,24 +1,33 @@
 .topbar {
   width: 100%;
-  height: 70px;
+  height: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 10, 10, 0.88);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
+/* Standalone PWA: account for status bar */
+@media all and (display-mode: standalone) {
+  .topbar {
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(56px + env(safe-area-inset-top, 0px));
+  }
+}
+
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .brandLogo {
@@ -29,7 +38,7 @@
 .brandName {
   font-weight: 700;
   letter-spacing: 2px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--color-white);
 }
 
@@ -53,7 +62,7 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .searchTrigger {
@@ -89,6 +98,7 @@
   justify-content: center;
   border-radius: 50%;
   transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .iconBtn:hover {
@@ -110,6 +120,10 @@
   justify-content: center;
   border-radius: 50%;
   box-shadow: 0 0 10px var(--color-purple-neon);
+}
+
+.notificationBackdrop {
+  display: none;
 }
 
 .notificationDropdown {
@@ -174,4 +188,98 @@
   color: #fff;
   font-weight: 600;
   font-size: 0.9rem;
+}
+
+/* ─── MOBILE OVERRIDES ─── */
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 1rem;
+    height: 52px;
+  }
+
+  /* Hide desktop-only elements */
+  .navLinks {
+    display: none;
+  }
+
+  .searchTrigger {
+    display: none;
+  }
+
+  .brandName {
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+  }
+
+  .actions {
+    gap: 0.5rem;
+  }
+
+  .loginBtn {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    min-height: 36px;
+    min-width: auto;
+  }
+
+  .iconBtn {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    min-width: 36px;
+  }
+
+  /* Mobile notification as bottom sheet */
+  .notificationBackdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .notificationDropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 60vh;
+    border-radius: 20px 20px 0 0;
+    z-index: 1000;
+    animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(100%); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dropdownHeader {
+    padding: 16px 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .dropdownHeader::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .notificationItem {
+    padding: 16px 20px;
+  }
 }

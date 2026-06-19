@@ -1,219 +1,147 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.css";
-import LaunchSequence from "@/components/LaunchSequence";
-import LiveTelemetry from "@/components/LiveTelemetry";
-import ActivityFeed from "@/components/ActivityFeed";
-import {
-  CodeIcon, BrainIcon, CloudIcon, PaletteIcon, ShieldIcon, ChartIcon,
-  SignalIcon, CpuIcon, ZapIcon, ArrowRightIcon,
-} from "@/components/Icons";
+import { ArrowRightIcon } from "@/components/Icons";
 
 const ecosystemApps = [
-  { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Smart Road Safety", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
-  { name: "Mboka", icon: "mboka.png", tagline: "Digital Marketplace", color: "#FF6D00", url: "https://mboka.vercel.app" },
-  { name: "Fixxo", icon: "fixxo.png", tagline: "Repair & Maintenance", color: "#2979FF", url: "https://fixxo.vercel.app" },
-  { name: "Vuna", icon: "vuna.png", tagline: "AgriTech Intelligence", color: "#76FF03", url: "https://vunashorts.vercel.app" },
-  { name: "Safura", icon: "safura.png", tagline: "AI Health & Wellness", color: "#00E5FF", url: "https://safura-ai.vercel.app" },
+  { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Road Safety", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
+  { name: "Mboka", icon: "mboka.png", tagline: "Marketplace", color: "#FF6D00", url: "https://mboka.vercel.app" },
+  { name: "Fixxo", icon: "fixxo.png", tagline: "Repairs", color: "#2979FF", url: "https://fixxo.vercel.app" },
+  { name: "Vuna", icon: "vuna.png", tagline: "AgriTech", color: "#76FF03", url: "https://vunashorts.vercel.app" },
+  { name: "Safura", icon: "safura.png", tagline: "Health AI", color: "#00E5FF", url: "https://safura-ai.vercel.app" },
 ];
 
-const services = [
-  {
-    title: "Software Development",
-    description: "Custom enterprise applications, mobile apps, and cloud-native solutions built with cutting-edge technology.",
-    IconComponent: CodeIcon,
-    price: "From KES 150,000",
-  },
-  {
-    title: "AI & Machine Learning",
-    description: "Intelligent automation, predictive analytics, and computer vision solutions for your business.",
-    IconComponent: BrainIcon,
-    price: "Custom Quote",
-  },
-  {
-    title: "Cloud Infrastructure",
-    description: "Scalable, secure cloud architecture design, migration, and managed services.",
-    IconComponent: CloudIcon,
-    price: "From KES 50,000/mo",
-  },
-  {
-    title: "UI/UX Design",
-    description: "Premium interface design, brand identity systems, and user experience consulting.",
-    IconComponent: PaletteIcon,
-    price: "From KES 80,000",
-  },
-  {
-    title: "Cybersecurity",
-    description: "Penetration testing, security audits, compliance frameworks, and threat monitoring.",
-    IconComponent: ShieldIcon,
-    price: "From KES 120,000",
-  },
-  {
-    title: "Consulting & Strategy",
-    description: "Digital transformation roadmaps, technology advisory, and innovation workshops.",
-    IconComponent: ChartIcon,
-    price: "From KES 75,000",
-  },
-];
-
-const comingSoon = [
-  { title: "IoT Telemetry", description: "Connected device monitoring & analytics", IconComponent: SignalIcon },
-  { title: "Robotics Platform", description: "Autonomous systems management", IconComponent: CpuIcon },
-  { title: "Energy Grid", description: "Smart energy distribution & monitoring", IconComponent: ZapIcon },
+const quickActions = [
+  { label: "Store", icon: "🛒", href: "/store", color: "#B14CFF" },
+  { label: "Services", icon: "🛠️", href: "/services/request", color: "#00E5FF" },
+  { label: "Dashboard", icon: "📊", href: "/command-center", color: "#FF6D00" },
+  { label: "Settings", icon: "⚙️", href: "#", color: "#666" },
 ];
 
 export default function Home() {
+  const { user, logout } = useAuth();
+
   return (
-    <main className={styles.main}>
-      <LaunchSequence />
-      {/* Navigation */}
-      <nav className={styles.nav}>
-        <div className={styles.logoContainer}>
-          <Image src="/bohenixx.png" alt="Bohenix Logo" width={36} height={36} className={styles.logo} />
-          <span className={styles.brandName}>BOHENIX</span>
-        </div>
-        <div className={styles.navLinks}>
-          <Link href="/store" className={styles.navLink}>Store</Link>
-          <a href="#apps" className={styles.navLink}>Apps</a>
-          <a href="#services" className={styles.navLink}>Services</a>
-          <a href="#coming-soon" className={styles.navLink}>Labs</a>
-        </div>
-        <button className={styles.contactBtn}>Get In Touch</button>
-      </nav>
+    <div className={styles.screen}>
 
-      {/* Hero */}
-      <header className={styles.hero}>
-        <div className={styles.heroBadge}>
-          <span className={styles.badgeDot}></span>
-          Powering the future of technology
-        </div>
-        <h1 className={styles.title}>
-          One Platform.<br />
-          <span className="text-gradient">Infinite Possibilities.</span>
-        </h1>
-        <p className={styles.subtitle}>
-          Bohenix Technologies builds world-class digital products and delivers
-          premium technology services across Africa and beyond.
-        </p>
-        <div className={styles.heroCta}>
-          <Link href="/store" className={styles.primaryAction}>Visit Store</Link>
-          <a href="#apps" className={styles.secondaryAction}>Explore Ecosystem</a>
-          <a href="#services" className={styles.secondaryAction}>
-            Our Services <ArrowRightIcon size={16} />
-          </a>
-        </div>
+      {/* Quick Actions Grid */}
+      <section className={styles.quickActions}>
+        {quickActions.map((action) => (
+          <Link key={action.label} href={action.href} className={styles.quickActionCard}>
+            <div className={styles.quickActionIcon}>{action.icon}</div>
+            <span className={styles.quickActionLabel}>{action.label}</span>
+          </Link>
+        ))}
+      </section>
 
-        {/* Live Telemetry & Feed */}
-        <div className={styles.dashboardContainer}>
-          <LiveTelemetry />
-          <ActivityFeed />
+      {/* Status Card */}
+      <section className={styles.statusCard}>
+        <div className={styles.statusHeader}>
+          <div className={styles.statusDot} />
+          <span className={styles.statusTitle}>System Status</span>
         </div>
-      </header>
+        <div className={styles.statusMetrics}>
+          <div className={styles.metric}>
+            <span className={styles.metricValue}>1,203</span>
+            <span className={styles.metricLabel}>Active Devices</span>
+          </div>
+          <div className={styles.metricDivider} />
+          <div className={styles.metric}>
+            <span className={styles.metricValue}>99.8%</span>
+            <span className={styles.metricLabel}>Uptime</span>
+          </div>
+          <div className={styles.metricDivider} />
+          <div className={styles.metric}>
+            <span className={styles.metricValue}>12ms</span>
+            <span className={styles.metricLabel}>Latency</span>
+          </div>
+        </div>
+      </section>
 
       {/* Ecosystem Apps */}
-      <section id="apps" className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionLabel}>ECOSYSTEM</p>
-          <h2 className={styles.sectionTitle}>Our Products</h2>
-          <p className={styles.sectionSubtitle}>
-            A unified suite of intelligent applications designed to solve real-world problems.
-          </p>
+      <section className={styles.appsSection}>
+        <div className={styles.sectionRow}>
+          <h2 className={styles.sectionTitle}>Your Apps</h2>
+          <span className={styles.seeAll}>See All</span>
         </div>
-        <div className={styles.ecosystemGrid}>
+        <div className={styles.appsList}>
           {ecosystemApps.map((app) => (
-            <Link href={app.url} target="_blank" rel="noopener noreferrer" key={app.name} className={`${styles.appCard} glass-panel`}>
-              <div className={styles.appIconContainer} style={{ boxShadow: `0 0 20px ${app.color}20` }}>
-                <Image src={`/${app.icon}`} alt={`${app.name} Logo`} width={56} height={56} className={styles.appIcon} />
+            <Link href={app.url} target="_blank" rel="noopener noreferrer" key={app.name} className={styles.appRow}>
+              <div className={styles.appRowLeft}>
+                <div className={styles.appIconWrap} style={{ boxShadow: `0 0 16px ${app.color}20` }}>
+                  <Image src={`/${app.icon}`} alt={app.name} width={44} height={44} className={styles.appIconImg} />
+                </div>
+                <div className={styles.appInfo}>
+                  <span className={styles.appName}>{app.name}</span>
+                  <span className={styles.appTagline}>{app.tagline}</span>
+                </div>
               </div>
-              <div className={styles.appHeader}>
-                <h3 className={styles.appName}>{app.name}</h3>
-                <span className={styles.healthDot} style={{ backgroundColor: app.color, boxShadow: `0 0 8px ${app.color}` }}></span>
-              </div>
-              <p className={styles.appTagline}>{app.tagline}</p>
-              <div className={styles.launchBtn} style={{ borderColor: `${app.color}40`, color: app.color }}>
-                Launch App
+              <div className={styles.appRowRight}>
+                <span className={styles.appStatus} style={{ color: app.color }}>Open</span>
+                <ArrowRightIcon size={16} color="rgba(255,255,255,0.2)" />
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Services */}
-      <section id="services" className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionLabel}>SERVICES</p>
-          <h2 className={styles.sectionTitle}>What We Build</h2>
-          <p className={styles.sectionSubtitle}>
-            Enterprise-grade technology solutions tailored for businesses of every scale.
-          </p>
+      {/* Recent Activity */}
+      <section className={styles.recentSection}>
+        <div className={styles.sectionRow}>
+          <h2 className={styles.sectionTitle}>Recent Activity</h2>
         </div>
-        <div className={styles.servicesGrid}>
-          {services.map((svc) => (
-            <div key={svc.title} className={`${styles.serviceCard} glass-panel`}>
-              <div className={styles.serviceIconWrapper}>
-                <svc.IconComponent size={24} color="#B14CFF" />
-              </div>
-              <h3 className={styles.serviceTitle}>{svc.title}</h3>
-              <p className={styles.serviceDesc}>{svc.description}</p>
-              <div className={styles.serviceFooter}>
-                <span className={styles.servicePrice}>{svc.price}</span>
-                <button className={styles.serviceBtn}>
-                  Inquire <ArrowRightIcon size={16} />
-                </button>
-              </div>
+        <div className={styles.activityList}>
+          <div className={styles.activityItem}>
+            <div className={styles.activityDot} style={{ background: "#00C853" }} />
+            <div className={styles.activityContent}>
+              <span className={styles.activityText}>NjiaSafe synced route data</span>
+              <span className={styles.activityTime}>2 min ago</span>
             </div>
-          ))}
+          </div>
+          <div className={styles.activityItem}>
+            <div className={styles.activityDot} style={{ background: "#00E5FF" }} />
+            <div className={styles.activityContent}>
+              <span className={styles.activityText}>Safura generated health insight</span>
+              <span className={styles.activityTime}>15 min ago</span>
+            </div>
+          </div>
+          <div className={styles.activityItem}>
+            <div className={styles.activityDot} style={{ background: "#B14CFF" }} />
+            <div className={styles.activityContent}>
+              <span className={styles.activityText}>System telemetry sync complete</span>
+              <span className={styles.activityTime}>1 hr ago</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Coming Soon */}
-      <section id="coming-soon" className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <p className={styles.sectionLabel}>BOHENIX LABS</p>
-          <h2 className={styles.sectionTitle}>Coming Soon</h2>
-          <p className={styles.sectionSubtitle}>
-            Next-generation platforms currently in development.
-          </p>
+      {/* Account Section */}
+      <section className={styles.accountSection}>
+        <div className={styles.sectionRow}>
+          <h2 className={styles.sectionTitle}>Account</h2>
         </div>
-        <div className={styles.comingSoonGrid}>
-          {comingSoon.map((item) => (
-            <div key={item.title} className={`${styles.comingSoonCard} glass-panel`}>
-              <div className={styles.comingSoonIconWrapper}>
-                <item.IconComponent size={28} color="#B14CFF" />
-              </div>
-              <h3 className={styles.comingSoonTitle}>{item.title}</h3>
-              <p className={styles.comingSoonDesc}>{item.description}</p>
-              <span className={styles.comingSoonBadge}>In Development</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Banner */}
-      <section className={styles.ctaBanner}>
-        <h2>Ready to build the future?</h2>
-        <p>Partner with Bohenix Technologies for world-class digital solutions.</p>
-        <div className={styles.ctaActions}>
-          <button className={styles.primaryAction}>Start a Project</button>
-          <button className={styles.secondaryAction}>
-            Schedule a Call <ArrowRightIcon size={16} />
+        <div className={styles.accountCard}>
+          <div className={styles.accountRow}>
+            <span className={styles.accountLabel}>Email</span>
+            <span className={styles.accountValue}>{user?.email}</span>
+          </div>
+          <div className={styles.accountDivider} />
+          <div className={styles.accountRow}>
+            <span className={styles.accountLabel}>Plan</span>
+            <span className={styles.accountBadge}>Pro</span>
+          </div>
+          <div className={styles.accountDivider} />
+          <button className={styles.logoutBtn} onClick={logout}>
+            Sign Out
           </button>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={styles.footer}>
-        <div className={styles.footerTop}>
-          <div className={styles.footerBrand}>
-            <Image src="/bohenixx.png" alt="Bohenix" width={28} height={28} className={styles.logo} />
-            <span>BOHENIX</span>
-          </div>
-          <p className={styles.footerTagline}>Engineering the future, one product at a time.</p>
-        </div>
-        <div className={styles.footerBottom}>
-          <p>© 2026 Bohenix Technologies. All rights reserved.</p>
-        </div>
-      </footer>
-    </main>
+      {/* Bottom spacer for bottom nav */}
+      <div style={{ height: "2rem" }} />
+    </div>
   );
 }
