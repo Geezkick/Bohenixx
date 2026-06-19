@@ -6,22 +6,31 @@ import NativeHeader from "@/components/NativeHeader";
 
 const PRODUCTS = [
   {
-    id: "bx-ev-1",
-    name: "Bohenix V-Drive",
-    tagline: "Next-Gen Electric Mobility",
-    price: "$75,000",
+    id: "bx-concept-1",
+    name: "BX Concept Car 1",
+    tagline: "Next-Gen Electric Concept Vehicle",
+    price: "$85,000",
     specs: ["0-60 in 2.9s", "600mi Range", "Level 4 Autonomy"],
     color: "#00E5FF",
-    image: "/bx_ev_1.png",
+    image: "/bx_concept_1.png",
   },
   {
-    id: "bx-drone-1",
-    name: "Bohenix Aero X",
-    tagline: "Industrial Heavy-Lift Drone",
+    id: "bx-charging-1",
+    name: "BX Charging Concept 1",
+    tagline: "Intelligent Charging Infrastructure",
     price: "$12,500",
-    specs: ["200kg Payload", "Thermal Imaging", "Swarm Coordination"],
-    color: "#FF6D00",
-    image: "/bx_drone_1.png",
+    specs: ["150kW Output", "Smart Grid", "Solar Integration"],
+    color: "#76FF03",
+    image: "/bx_charging_1.png",
+  },
+  {
+    id: "bx-humanoid-1",
+    name: "BX-1 Humanoid",
+    tagline: "Autonomous General-Purpose Robot",
+    price: "$125,000",
+    specs: ["Full Dexterity", "AI Vision", "72hr Battery"],
+    color: "#B14CFF",
+    image: "/bx1.png",
   },
 ];
 
