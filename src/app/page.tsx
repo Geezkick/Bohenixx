@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.css";
-import { ArrowRightIcon } from "@/components/Icons";
+import { ArrowRightIcon, StoreIcon, WrenchIcon, DashboardIcon, GearIcon } from "@/components/Icons";
 
 const ecosystemApps = [
   { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Road Safety", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
@@ -15,10 +15,10 @@ const ecosystemApps = [
 ];
 
 const quickActions = [
-  { label: "Store", icon: "🛒", href: "/store", color: "#B14CFF" },
-  { label: "Services", icon: "🛠️", href: "/services/request", color: "#00E5FF" },
-  { label: "Dashboard", icon: "📊", href: "/command-center", color: "#FF6D00" },
-  { label: "Settings", icon: "⚙️", href: "#", color: "#666" },
+  { label: "Store", icon: <StoreIcon size={24} color="#B14CFF" />, href: "/store", color: "#B14CFF" },
+  { label: "Services", icon: <WrenchIcon size={24} color="#00E5FF" />, href: "/services/request", color: "#00E5FF" },
+  { label: "Dashboard", icon: <DashboardIcon size={24} color="#FF6D00" />, href: "/command-center", color: "#FF6D00" },
+  { label: "Settings", icon: <GearIcon size={24} color="#666" />, href: "#", color: "#666" },
 ];
 
 export default function Home() {
