@@ -8,25 +8,58 @@ import { ArrowRightIcon, Terminal, Shield, Database, Cloud, Code, BrainCircuit, 
 import styles from "./landing.module.css";
 import founderStyles from "./founder.module.css";
 import ParticlesBackground from "@/components/ParticlesBackground";
+import CobeGlobe from "@/components/CobeGlobe";
+import TestimonialWall from "@/components/TestimonialWall";
+import LaunchTimer from "@/components/LaunchTimer";
 import AskBohenix from "@/components/AskBohenix";
 import InstallButton from "@/components/InstallButton";
 
 const ecosystem = [
-  { name: "NjiaSafe", desc: "Road safety and smart mobility platform.", icon: "/njiasafee.png", color: "#E0E0E0", status: "Under Dev" },
-  { name: "BX Omni", desc: "AI Digital Operations Twin.", icon: "/bohenixx.png", color: "#E0E0E0", status: "Under Dev" },
-  { name: "Fixxo", desc: "Smart maintenance and service platform.", icon: "/fixxo.png", color: "#E0E0E0", status: "Under Dev" },
-  { name: "Mboka", desc: "Community and local commerce ecosystem.", icon: "/mboka.png", color: "#E0E0E0", status: "Under Dev" },
-  { name: "Vuna", desc: "Agriculture and agritech platform.", icon: "/vuna.png", color: "#E0E0E0", status: "Under Dev" },
-  { name: "Kwelify", desc: "Education and learning technology platform.", icon: "/bohenixx.png", color: "#E0E0E0", status: "Under Dev" },
-  { name: "Safura", desc: "Security and safety platform.", icon: "/safura.png", color: "#E0E0E0", status: "Under Dev" },
+  { name: "NjiaSafe", desc: "Road safety and smart mobility platform.", icon: "/njiasafee.png", color: "#E0E0E0", href: "https://njiasafe.six.vercel.app" },
+  { name: "BX Omni", desc: "AI Digital Operations Twin.", icon: "/bohenixx.png", color: "#E0E0E0", href: "https://bohenixx.vercel.app" },
+  { name: "Fixxo", desc: "Smart maintenance and service platform.", icon: "/fixxo.png", color: "#E0E0E0", href: "https://fixxo.vercel.app" },
+  { name: "Mboka", desc: "Community and local commerce ecosystem.", icon: "/mboka.png", color: "#E0E0E0", href: "https://mboka.vercel.app" },
+  { name: "Vuna", desc: "Agriculture and agritech platform.", icon: "/vuna.png", color: "#E0E0E0", href: "https://vunashorts.vercel.app" },
+  { name: "Kwelify", desc: "Education and learning technology platform.", icon: "/bohenixx.png", color: "#E0E0E0", href: "https://kwelify.vercel.app" },
+  { name: "Safura", desc: "Security and safety platform.", icon: "/safura.png", color: "#E0E0E0", href: "https://safura-ai.vercel.app" },
 ];
 
 const services = [
-  { title: "Enterprise Software", icon: <Code size={32} color="#FFFFFF"/>, items: ["Web Applications", "Mobile Apps", "SaaS Platforms", "Enterprise Systems"] },
-  { title: "Artificial Intelligence", icon: <BrainCircuit size={32} color="#FFFFFF"/>, items: ["AI Agents", "Business Automation", "Predictive Analytics", "AI Integration"] },
-  { title: "Cybersecurity", icon: <Shield size={32} color="#FFFFFF"/>, items: ["Security Audits", "Penetration Testing", "Security Monitoring", "Compliance"] },
-  { title: "Data Analytics", icon: <Database size={32} color="#FFFFFF"/>, items: ["Business Intelligence", "Dashboards", "Reporting", "Data Engineering"] },
-  { title: "Cloud Infrastructure", icon: <Cloud size={32} color="#FFFFFF"/>, items: ["DevOps", "Cloud Deployment", "Hosting", "Monitoring"] },
+  { 
+    title: "Enterprise Software", 
+    icon: <Code size={32} color="#FFFFFF"/>, 
+    desc: "We design and develop scalable, high-performance software tailored to your business needs, from responsive web platforms to robust backend systems.",
+    items: ["Web Applications", "Mobile Apps", "SaaS Platforms", "Enterprise Systems"],
+    href: "/services/enterprise-software"
+  },
+  { 
+    title: "Artificial Intelligence", 
+    icon: <BrainCircuit size={32} color="#FFFFFF"/>, 
+    desc: "Unlock the power of your data with advanced AI solutions. We build intelligent systems that automate workflows and provide actionable insights.",
+    items: ["AI Agents", "Business Automation", "Predictive Analytics", "AI Integration"],
+    href: "/services/artificial-intelligence"
+  },
+  { 
+    title: "Cybersecurity", 
+    icon: <Shield size={32} color="#FFFFFF"/>, 
+    desc: "Protect your digital assets with our comprehensive security solutions, identifying vulnerabilities and ensuring compliance with global standards.",
+    items: ["Security Audits", "Penetration Testing", "Security Monitoring", "Compliance"],
+    href: "/services/cybersecurity"
+  },
+  { 
+    title: "Data Analytics", 
+    icon: <Database size={32} color="#FFFFFF"/>, 
+    desc: "Transform raw data into strategic intelligence. We provide interactive dashboards and comprehensive data pipelines to drive informed decision-making.",
+    items: ["Business Intelligence", "Dashboards", "Reporting", "Data Engineering"],
+    href: "/services/data-analytics"
+  },
+  { 
+    title: "Cloud Infrastructure", 
+    icon: <Cloud size={32} color="#FFFFFF"/>, 
+    desc: "Scale your operations seamlessly with our cloud expertise. We manage deployment, orchestration, and continuous monitoring for zero-downtime environments.",
+    items: ["DevOps", "Cloud Deployment", "Hosting", "Monitoring"],
+    href: "/services/cloud-infrastructure"
+  },
 ];
 
 export default function CorporateLandingPage() {
@@ -113,9 +146,6 @@ export default function CorporateLandingPage() {
             <a href="#contact" className={styles.secondaryCta}>
               Contact Us
             </a>
-            <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center' }}>
-              <InstallButton />
-            </div>
           </div>
         </motion.div>
       </header>
@@ -136,14 +166,39 @@ export default function CorporateLandingPage() {
         </div>
       </section>
 
+      {/* Client Testimonial Wall */}
+      <section className={styles.section} style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+        <TestimonialWall />
+      </section>
+
+      {/* African Presence Globe */}
+      <section id="presence" className={styles.section} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem', background: 'rgba(255,255,255,0.01)' }}>
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Active Across Africa</h2>
+          <p style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: '2rem' }}>
+            Our digital infrastructure is live in multiple tech hubs across the continent. 
+            From Nairobi to Lagos, Johannesburg to Cairo, we are building the foundation 
+            for Africa's connected future.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <span style={{ padding: '0.5rem 1rem', background: 'rgba(139,46,255,0.1)', border: '1px solid rgba(139,46,255,0.3)', borderRadius: '99px', color: '#B14CFF' }}>Nairobi, KE</span>
+            <span style={{ padding: '0.5rem 1rem', background: 'rgba(139,46,255,0.1)', border: '1px solid rgba(139,46,255,0.3)', borderRadius: '99px', color: '#B14CFF' }}>Lagos, NG</span>
+            <span style={{ padding: '0.5rem 1rem', background: 'rgba(139,46,255,0.1)', border: '1px solid rgba(139,46,255,0.3)', borderRadius: '99px', color: '#B14CFF' }}>Johannesburg, ZA</span>
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
+          <CobeGlobe />
+        </div>
+      </section>
+
       {/* Ecosystem / Products Section */}
       <section id="products" className={styles.section}>
         <motion.div 
           className={styles.sectionHeader}
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         >
-          <h2>Bohenix Products</h2>
-          <p>Coming Soon</p>
+          <h2>Bohenix Ecosystem</h2>
+          <p>Explore our live platforms.</p>
         </motion.div>
 
         <motion.div 
@@ -165,19 +220,22 @@ export default function CorporateLandingPage() {
                 </div>
                 <div>
                   <h3 className={styles.appName}>{app.name}</h3>
-                  <span className={styles.appStatus} style={{ background: `${app.color}20`, color: app.color }}>
-                    {app.status}
+                  <span className={styles.appStatus} style={{ background: `rgba(0,200,83,0.1)`, color: '#00C853' }}>
+                    LIVE
                   </span>
                 </div>
               </div>
               <p className={styles.appDesc}>{app.desc}</p>
-              <Link href="#" className={styles.appLink} style={{ color: app.color }}>
-                Learn More <ArrowRightIcon size={16} />
+              <Link href={app.href} target="_blank" className={styles.appLink} style={{ color: app.color }}>
+                Launch Platform <ArrowRightIcon size={16} />
               </Link>
               <div className={styles.cardGlow} style={{ background: app.color }} />
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Global Launch Date Timer */}
+        <LaunchTimer />
       </section>
 
       {/* About & Vision Section */}
@@ -219,9 +277,13 @@ export default function CorporateLandingPage() {
             <motion.div key={svc.title} className={styles.serviceCard} variants={staggerItem}>
               {svc.icon}
               <h3>{svc.title}</h3>
-              <ul className={styles.serviceList}>
+              <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>{svc.desc}</p>
+              <ul className={styles.serviceList} style={{ marginBottom: '2rem' }}>
                 {svc.items.map(item => <li key={item}>{item}</li>)}
               </ul>
+              <Link href={svc.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#00E5FF', fontWeight: 600, textDecoration: 'none', marginTop: 'auto' }}>
+                Explore Service <ArrowRightIcon size={16} />
+              </Link>
             </motion.div>
           ))}
         </motion.div>
@@ -339,14 +401,7 @@ export default function CorporateLandingPage() {
               <button type="button" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}>Send Email Inquiry</button>
             </form>
           </div>
-          {/* Google Map Mockup */}
-          <div style={{ flex: 1, minWidth: '300px', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'url(https://maps.googleapis.com/maps/api/staticmap?center=Nairobi,Kenya&zoom=13&size=600x400&maptype=roadmap&style=feature:all|element:labels.text.fill|color:0xffffff&style=feature:all|element:labels.text.stroke|color:0x000000&style=feature:all|element:labels.icon|visibility:off&style=feature:administrative|element:geometry.fill|color:0x000000&style=feature:administrative|element:geometry.stroke|color:0x144b53&style=feature:landscape|element:all|color:0x08304b&style=feature:poi|element:geometry|color:0x0c4152&style=feature:road.highway|element:geometry.fill|color:0x000000&style=feature:road.highway|element:geometry.stroke|color:0x0b434f&style=feature:transit|element:geometry|color:0x146474&style=feature:water|element:all|color:0x021019) center/cover' }}></div>
-            <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', background: 'rgba(0,0,0,0.8)', padding: '1.5rem', borderRadius: '16px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <h4 style={{ color: '#00E5FF', margin: 0, fontSize: '1.2rem' }}>Global Headquarters</h4>
-              <p style={{ color: 'rgba(255,255,255,0.7)', margin: '0.5rem 0 0 0' }}>Nairobi, Kenya<br/>Africa's Silicon Savannah</p>
-            </div>
-          </div>
+
         </div>
       </section>
 

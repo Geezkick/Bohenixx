@@ -12,17 +12,34 @@ export default function AskBohenix() {
   ]);
   const [input, setInput] = useState('');
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    setMessages([...messages, { role: 'user', text: input }]);
+    const userMessage = input;
+    setMessages([...messages, { role: 'user', text: userMessage }]);
     setInput('');
     
-    // Mock AI response
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'ai', text: 'Thank you for your inquiry. A Bohenix representative will review this shortly, or please visit our contact page.' }]);
-    }, 1000);
+    try {
+      // Use the API route to securely push to Supabase contacts
+      await fetch('/api/services/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service: 'AI Assistant Chat',
+          budget: 'N/A',
+          timeline: 'Immediate',
+          details: userMessage,
+          email: 'guest@bohenix.com'
+        })
+      });
+
+      setTimeout(() => {
+        setMessages(prev => [...prev, { role: 'ai', text: 'Thank you for your inquiry. A Bohenix representative will review this shortly, or please visit our contact page.' }]);
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

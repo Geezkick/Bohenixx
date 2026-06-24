@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
+import ParticlesBackground from "@/components/ParticlesBackground";
 import styles from "./AuthScreen.module.css";
 
 export default function AuthScreen() {
@@ -33,7 +35,7 @@ export default function AuthScreen() {
         : await signup(name, email, password);
 
       if (!success) {
-        setError(mode === "login" ? "Invalid credentials" : "Password must be 6+ characters");
+        setError(mode === "login" ? "Invalid credentials" : "Error creating account. Password must be 6+ chars.");
       }
     } catch {
       setError("Something went wrong. Try again.");
@@ -42,103 +44,155 @@ export default function AuthScreen() {
     }
   };
 
+  // Deep storytelling phrases
+  const adverts = [
+    <>Our Vision: To become Africa's leading technology ecosystem powering businesses, governments, and communities.</>,
+    <>Our Mission: Building transformative software products that solve real-world problems and create sustainable economic growth.</>,
+    <>Bohenix ONE: The singular portal to your enterprise software, AI, and cybersecurity solutions.</>,
+    <>Powering Africa's <span className={styles.highlight}>Digital Economy</span> with seamless interconnectivity.</>
+  ];
+  const [adIndex, setAdIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAdIndex((prev) => (prev + 1) % adverts.length);
+    }, 6000); // 6 seconds for longer reading time
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className={styles.screen}>
-      {/* Top gradient decoration */}
-      <div className={styles.topGlow} />
-
-      <div className={styles.content}>
-        {/* Logo + Welcome */}
-        <div className={styles.logoArea}>
-          <Image src="/bohenixx.png" alt="Bohenix" width={72} height={72} className={styles.logo} />
-          <h1 className={styles.appName}>Bohenix ONE</h1>
-          <p className={styles.tagline}>
-            {mode === "login" ? "Welcome back" : "Create your account"}
-          </p>
+      {/* LEFT SIDE - Auth Form */}
+      <div className={styles.leftSide}>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: 0.3 }}>
+          <ParticlesBackground />
         </div>
+        <div className={styles.topGlow} />
 
-        {/* Form */}
-        <div className={styles.form}>
-          {mode === "signup" && (
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>Full Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
-                className={styles.input}
-                autoComplete="name"
-              />
-            </div>
-          )}
-
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@email.com"
-              className={styles.input}
-              autoComplete="email"
-            />
+        <div className={styles.content}>
+          <div className={styles.logoArea}>
+            <Image src="/bohenixx.png" alt="Bohenix" width={90} height={90} className={styles.logo} />
+            <h1 className={styles.appName}>Bohenix ONE</h1>
+            <p className={styles.tagline}>
+              {mode === "login" ? "Access your enterprise portal" : "Join the digital ecosystem"}
+            </p>
           </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Password</label>
-            <div className={styles.passwordWrap}>
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className={styles.input}
-                autoComplete={mode === "login" ? "current-password" : "new-password"}
-              />
-              <button
-                type="button"
-                className={styles.eyeBtn}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-          </div>
-
-          {error && <p className={styles.error}>{error}</p>}
-
-          <button
-            className={styles.submitBtn}
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? (
-              <span className={styles.spinner} />
-            ) : (
-              mode === "login" ? "Sign In" : "Create Account"
+          <div className={styles.form}>
+            {mode === "signup" && (
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Full Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="John Doe"
+                  className={styles.input}
+                  autoComplete="name"
+                />
+              </div>
             )}
-          </button>
 
-          {mode === "login" && (
-            <button className={styles.forgotBtn}>Forgot password?</button>
-          )}
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@email.com"
+                className={styles.input}
+                autoComplete="email"
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Password</label>
+              <div className={styles.passwordWrap}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className={styles.input}
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                />
+                <button
+                  type="button"
+                  className={styles.eyeBtn}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            {error && <p className={styles.error}>{error}</p>}
+
+            <button
+              className={styles.submitBtn}
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? (
+                <span className={styles.spinner} />
+              ) : (
+                mode === "login" ? "Authenticate" : "Create Account"
+              )}
+            </button>
+
+            {mode === "login" && (
+              <button className={styles.forgotBtn}>Forgot password?</button>
+            )}
+          </div>
+
+          <div className={styles.toggle}>
+            <span className={styles.toggleText}>
+              {mode === "login" ? "Don't have an account?" : "Already have an account?"}
+            </span>
+            <button
+              className={styles.toggleBtn}
+              onClick={() => {
+                setMode(mode === "login" ? "signup" : "login");
+                setError("");
+              }}
+            >
+              {mode === "login" ? "Request Access" : "Sign In"}
+            </button>
+          </div>
         </div>
+      </div>
 
-        {/* Toggle */}
-        <div className={styles.toggle}>
-          <span className={styles.toggleText}>
-            {mode === "login" ? "Don't have an account?" : "Already have an account?"}
-          </span>
-          <button
-            className={styles.toggleBtn}
-            onClick={() => {
-              setMode(mode === "login" ? "signup" : "login");
-              setError("");
-            }}
-          >
-            {mode === "login" ? "Sign Up" : "Sign In"}
-          </button>
+      {/* RIGHT SIDE - Looping Video & Animated Text */}
+      <div className={styles.rightSide}>
+        <video 
+          ref={(el) => {
+            if (el) {
+              el.play().catch(e => console.error("Autoplay prevented:", e));
+            }
+          }}
+          src="/bohenixx.mp4" 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          preload="auto"
+          className={styles.videoPlayer}
+        >
+          <source src="/bohenixx.mp4" type="video/mp4" />
+        </video>
+        <div className={styles.overlayTextWrap}>
+          <AnimatePresence mode="wait">
+            <motion.h2
+              key={adIndex}
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -30, scale: 1.02 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className={styles.advertText}
+            >
+              {adverts[adIndex]}
+            </motion.h2>
+          </AnimatePresence>
         </div>
       </div>
     </div>

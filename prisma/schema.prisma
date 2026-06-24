@@ -44,3 +44,13 @@ model Telemetry {
   latency     Int
   updatedAt   DateTime @updatedAt
 }
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  company   String?
+  message   String
+  rating    Int      @default(5)
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

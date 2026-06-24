@@ -1,32 +1,28 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
   try {
+    const supabase = await createClient();
     const body = await req.json();
     const { service, budget, timeline, details, email } = body;
 
-    // Save to DB
-    const newRequest = await db.serviceRequest.create({
-      data: {
-        service,
-        budget,
-        timeline,
-        details,
-        email,
-      }
-    });
+    // Map Service Request to Contacts table structure
+    const name = `Service Request: ${service}`;
+    const message = `Budget: ${budget}\nTimeline: ${timeline}\nDetails: ${details}`;
 
-    // We can also log this into the activity feed
-    await db.activityLog.create({
-      data: {
-        app: "Bohenix ONE",
-        action: `New service request received for ${service}`,
-        color: "#00C853",
-      }
-    });
+    const { data, error } = await supabase
+      .from('contacts')
+      .insert([
+        { name, email, message }
+      ])
+      .select();
 
-    return NextResponse.json({ success: true, request: newRequest });
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ success: true, request: data });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

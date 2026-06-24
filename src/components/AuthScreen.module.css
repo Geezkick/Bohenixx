@@ -5,11 +5,70 @@
   z-index: 100000;
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .screen {
+    flex-direction: row;
+  }
+}
+
+.leftSide {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem;
-  padding-top: env(safe-area-inset-top, 2rem);
-  padding-bottom: env(safe-area-inset-bottom, 2rem);
+  padding: 2rem;
+  position: relative;
+  overflow-y: auto;
+}
+
+.rightSide {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .rightSide {
+    display: block;
+    flex: 1;
+    position: relative;
+    background: #050505;
+    overflow: hidden;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.videoPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6; /* Slight dimming for the overlay text */
+}
+
+.overlayTextWrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  text-align: center;
+  background: radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+}
+
+.advertText {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+  max-width: 800px;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.9);
+}
+
+.highlight {
+  background: linear-gradient(90deg, #B14CFF, #00E5FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .topGlow {
@@ -30,6 +89,8 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  position: relative;
+  z-index: 10;
 }
 
 .logoArea {
