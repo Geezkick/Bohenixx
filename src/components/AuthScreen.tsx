@@ -30,12 +30,12 @@ export default function AuthScreen() {
 
     setLoading(true);
     try {
-      const success = mode === "login"
+      const result = mode === "login"
         ? await login(email, password)
         : await signup(name, email, password);
 
-      if (!success) {
-        setError(mode === "login" ? "Invalid credentials" : "Error creating account. Password must be 6+ chars.");
+      if (!result.success) {
+        setError(result.error || (mode === "login" ? "Invalid credentials" : "Error creating account"));
       }
     } catch {
       setError("Something went wrong. Try again.");

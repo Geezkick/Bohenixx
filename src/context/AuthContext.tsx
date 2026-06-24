@@ -13,8 +13,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (name: string, email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 }
 
@@ -55,17 +55,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, [supabase.auth]);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return false;
-      return true;
-    } catch {
-      return false;
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || "An unexpected error occurred" };
     }
   };
 
-  const signup = async (name: string, email: string, password: string): Promise<boolean> => {
+  const signup = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -74,10 +74,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           data: { name }
         }
       });
-      if (error) return false;
-      return true;
-    } catch {
-      return false;
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || "An unexpected error occurred" };
     }
   };
 
