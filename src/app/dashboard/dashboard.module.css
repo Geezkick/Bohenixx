@@ -315,3 +315,18 @@
 .logoutBtn:active {
   background: rgba(255, 51, 102, 0.08);
 }
+
+.submitBtn {
+  width: 100%;
+  padding: 14px 16px;
+  text-align: center;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.submitBtn:active {
+  opacity: 0.8;
+}

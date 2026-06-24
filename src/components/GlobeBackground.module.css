@@ -1,0 +1,69 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.globeGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vh;
+  height: 80vh;
+  background: radial-gradient(circle, rgba(139, 46, 255, 0.15) 0%, rgba(0, 229, 255, 0.05) 40%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(40px);
+  border-radius: 50%;
+  animation: pulse 8s infinite alternate ease-in-out;
+}
+
+.globeCore {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40vh;
+  height: 40vh;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, rgba(0, 0, 0, 0) 60%);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 100px rgba(139, 46, 255, 0.1);
+  animation: rotateCore 20s linear infinite;
+}
+
+.networkNodes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.node {
+  position: absolute;
+  background: #FFD700;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #FFD700, 0 0 20px rgba(255, 215, 0, 0.5);
+  animation: floatNode 6s infinite alternate ease-in-out;
+  opacity: 0.6;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+}
+
+@keyframes rotateCore {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes floatNode {
+  0% { transform: translateY(0) scale(1); opacity: 0.2; }
+  100% { transform: translateY(-30px) scale(1.5); opacity: 0.8; }
+}

@@ -23,48 +23,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for stored session on mount
+  // Check for stored session on mount via API
   useEffect(() => {
-    const stored = localStorage.getItem("bx_user");
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem("bx_user");
-      }
-    }
-    setIsLoading(false);
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          setUser({ ...data.user, avatar: "/bohenixx.png" });
+        }
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1200));
-    if (password.length < 4) return false;
-
-    const newUser: User = {
-      id: "bx-user-001",
-      name: email.split("@")[0].replace(/[^a-zA-Z]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-      email,
-      avatar: "/bohenixx.png",
-    };
-    setUser(newUser);
-    localStorage.setItem("bx_user", JSON.stringify(newUser));
-    return true;
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      setUser({ ...data.user, avatar: "/bohenixx.png" });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    await new Promise((r) => setTimeout(r, 1500));
-    if (password.length < 6) return false;
-
-    const newUser: User = { id: "bx-user-" + Date.now(), name, email, avatar: "/bohenixx.png" };
-    setUser(newUser);
-    localStorage.setItem("bx_user", JSON.stringify(newUser));
-    return true;
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      setUser({ ...data.user, avatar: "/bohenixx.png" });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {}
     setUser(null);
-    localStorage.removeItem("bx_user");
   };
 
   return (

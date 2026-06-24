@@ -1,147 +1,396 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import styles from "./page.module.css";
-import { ArrowRightIcon, StoreIcon, WrenchIcon, DashboardIcon, GearIcon } from "@/components/Icons";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRightIcon, Terminal, Shield, Database, Cloud, Code, BrainCircuit, Globe, Activity, FileText } from "lucide-react";
+import styles from "./landing.module.css";
+import founderStyles from "./founder.module.css";
+import ParticlesBackground from "@/components/ParticlesBackground";
+import AskBohenix from "@/components/AskBohenix";
+import InstallButton from "@/components/InstallButton";
 
-const ecosystemApps = [
-  { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Road Safety", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
-  { name: "Mboka", icon: "mboka.png", tagline: "Marketplace", color: "#FF6D00", url: "https://mboka.vercel.app" },
-  { name: "Fixxo", icon: "fixxo.png", tagline: "Repairs", color: "#2979FF", url: "https://fixxo.vercel.app" },
-  { name: "Vuna", icon: "vuna.png", tagline: "AgriTech", color: "#76FF03", url: "https://vunashorts.vercel.app" },
-  { name: "Safura", icon: "safura.png", tagline: "Health AI", color: "#00E5FF", url: "https://safura-ai.vercel.app" },
+const ecosystem = [
+  { name: "NjiaSafe", desc: "Road safety and smart mobility platform.", icon: "/njiasafee.png", color: "#E0E0E0", status: "Under Dev" },
+  { name: "BX Omni", desc: "AI Digital Operations Twin.", icon: "/bohenixx.png", color: "#E0E0E0", status: "Under Dev" },
+  { name: "Fixxo", desc: "Smart maintenance and service platform.", icon: "/fixxo.png", color: "#E0E0E0", status: "Under Dev" },
+  { name: "Mboka", desc: "Community and local commerce ecosystem.", icon: "/mboka.png", color: "#E0E0E0", status: "Under Dev" },
+  { name: "Vuna", desc: "Agriculture and agritech platform.", icon: "/vuna.png", color: "#E0E0E0", status: "Under Dev" },
+  { name: "Kwelify", desc: "Education and learning technology platform.", icon: "/bohenixx.png", color: "#E0E0E0", status: "Under Dev" },
+  { name: "Safura", desc: "Security and safety platform.", icon: "/safura.png", color: "#E0E0E0", status: "Under Dev" },
 ];
 
-const quickActions = [
-  { label: "Store", icon: <StoreIcon size={24} color="#B14CFF" />, href: "/store", color: "#B14CFF" },
-  { label: "Services", icon: <WrenchIcon size={24} color="#00E5FF" />, href: "/services/request", color: "#00E5FF" },
-  { label: "Dashboard", icon: <DashboardIcon size={24} color="#FF6D00" />, href: "/command-center", color: "#FF6D00" },
-  { label: "Settings", icon: <GearIcon size={24} color="#666" />, href: "#", color: "#666" },
+const services = [
+  { title: "Enterprise Software", icon: <Code size={32} color="#FFFFFF"/>, items: ["Web Applications", "Mobile Apps", "SaaS Platforms", "Enterprise Systems"] },
+  { title: "Artificial Intelligence", icon: <BrainCircuit size={32} color="#FFFFFF"/>, items: ["AI Agents", "Business Automation", "Predictive Analytics", "AI Integration"] },
+  { title: "Cybersecurity", icon: <Shield size={32} color="#FFFFFF"/>, items: ["Security Audits", "Penetration Testing", "Security Monitoring", "Compliance"] },
+  { title: "Data Analytics", icon: <Database size={32} color="#FFFFFF"/>, items: ["Business Intelligence", "Dashboards", "Reporting", "Data Engineering"] },
+  { title: "Cloud Infrastructure", icon: <Cloud size={32} color="#FFFFFF"/>, items: ["DevOps", "Cloud Deployment", "Hosting", "Monitoring"] },
 ];
 
-export default function Home() {
-  const { user, logout } = useAuth();
+export default function CorporateLandingPage() {
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
+  
+  // Premium animation variants
+  const staggerContainer: any = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      }
+    }
+  };
+
+  const staggerItem: any = {
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
+    show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8, ease: "easeOut" } }
+  };
+  
+  // Stats counter animation state
+  const [stats, setStats] = useState({ products: 0, users: 0, countries: 0 });
+  
+  useEffect(() => {
+    // Simple animated counter effect
+    const interval = setInterval(() => {
+      setStats(prev => ({
+        products: Math.min(prev.products + 1, 7),
+        users: Math.min(prev.users + 120, 12000),
+        countries: Math.min(prev.countries + 1, 15)
+      }));
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className={styles.screen}>
+    <div className={styles.container}>
+      {/* AI Widget */}
+      <AskBohenix />
+      
+      {/* Global Background */}
+      <ParticlesBackground />
 
-      {/* Quick Actions Grid */}
-      <section className={styles.quickActions}>
-        {quickActions.map((action) => (
-          <Link key={action.label} href={action.href} className={styles.quickActionCard}>
-            <div className={styles.quickActionIcon}>{action.icon}</div>
-            <span className={styles.quickActionLabel}>{action.label}</span>
+      {/* Navigation */}
+      <nav className={styles.nav}>
+        <div className={styles.logoGroup}>
+          <Image src="/bohenixx.png" alt="Bohenix Logo" width={32} height={32} />
+          <span className={styles.brandName}>Bohenix</span>
+        </div>
+        <div className={styles.navLinks}>
+          <a href="#products" className={styles.navLink}>Products</a>
+          <a href="#services" className={styles.navLink}>Services</a>
+          <a href="#labs" className={styles.navLink}>BX Labs</a>
+          <a href="#about" className={styles.navLink}>About</a>
+          <a href="#contact" className={styles.navLink}>Contact</a>
+          <InstallButton />
+          <Link href="/dashboard" className={styles.navBtn}>Access Portal</Link>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <header className={styles.hero} id="home">
+        
+        <motion.div 
+          className={styles.heroContent}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <div className={styles.badge}>Africa's Leading Technology Ecosystem</div>
+          <h1 className={styles.title}>
+            Building Africa's Intelligent <br />
+            <span style={{ color: '#FFFFFF' }}>Digital Future</span>
+          </h1>
+          <p className={styles.subtitle}>
+            Bohenix develops AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.
+          </p>
+          <div className={styles.ctaGroup}>
+            <a href="#products" className={styles.primaryCta}>
+              Explore Products <ArrowRightIcon size={20} />
+            </a>
+            <a href="#contact" className={styles.secondaryCta}>
+              Contact Us
+            </a>
+            <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center' }}>
+              <InstallButton />
+            </div>
+          </div>
+        </motion.div>
+      </header>
+
+      {/* Live Statistics */}
+      <section className={styles.statsSection}>
+        <div className={styles.statItem}>
+          <span className={styles.statNumber}>{stats.products}+</span>
+          <span className={styles.statLabel}>Digital Products</span>
+        </div>
+        <div className={styles.statItem}>
+          <span className={styles.statNumber}>{stats.users.toLocaleString()}+</span>
+          <span className={styles.statLabel}>Active Users</span>
+        </div>
+        <div className={styles.statItem}>
+          <span className={styles.statNumber}>{stats.countries}</span>
+          <span className={styles.statLabel}>African Countries</span>
+        </div>
+      </section>
+
+      {/* Ecosystem / Products Section */}
+      <section id="products" className={styles.section}>
+        <motion.div 
+          className={styles.sectionHeader}
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+        >
+          <h2>Bohenix Products</h2>
+          <p>Coming Soon</p>
+        </motion.div>
+
+        <motion.div 
+          className={styles.appsGrid}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          {ecosystem.map((app, i) => (
+            <motion.div 
+              key={app.name} 
+              className={styles.appCard}
+              variants={staggerItem}
+            >
+              <div className={styles.appHeader}>
+                <div className={styles.appIconWrap}>
+                  <Image src={app.icon} alt={app.name} width={50} height={50} className={styles.appIcon} />
+                </div>
+                <div>
+                  <h3 className={styles.appName}>{app.name}</h3>
+                  <span className={styles.appStatus} style={{ background: `${app.color}20`, color: app.color }}>
+                    {app.status}
+                  </span>
+                </div>
+              </div>
+              <p className={styles.appDesc}>{app.desc}</p>
+              <Link href="#" className={styles.appLink} style={{ color: app.color }}>
+                Learn More <ArrowRightIcon size={16} />
+              </Link>
+              <div className={styles.cardGlow} style={{ background: app.color }} />
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* About & Vision Section */}
+      <section id="about" className={styles.section} style={{ background: 'rgba(255,255,255,0.01)' }}>
+        <div className={styles.sectionHeader}>
+          <h2>About Bohenix</h2>
+          <p>Our vision and mission to transform the digital landscape.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
+          <motion.div style={{ flex: 1, minWidth: '300px' }} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}>
+            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#B14CFF' }}>Vision</h3>
+            <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.7)' }}>
+              To become Africa's leading technology ecosystem powering businesses, governments, and communities through intelligent digital solutions.
+            </p>
+          </motion.div>
+          <motion.div style={{ flex: 1, minWidth: '300px' }} initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}>
+            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#00E5FF' }}>Mission</h3>
+            <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.7)' }}>
+              Building transformative software products that solve real-world problems and create sustainable economic growth.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2>Enterprise Services</h2>
+          <p>We provide world-class engineering, AI, and cybersecurity services.</p>
+        </div>
+        <motion.div 
+          className={styles.servicesGrid}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          {services.map((svc, i) => (
+            <motion.div key={svc.title} className={styles.serviceCard} variants={staggerItem}>
+              {svc.icon}
+              <h3>{svc.title}</h3>
+              <ul className={styles.serviceList}>
+                {svc.items.map(item => <li key={item}>{item}</li>)}
+              </ul>
+            </motion.div>
+          ))}
+        </motion.div>
+        <div style={{ textAlign: 'center', marginTop: '4rem' }}>
+          <Link href="/services/request" className={styles.primaryCta} style={{ display: 'inline-flex', background: '#fff', color: '#000' }}>
+            Request Services <ArrowRightIcon size={20} />
           </Link>
-        ))}
-      </section>
-
-      {/* Status Card */}
-      <section className={styles.statusCard}>
-        <div className={styles.statusHeader}>
-          <div className={styles.statusDot} />
-          <span className={styles.statusTitle}>System Status</span>
-        </div>
-        <div className={styles.statusMetrics}>
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>1,203</span>
-            <span className={styles.metricLabel}>Active Devices</span>
-          </div>
-          <div className={styles.metricDivider} />
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>99.8%</span>
-            <span className={styles.metricLabel}>Uptime</span>
-          </div>
-          <div className={styles.metricDivider} />
-          <div className={styles.metric}>
-            <span className={styles.metricValue}>12ms</span>
-            <span className={styles.metricLabel}>Latency</span>
-          </div>
         </div>
       </section>
 
-      {/* Ecosystem Apps */}
-      <section className={styles.appsSection}>
-        <div className={styles.sectionRow}>
-          <h2 className={styles.sectionTitle}>Your Apps</h2>
-          <span className={styles.seeAll}>See All</span>
+      {/* BX Labs Section */}
+      <section id="labs" className={styles.section} style={{ background: 'linear-gradient(135deg, rgba(139,46,255,0.05), transparent)' }}>
+        <div className={styles.sectionHeader}>
+          <h2>BX Labs</h2>
+          <p>Our dedicated research and innovation division.</p>
         </div>
-        <div className={styles.appsList}>
-          {ecosystemApps.map((app) => (
-            <Link href={app.url} target="_blank" rel="noopener noreferrer" key={app.name} className={styles.appRow}>
-              <div className={styles.appRowLeft}>
-                <div className={styles.appIconWrap} style={{ boxShadow: `0 0 16px ${app.color}20` }}>
-                  <Image src={`/${app.icon}`} alt={app.name} width={44} height={44} className={styles.appIconImg} />
-                </div>
-                <div className={styles.appInfo}>
-                  <span className={styles.appName}>{app.name}</span>
-                  <span className={styles.appTagline}>{app.tagline}</span>
-                </div>
-              </div>
-              <div className={styles.appRowRight}>
-                <span className={styles.appStatus} style={{ color: app.color }}>Open</span>
-                <ArrowRightIcon size={16} color="rgba(255,255,255,0.2)" />
-              </div>
-            </Link>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+          {['Emerging Technology Research', 'AI Innovation', 'Robotics', 'Smart Cities', 'Digital Infrastructure'].map(feature => (
+            <div key={feature} style={{ padding: '1rem 2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '99px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              {feature}
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Recent Activity */}
-      <section className={styles.recentSection}>
-        <div className={styles.sectionRow}>
-          <h2 className={styles.sectionTitle}>Recent Activity</h2>
+      {/* Careers & Partners Section */}
+      <section id="careers" className={styles.section} style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem' }}>
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Careers</h2>
+          <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem' }}>
+            Join us in building the future. We offer open positions, internship opportunities, and graduate programs.
+          </p>
+          <a href="mailto:career@bohenix.africa" className={styles.secondaryCta} style={{ display: 'inline-block' }}>
+            Apply: career@bohenix.africa
+          </a>
         </div>
-        <div className={styles.activityList}>
-          <div className={styles.activityItem}>
-            <div className={styles.activityDot} style={{ background: "#00C853" }} />
-            <div className={styles.activityContent}>
-              <span className={styles.activityText}>NjiaSafe synced route data</span>
-              <span className={styles.activityTime}>2 min ago</span>
-            </div>
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Investors & Partners</h2>
+          <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem' }}>
+            Collaborating with governments, NGOs, enterprise clients, and investors to scale impact.
+          </p>
+          <a href="mailto:ceo@bohenix.africa" className={styles.primaryCta} style={{ display: 'inline-block' }}>
+            Contact: ceo@bohenix.africa
+          </a>
+        </div>
+      </section>
+
+      {/* Founder Profile */}
+      <section className={styles.section} style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', margin: '4rem auto' }}>
+        <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', width: '300px', height: '400px', borderRadius: '16px', overflow: 'hidden', border: '2px solid rgba(139, 46, 255, 0.5)', boxShadow: '0 0 50px rgba(139, 46, 255, 0.2)' }}>
+            <Image src="/brian.png" alt="Brian Nyarienya - Founder" layout="fill" objectFit="cover" />
           </div>
-          <div className={styles.activityItem}>
-            <div className={styles.activityDot} style={{ background: "#00E5FF" }} />
-            <div className={styles.activityContent}>
-              <span className={styles.activityText}>Safura generated health insight</span>
-              <span className={styles.activityTime}>15 min ago</span>
+        </div>
+        <div style={{ flex: 2, minWidth: '300px' }}>
+          <h2 style={{ fontSize: '3rem', marginBottom: '0.5rem', color: '#FFFFFF' }}>Brian Nyarienya</h2>
+          <h3 style={{ fontSize: '1.5rem', color: '#E0E0E0', marginBottom: '1.5rem' }}>Founder & Visionary, Bohenix Technologies</h3>
+          <motion.p 
+            style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'rgba(255,255,255,0.8)' }}
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {`"Our goal is not just to build software, but to architect the digital nervous system of Africa. From smart mobility to AI-driven ecosystems, we are creating the foundation for a sustainable and hyper-connected future."`.split(' ').map((word, i) => (
+              <motion.span key={i} variants={staggerItem} style={{ display: 'inline-block', marginRight: '4px' }}>
+                {word}
+              </motion.span>
+            ))}
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Dedicated Contact Form & Map Section */}
+      <section id="contact" className={styles.section} style={{ background: 'rgba(0,0,0,0.5)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className={styles.sectionHeader}>
+          <h2>Get in Touch</h2>
+          <p>Reach out to our teams for partnerships, services, or inquiries.</p>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem' }}>
+          {/* Contact Form */}
+          <div style={{ flex: 1, minWidth: '300px', background: 'rgba(255,255,255,0.02)', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+              <a href="https://wa.me/254783176503" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                WhatsApp
+              </a>
+              <a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=p9wb1ez" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                Insta
+              </a>
+              <a href="https://x.com/bohenix_solutio" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                X
+              </a>
+              <a href="https://www.linkedin.com/in/brian-nyarienya-35892925b/" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                LinkedIn
+              </a>
+              <a href="mailto:bohenixsolutions@gmail.com" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Email
+              </a>
+              <a href="https://reddit.com/r/bohenix" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.248-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.561-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+                Reddit
+              </a>
             </div>
+            <button type="button" style={{ width: '100%', marginBottom: '2rem', background: '#FFFFFF', color: '#000', padding: '1rem', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer', border: 'none' }} onClick={() => document.querySelector<HTMLButtonElement>('.' + styles.fab)?.click()}>
+              Start Customer Service Chat
+            </button>
+            <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <input type="email" placeholder="Email support@bohenix.africa" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+              <textarea placeholder="Direct message..." rows={4} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
+              <button type="button" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}>Send Email Inquiry</button>
+            </form>
           </div>
-          <div className={styles.activityItem}>
-            <div className={styles.activityDot} style={{ background: "#B14CFF" }} />
-            <div className={styles.activityContent}>
-              <span className={styles.activityText}>System telemetry sync complete</span>
-              <span className={styles.activityTime}>1 hr ago</span>
+          {/* Google Map Mockup */}
+          <div style={{ flex: 1, minWidth: '300px', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'url(https://maps.googleapis.com/maps/api/staticmap?center=Nairobi,Kenya&zoom=13&size=600x400&maptype=roadmap&style=feature:all|element:labels.text.fill|color:0xffffff&style=feature:all|element:labels.text.stroke|color:0x000000&style=feature:all|element:labels.icon|visibility:off&style=feature:administrative|element:geometry.fill|color:0x000000&style=feature:administrative|element:geometry.stroke|color:0x144b53&style=feature:landscape|element:all|color:0x08304b&style=feature:poi|element:geometry|color:0x0c4152&style=feature:road.highway|element:geometry.fill|color:0x000000&style=feature:road.highway|element:geometry.stroke|color:0x0b434f&style=feature:transit|element:geometry|color:0x146474&style=feature:water|element:all|color:0x021019) center/cover' }}></div>
+            <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', background: 'rgba(0,0,0,0.8)', padding: '1.5rem', borderRadius: '16px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h4 style={{ color: '#00E5FF', margin: 0, fontSize: '1.2rem' }}>Global Headquarters</h4>
+              <p style={{ color: 'rgba(255,255,255,0.7)', margin: '0.5rem 0 0 0' }}>Nairobi, Kenya<br/>Africa's Silicon Savannah</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Account Section */}
-      <section className={styles.accountSection}>
-        <div className={styles.sectionRow}>
-          <h2 className={styles.sectionTitle}>Account</h2>
-        </div>
-        <div className={styles.accountCard}>
-          <div className={styles.accountRow}>
-            <span className={styles.accountLabel}>Email</span>
-            <span className={styles.accountValue}>{user?.email}</span>
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div className={styles.footerGrid}>
+          <div className={styles.footerBrand}>
+            <Image src="/bohenixx.png" alt="Bohenix Logo" width={48} height={48} />
+            <p>Building Africa's Intelligent Digital Future through enterprise engineering, smart ecosystems, and artificial intelligence.</p>
           </div>
-          <div className={styles.accountDivider} />
-          <div className={styles.accountRow}>
-            <span className={styles.accountLabel}>Plan</span>
-            <span className={styles.accountBadge}>Pro</span>
+          <div className={styles.footerCol}>
+            <h4>Contact Center</h4>
+            <ul>
+              <li><a href="mailto:bohenixsolutions@gmail.com">bohenixsolutions@gmail.com</a></li>
+            </ul>
           </div>
-          <div className={styles.accountDivider} />
-          <button className={styles.logoutBtn} onClick={logout}>
-            Sign Out
-          </button>
+          <div className={styles.footerCol}>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#careers">Careers</a></li>
+              <li><a href="#">Newsroom</a></li>
+              <li><a href="#">Developer Portal</a></li>
+            </ul>
+          </div>
+          <div className={styles.footerCol}>
+            <h4>Social Media</h4>
+            <ul>
+              <li><a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=p9wb1ez" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg> Instagram</a></li>
+              <li><a href="https://x.com/bohenix_solutio" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> X</a></li>
+              <li><a href="https://www.linkedin.com/in/brian-nyarienya-35892925b/" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> LinkedIn</a></li>
+              <li><a href="https://wa.me/254783176503" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg> WhatsApp</a></li>
+              <li><a href="https://reddit.com/r/bohenix" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.248-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.561-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg> Reddit</a></li>
+            </ul>
+          </div>
         </div>
-      </section>
-
-      {/* Bottom spacer for bottom nav */}
-      <div style={{ height: "2rem" }} />
+        <div className={styles.footerBottom}>
+          <span>&copy; {new Date().getFullYear()} Bohenix Technologies. All rights reserved.</span>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>Privacy Policy</a>
+            <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>Terms of Service</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
