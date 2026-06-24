@@ -32,13 +32,26 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect routes here if needed
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard') && request.nextUrl.pathname !== '/dashboard') {
-    // If not authenticated and trying to access a subroute of dashboard
+  // Protected routes — unauthenticated users get redirected to /dashboard (which shows AuthScreen)
+  const protectedPaths = ['/dashboard', '/command-center', '/products', '/services', '/apps']
+  const isProtected = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const isApiRoute = request.nextUrl.pathname.startsWith('/api')
+
+  if (!user && isProtected) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
-    // return NextResponse.redirect(url)
+    url.pathname = '/dashboard'
+    // Don't redirect if already on /dashboard (to avoid infinite loop — AuthScreen handles this)
+    if (request.nextUrl.pathname !== '/dashboard') {
+      return NextResponse.redirect(url)
+    }
   }
+
+  // Add security headers to every response
+  supabaseResponse.headers.set('X-Frame-Options', 'DENY')
+  supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff')
+  supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  supabaseResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  supabaseResponse.headers.set('X-XSS-Protection', '1; mode=block')
 
   return supabaseResponse
 }

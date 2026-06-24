@@ -13,6 +13,9 @@ import TestimonialWall from "@/components/TestimonialWall";
 import LaunchTimer from "@/components/LaunchTimer";
 import AskBohenix from "@/components/AskBohenix";
 import InstallButton from "@/components/InstallButton";
+import { useAuth } from "@/context/AuthContext";
+import { useNotification } from "@/context/NotificationContext";
+import { useRouter } from "next/navigation";
 
 const ecosystem = [
   { name: "NjiaSafe", desc: "Road safety and smart mobility platform.", icon: "/njiasafee.png", color: "#E0E0E0", href: "https://njiasafe.six.vercel.app" },
@@ -63,6 +66,25 @@ const services = [
 ];
 
 export default function CorporateLandingPage() {
+  const { user } = useAuth();
+  const { showNotification } = useNotification();
+  const router = useRouter();
+  const [pulseAuth, setPulseAuth] = useState(false);
+
+  const handleProtectedNavigation = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      showNotification({
+        title: "Access Restricted",
+        message: "Please access the portal first to unlock all features and protect user data.",
+        type: "warning"
+      });
+      setPulseAuth(true);
+      setTimeout(() => setPulseAuth(false), 2000);
+      setTimeout(() => router.push("/dashboard"), 1500);
+    }
+  };
+
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
   
@@ -133,13 +155,13 @@ export default function CorporateLandingPage() {
           <span className={styles.brandName}>Bohenix</span>
         </div>
         <div className={styles.navLinks}>
-          <a href="#products" className={styles.navLink}>Products</a>
-          <a href="#services" className={styles.navLink}>Services</a>
-          <a href="#labs" className={styles.navLink}>BX Labs</a>
-          <a href="#about" className={styles.navLink}>About</a>
-          <a href="#contact" className={styles.navLink}>Contact</a>
+          <a href="#products" className={styles.navLink} onClick={handleProtectedNavigation}>Products</a>
+          <a href="#services" className={styles.navLink} onClick={handleProtectedNavigation}>Services</a>
+          <a href="#labs" className={styles.navLink} onClick={handleProtectedNavigation}>BX Labs</a>
+          <a href="#about" className={styles.navLink} onClick={handleProtectedNavigation}>About</a>
+          <a href="#contact" className={styles.navLink} onClick={handleProtectedNavigation}>Contact</a>
           <InstallButton />
-          <Link href="/dashboard" className={styles.navBtn}>Access Portal</Link>
+          <Link href="/dashboard" className={styles.navBtn} style={pulseAuth ? { animation: 'pulse 1s infinite', transform: 'scale(1.05)', boxShadow: '0 0 25px #00E5FF', transition: 'all 0.3s' } : {}}>Access Portal</Link>
         </div>
       </nav>
 
@@ -170,20 +192,22 @@ export default function CorporateLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
           >
-            <a href="#products" className={styles.primaryCta}>
+            <a href="#products" className={styles.primaryCta} onClick={handleProtectedNavigation}>
               Explore Products <ArrowRightIcon size={20} />
             </a>
-            <a href="#contact" className={styles.secondaryCta}>
+            <a href="#contact" className={styles.secondaryCta} onClick={handleProtectedNavigation}>
               Contact Us
             </a>
           </motion.div>
         </motion.div>
       </header>
 
-      {/* Live Statistics */}
-      <section className={styles.statsSection}>
-        <div className={styles.statItem}>
-          <span className={styles.statNumber}>{stats.products}+</span>
+      {user ? (
+        <>
+          {/* Live Statistics */}
+          <section className={styles.statsSection}>
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>{stats.products}+</span>
           <span className={styles.statLabel}>Digital Products</span>
         </div>
         <div className={styles.statItem}>
@@ -476,6 +500,17 @@ export default function CorporateLandingPage() {
           </div>
         </div>
       </footer>
+        </>
+      ) : (
+        <section style={{ padding: '8rem 2rem', minHeight: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(to bottom, transparent, rgba(139,46,255,0.05))', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
+           <Shield size={64} color="rgba(255,255,255,0.1)" style={{ marginBottom: '2rem' }} />
+           <h2 style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '1rem', textAlign: 'center', fontWeight: 800 }}>Ecosystem Locked</h2>
+           <p style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '3rem', textAlign: 'center', fontSize: '1.2rem', maxWidth: '500px' }}>For security and data protection, please authenticate to access products, services, and live telemetry.</p>
+           <button onClick={(e) => handleProtectedNavigation(e)} className={styles.primaryCta} style={{ border: 'none', cursor: 'pointer' }}>
+             Unlock Ecosystem <ArrowRightIcon size={20} />
+           </button>
+        </section>
+      )}
     </div>
   );
 }
