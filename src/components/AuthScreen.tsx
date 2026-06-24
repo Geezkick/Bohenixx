@@ -44,12 +44,12 @@ export default function AuthScreen() {
     }
   };
 
-  // Deep storytelling phrases
+  // Deep storytelling phrases with balanced gradient highlights
   const adverts = [
-    <>Our Vision: To become Africa's leading technology ecosystem powering businesses, governments, and communities.</>,
-    <>Our Mission: Building transformative software products that solve real-world problems and create sustainable economic growth.</>,
-    <>Bohenix ONE: The singular portal to your enterprise software, AI, and cybersecurity solutions.</>,
-    <>Powering Africa's <span className={styles.highlight}>Digital Economy</span> with seamless interconnectivity.</>
+    <>Architecting a <span className={styles.highlight}>Cognitive Tech-Ecosystem</span> to autonomously scale <span className={styles.highlight}>Africa's Digital Infrastructure</span>.</>,
+    <>Engineering <span className={styles.highlight}>Hyper-Converged Solutions</span> that seamlessly fuse <span className={styles.highlight}>Predictive AI</span> with resilient enterprise security.</>,
+    <>Bohenix ONE: The centralized nexus for <span className={styles.highlight}>Quantum-Resistant Networks</span> and <span className={styles.highlight}>Intelligent Automation</span>.</>,
+    <>Pioneering the next epoch of <span className={styles.highlight}>Cyber-Physical Systems</span> to drive <span className={styles.highlight}>Exponential Economic Velocity</span>.</>
   ];
   const [adIndex, setAdIndex] = useState(0);
 
