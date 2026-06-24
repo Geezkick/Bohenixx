@@ -6,13 +6,20 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/command-center'],
+        disallow: ['/api/', '/command-center/', '/dashboard/'],
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
+        disallow: ['/api/', '/command-center/'],
+      },
+      {
+        userAgent: 'Googlebot-Mobile',
+        allow: '/',
+        disallow: ['/api/', '/command-center/'],
       },
     ],
     sitemap: 'https://bohenix.africa/sitemap.xml',
+    host: 'https://bohenix.africa',
   }
 }

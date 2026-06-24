@@ -72,6 +72,30 @@ export default function CorporateLandingPage() {
   const [pulseAuth, setPulseAuth] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // HARD LOCK: Prevent scroll on body + html when not authenticated
+  useEffect(() => {
+    if (!user) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [user]);
+
   // Live Visitor Counter
   const [visitors, setVisitors] = useState(1430210);
   useEffect(() => {
@@ -144,7 +168,7 @@ export default function CorporateLandingPage() {
   }, []);
 
   return (
-    <div className={styles.container} style={!user ? { overflowY: 'hidden', touchAction: 'none' } : {}}>
+    <div className={`${styles.container} ${!user ? styles.locked : ''}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
