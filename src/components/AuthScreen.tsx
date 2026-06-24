@@ -46,10 +46,10 @@ export default function AuthScreen() {
 
   // Deep storytelling phrases with balanced gradient highlights
   const adverts = [
-    <>Architecting a <span className={styles.highlight}>Cognitive Tech-Ecosystem</span> to autonomously scale <span className={styles.highlight}>Africa's Digital Infrastructure</span>.</>,
-    <>Engineering <span className={styles.highlight}>Hyper-Converged Solutions</span> that seamlessly fuse <span className={styles.highlight}>Predictive AI</span> with resilient enterprise security.</>,
-    <>Bohenix ONE: The centralized nexus for <span className={styles.highlight}>Quantum-Resistant Networks</span> and <span className={styles.highlight}>Intelligent Automation</span>.</>,
-    <>Pioneering the next epoch of <span className={styles.highlight}>Cyber-Physical Systems</span> to drive <span className={styles.highlight}>Exponential Economic Velocity</span>.</>
+    <>Architecting a <span className={styles.highlight}>Cognitive Tech-Ecosystem</span> to <span className={styles.highlightWarm}>autonomously scale</span> <span className={styles.highlight}>Africa&apos;s Digital Infrastructure</span>.</>,
+    <><span className={styles.highlightWarm}>Engineering</span> <span className={styles.highlight}>Hyper-Converged Solutions</span> that seamlessly fuse <span className={styles.highlight}>Predictive AI</span> with <span className={styles.highlightWarm}>resilient enterprise</span> security.</>,
+    <>Bohenix ONE: The <span className={styles.highlightWarm}>centralized nexus</span> for <span className={styles.highlight}>Quantum-Resistant Networks</span> and <span className={styles.highlight}>Intelligent Automation</span>.</>,
+    <>Pioneering the <span className={styles.highlightWarm}>next epoch</span> of <span className={styles.highlight}>Cyber-Physical Systems</span> to drive <span className={styles.highlight}>Exponential Economic Velocity</span>.</>
   ];
   const [adIndex, setAdIndex] = useState(0);
 

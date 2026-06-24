@@ -131,22 +131,31 @@ export default function CorporateLandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <div className={styles.badge}>Africa's Leading Technology Ecosystem</div>
-          <h1 className={styles.title}>
-            Building Africa's Intelligent <br />
-            <span style={{ color: '#FFFFFF' }}>Digital Future</span>
+          <h1 className={`${styles.title} ${styles.shimmerText}`}>
+            Building Africa&apos;s <span className={styles.titleHighlight}>Intelligent</span> <br />
+            <span className={styles.titleHighlight}>Digital</span> Future
           </h1>
-          <p className={styles.subtitle}>
+          <motion.p 
+            className={styles.subtitle}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+          >
             Bohenix develops AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.
-          </p>
-          <div className={styles.ctaGroup}>
+          </motion.p>
+          <motion.div 
+            className={styles.ctaGroup}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+          >
             <a href="#products" className={styles.primaryCta}>
               Explore Products <ArrowRightIcon size={20} />
             </a>
             <a href="#contact" className={styles.secondaryCta}>
               Contact Us
             </a>
-          </div>
+          </motion.div>
         </motion.div>
       </header>
 

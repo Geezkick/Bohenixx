@@ -71,6 +71,12 @@
   -webkit-text-fill-color: transparent;
 }
 
+.highlightWarm {
+  background: linear-gradient(90deg, #FFD700, #FF6B35);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .topGlow {
   position: absolute;
   top: -120px;

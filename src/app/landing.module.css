@@ -96,32 +96,52 @@
   z-index: 20;
 }
 
-.badge {
-  display: inline-block;
-  padding: 0.5rem 1.25rem;
-  background: rgba(139, 46, 255, 0.15);
-  border: 1px solid rgba(139, 46, 255, 0.3);
-  border-radius: 999px;
-  color: #B14CFF;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
 .title {
   font-size: 4.5rem;
   line-height: 1.1;
   font-weight: 800;
   margin-bottom: 1.5rem;
   letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.shimmerText {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    #fff 0%,
+    #fff 40%,
+    #B14CFF 50%,
+    #00E5FF 60%,
+    #fff 70%,
+    #fff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerSweep 4s ease-in-out infinite;
+}
+
+@keyframes shimmerSweep {
+  0% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+  100% { background-position: 100% 0; }
 }
 
 .titleHighlight {
-  background: linear-gradient(90deg, #B14CFF, #00E5FF);
+  background: linear-gradient(90deg, #B14CFF, #00E5FF, #B14CFF);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientMove 3s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .subtitle {
