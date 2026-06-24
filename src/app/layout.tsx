@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "The official digital ecosystem of Bohenix Technologies.",
   manifest: "/manifest.json",
   icons: {
-    icon: '/globe.svg',
+    icon: '/bohenixx.png',
     apple: '/apple-touch-icon.png'
   },
   appleWebApp: {
