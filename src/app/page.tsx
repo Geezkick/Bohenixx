@@ -99,6 +99,27 @@ export default function CorporateLandingPage() {
 
   return (
     <div className={styles.container}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Bohenix Technologies",
+            "url": "https://bohenixx.vercel.app",
+            "logo": "https://bohenixx.vercel.app/bohenixx.png",
+            "description": "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
+            "founder": {
+              "@type": "Person",
+              "name": "Brian Nyarienya"
+            },
+            "sameAs": [
+              "https://x.com/bohenix_solutio",
+              "https://www.linkedin.com/in/brian-nyarienya-35892925b/"
+            ]
+          })
+        }}
+      />
       {/* AI Widget */}
       <AskBohenix />
       
