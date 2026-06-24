@@ -71,6 +71,29 @@ export default function CorporateLandingPage() {
   const router = useRouter();
   const [pulseAuth, setPulseAuth] = useState(false);
 
+  // Live Visitor Counter
+  const [visitors, setVisitors] = useState(1430210);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisitors(prev => prev + Math.floor(Math.random() * 5) + 1);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Contact Form State
+  const [inquiryEmail, setInquiryEmail] = useState("");
+  const [inquiryMsg, setInquiryMsg] = useState("");
+
+  const handleSendInquiry = () => {
+    if(!inquiryEmail || !inquiryMsg) {
+      showNotification({ title: "Missing Fields", message: "Please provide both an email and a message.", type: "warning" });
+      return;
+    }
+    window.open(`mailto:ceo@bohenix.africa?subject=Ecosystem Inquiry from ${inquiryEmail}&body=${encodeURIComponent(inquiryMsg)}`);
+    setInquiryEmail("");
+    setInquiryMsg("");
+    showNotification({ title: "Opening Mail Client", message: "Directing to your secure email client...", type: "success" });
+  };
   const handleProtectedNavigation = (e: React.MouseEvent) => {
     if (!user) {
       e.preventDefault();
@@ -228,7 +251,16 @@ export default function CorporateLandingPage() {
       {/* African Presence Globe */}
       <section id="presence" className={styles.section} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem', background: 'rgba(255,255,255,0.01)' }}>
         <div style={{ flex: 1, minWidth: '300px' }}>
-          <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Active Across Africa</h2>
+          <h2 style={{ fontSize: '3.5rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-1px' }}>Active Across Africa</h2>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', background: 'rgba(139,46,255,0.1)', padding: '1rem 1.5rem', borderRadius: '16px', border: '1px solid rgba(139,46,255,0.2)', width: 'fit-content' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 10px #00E5FF', animation: 'pulse 1.5s infinite' }} />
+            <div>
+               <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 600 }}>Live Ecosystem Visitors</div>
+               <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff', fontFamily: 'monospace', lineHeight: 1 }}>{visitors.toLocaleString()}</div>
+            </div>
+          </div>
+
           <p style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: '2rem' }}>
             Our digital infrastructure is live in multiple tech hubs across the continent. 
             From Nairobi to Lagos, Johannesburg to Cairo, we are building the foundation 
@@ -437,9 +469,9 @@ export default function CorporateLandingPage() {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 LinkedIn
               </a>
-              <a href="mailto:bohenixsolutions@gmail.com" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+              <a href="mailto:career@bohenix.africa" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                Email
+                Careers
               </a>
               <a href="https://reddit.com/r/bohenix" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.248-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.561-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
@@ -450,9 +482,9 @@ export default function CorporateLandingPage() {
               Start Customer Service Chat
             </button>
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <input type="email" placeholder="Email support@bohenix.africa" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
-              <textarea placeholder="Direct message..." rows={4} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
-              <button type="button" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}>Send Email Inquiry</button>
+              <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email (to reply to)" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+              <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder="Direct message to ceo@bohenix.africa..." rows={4} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
+              <button type="button" onClick={handleSendInquiry} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}>Send Email Inquiry</button>
             </form>
           </div>
 
@@ -469,7 +501,7 @@ export default function CorporateLandingPage() {
           <div className={styles.footerCol}>
             <h4>Contact Center</h4>
             <ul>
-              <li><a href="mailto:bohenixsolutions@gmail.com">bohenixsolutions@gmail.com</a></li>
+              <li><a href="mailto:ceo@bohenix.africa">ceo@bohenix.africa</a></li>
             </ul>
           </div>
           <div className={styles.footerCol}>
