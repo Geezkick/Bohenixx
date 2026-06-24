@@ -70,6 +70,7 @@ export default function CorporateLandingPage() {
   const { showNotification } = useNotification();
   const router = useRouter();
   const [pulseAuth, setPulseAuth] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Live Visitor Counter
   const [visitors, setVisitors] = useState(1430210);
@@ -143,7 +144,7 @@ export default function CorporateLandingPage() {
   }, []);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={!user ? { overflowY: 'hidden', touchAction: 'none' } : {}}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -151,8 +152,8 @@ export default function CorporateLandingPage() {
             "@context": "https://schema.org",
             "@type": "Organization",
             "name": "Bohenix Technologies",
-            "url": "https://bohenixx.vercel.app",
-            "logo": "https://bohenixx.vercel.app/bohenixx.png",
+            "url": "https://bohenix.africa",
+            "logo": "https://bohenix.africa/bohenixx.png",
             "description": "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
             "founder": {
               "@type": "Person",
@@ -186,7 +187,24 @@ export default function CorporateLandingPage() {
           <InstallButton />
           <Link href="/dashboard" className={styles.navBtn} style={pulseAuth ? { animation: 'pulse 1s infinite', transform: 'scale(1.05)', boxShadow: '0 0 25px #00E5FF', transition: 'all 0.3s' } : {}}>Access Portal</Link>
         </div>
+        {/* Mobile Hamburger */}
+        <button className={styles.mobileMenuBtn} onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">
+          <span /><span /><span />
+        </button>
       </nav>
+
+      {/* Mobile Navigation Overlay */}
+      {mobileMenuOpen && (
+        <div className={styles.mobileNav}>
+          <button className={styles.mobileNavClose} onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">✕</button>
+          <a href="#products" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>Products</a>
+          <a href="#services" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>Services</a>
+          <a href="#labs" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>BX Labs</a>
+          <a href="#about" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>About</a>
+          <a href="#contact" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>Contact</a>
+          <Link href="/dashboard" className={styles.mobileNavPortal} onClick={() => setMobileMenuOpen(false)}>Access Portal</Link>
+        </div>
+      )}
 
       {/* Hero Section */}
       <header className={styles.hero} id="home">
