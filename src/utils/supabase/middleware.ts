@@ -32,18 +32,25 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protected routes — unauthenticated users get redirected to /dashboard (which shows AuthScreen)
-  const protectedPaths = ['/dashboard', '/command-center', '/products', '/services', '/apps']
-  const isProtected = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
-  const isApiRoute = request.nextUrl.pathname.startsWith('/api')
+  const pathname = request.nextUrl.pathname
 
-  if (!user && isProtected) {
+  // PUBLIC ROUTES — these are the ONLY pages accessible without authentication
+  // Everything else is locked behind the portal
+  const publicPaths = [
+    '/',           // Landing page (has its own client-side lock for scrolling)
+    '/dashboard',  // Auth screen lives here — must be accessible to log in
+  ]
+
+  const isPublicRoute = publicPaths.some(path => pathname === path)
+  const isApiRoute = pathname.startsWith('/api')
+  const isStaticAsset = /\.(svg|png|jpg|jpeg|gif|webp|ico|html|xml|txt|json|mp4|webm|css|js|woff|woff2|ttf)$/i.test(pathname)
+
+  // If the user is NOT logged in, and it's NOT a public route, NOT an API route, NOT a static asset
+  // → redirect them to /dashboard (which shows the AuthScreen)
+  if (!user && !isPublicRoute && !isApiRoute && !isStaticAsset) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
-    // Don't redirect if already on /dashboard (to avoid infinite loop — AuthScreen handles this)
-    if (request.nextUrl.pathname !== '/dashboard') {
-      return NextResponse.redirect(url)
-    }
+    return NextResponse.redirect(url)
   }
 
   // Add security headers to every response
