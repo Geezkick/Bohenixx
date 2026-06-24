@@ -10,10 +10,12 @@ const Globe = dynamic(() => import("react-globe.gl"), {
 });
 
 export default function RealGlobe() {
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(600);
+  const [mounted, setMounted] = useState(false);
   const globeEl = useRef<any>(null);
 
   useEffect(() => {
+    setMounted(true);
     setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -37,6 +39,10 @@ export default function RealGlobe() {
     { lat: 9.0192, lng: 38.7525, size: 0.06, color: '#B14CFF', name: 'Addis Ababa' },
     { lat: 5.6037, lng: -0.1870, size: 0.06, color: '#B14CFF', name: 'Accra' },
   ];
+
+  if (!mounted) {
+    return <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading Earth...</div>;
+  }
 
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', cursor: 'grab' }}>
