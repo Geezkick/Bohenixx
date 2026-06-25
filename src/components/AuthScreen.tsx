@@ -16,6 +16,7 @@ export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleSubmit = async () => {
     setError("");
@@ -53,10 +54,24 @@ export default function AuthScreen() {
   ];
   const [adIndex, setAdIndex] = useState(0);
 
+  // Imperatively trigger play once the video element is mounted
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.muted = true; // ensure muted before play (required for autoplay policy)
+    const playPromise = vid.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Retry once after a short delay (handles some mobile autoplay restrictions)
+        setTimeout(() => vid.play().catch(() => {}), 500);
+      });
+    }
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setAdIndex((prev) => (prev + 1) % adverts.length);
-    }, 6000); // 6 seconds for longer reading time
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -165,11 +180,7 @@ export default function AuthScreen() {
       {/* RIGHT SIDE - Looping Video & Animated Text */}
       <div className={styles.rightSide}>
         <video 
-          ref={(el) => {
-            if (el) {
-              el.play().catch(e => console.error("Autoplay prevented:", e));
-            }
-          }}
+          ref={videoRef}
           src="/bohenixx.mp4" 
           autoPlay 
           loop 
@@ -177,9 +188,7 @@ export default function AuthScreen() {
           playsInline 
           preload="auto"
           className={styles.videoPlayer}
-        >
-          <source src="/bohenixx.mp4" type="video/mp4" />
-        </video>
+        />
         <div className={styles.overlayTextWrap}>
           <AnimatePresence mode="wait">
             <motion.h2
