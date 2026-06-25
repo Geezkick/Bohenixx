@@ -5,14 +5,14 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bohenix.africa'),
+  metadataBase: new URL('https://www.bohenix.africa'),
   title: {
     default: "Bohenix ONE | Intelligent Digital Future",
     template: "%s | Bohenix ONE"
   },
   description: "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond. Founded by Brian Nyarienya.",
-  keywords: ["Bohenix", "Bohenix Technologies", "Brian Nyarienya", "Africa Tech Startup", "Digital Ecosystem", "Enterprise Software", "Artificial Intelligence", "Cybersecurity", "Cloud Infrastructure", "Bohenix ONE", "African Technology", "Tech Ecosystem Africa"],
-  authors: [{ name: "Brian Nyarienya", url: "https://bohenix.africa" }],
+  keywords: ["Bohenix", "Bohenix Technologies", "Bohenix Solutions", "Brian Nyarienya", "Africa Tech Startup", "Digital Ecosystem", "Enterprise Software", "Artificial Intelligence", "Cybersecurity", "Cloud Infrastructure", "Bohenix ONE", "African Technology", "Tech Ecosystem Africa"],
+  authors: [{ name: "Brian Nyarienya", url: "https://www.bohenix.africa" }],
   creator: "Brian Nyarienya",
   publisher: "Bohenix Technologies",
   formatDetection: {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Bohenix ONE | Africa's Intelligent Digital Future",
     description: "Architecting a Cognitive Tech-Ecosystem to autonomously scale Africa's Digital Infrastructure. AI, mobility, fintech, and enterprise solutions.",
-    url: "https://bohenix.africa",
+    url: "https://www.bohenix.africa",
     siteName: "Bohenix",
     locale: "en_US",
     type: "website",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     images: ["/bohenixx.png"],
   },
   alternates: {
-    canonical: "https://bohenix.africa",
+    canonical: "https://www.bohenix.africa",
   },
   robots: {
     index: true,

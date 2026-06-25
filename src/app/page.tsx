@@ -174,18 +174,93 @@ export default function CorporateLandingPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "Bohenix Technologies",
-            "url": "https://bohenix.africa",
-            "logo": "https://bohenix.africa/bohenixx.png",
-            "description": "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
-            "founder": {
-              "@type": "Person",
-              "name": "Brian Nyarienya"
-            },
-            "sameAs": [
-              "https://x.com/bohenix_solutio",
-              "https://www.linkedin.com/in/brian-nyarienya-35892925b/"
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": "https://www.bohenix.africa/#organization",
+                "name": "Bohenix Technologies",
+                "url": "https://www.bohenix.africa",
+                "logo": "https://www.bohenix.africa/bohenixx.png",
+                "description": "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
+                "founder": {
+                  "@type": "Person",
+                  "name": "Brian Nyarienya"
+                },
+                "sameAs": [
+                  "https://x.com/bohenix_solutio",
+                  "https://www.linkedin.com/in/brian-nyarienya-35892925b/"
+                ]
+              },
+              {
+                "@type": "WebSite",
+                "@id": "https://www.bohenix.africa/#website",
+                "url": "https://www.bohenix.africa",
+                "name": "Bohenix ONE",
+                "publisher": {
+                  "@id": "https://www.bohenix.africa/#organization"
+                },
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://www.bohenix.africa/?s={search_term_string}",
+                  "query-input": "required name=search_term_string"
+                }
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "NjiaSafe",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "All",
+                "url": "https://njiasafe.six.vercel.app",
+                "description": "Road safety and smart mobility platform."
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "BX Omni",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "All",
+                "url": "https://bohenixx.vercel.app",
+                "description": "AI Digital Operations Twin."
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "Fixxo",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "All",
+                "url": "https://fixxo.vercel.app",
+                "description": "Smart maintenance and service platform."
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "Mboka",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "All",
+                "url": "https://mboka.vercel.app",
+                "description": "Community and local commerce ecosystem."
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "Vuna",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "All",
+                "url": "https://vunashorts.vercel.app",
+                "description": "Agriculture and agritech platform."
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "Kwelify",
+                "applicationCategory": "EducationalApplication",
+                "operatingSystem": "All",
+                "url": "https://kwelify.vercel.app",
+                "description": "Education and learning technology platform."
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "Safura",
+                "applicationCategory": "SecurityApplication",
+                "operatingSystem": "All",
+                "url": "https://safura-ai.vercel.app",
+                "description": "Security and safety platform."
+              }
             ]
           })
         }}

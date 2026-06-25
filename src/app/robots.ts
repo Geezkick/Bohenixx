@@ -19,7 +19,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/command-center/'],
       },
     ],
-    sitemap: 'https://bohenix.africa/sitemap.xml',
-    host: 'https://bohenix.africa',
+    sitemap: 'https://www.bohenix.africa/sitemap.xml',
+    host: 'https://www.bohenix.africa',
   }
 }
