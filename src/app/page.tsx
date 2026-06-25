@@ -66,7 +66,7 @@ const services = [
 ];
 
 export default function CorporateLandingPage() {
-  const { user, login, signup } = useAuth();
+  const { user, isLoading, login, signup } = useAuth();
   const { showNotification } = useNotification();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -93,19 +93,18 @@ export default function CorporateLandingPage() {
         : await signup(authName, authEmail, authPassword);
       if (!result.success) {
         setAuthError(result.error || "Something went wrong");
-      } else {
-        showNotification({ title: "Welcome!", message: authMode === "login" ? "Successfully signed in." : "Account created successfully.", type: "success" });
+        setAuthLoading(false);
       }
+      // On success: AuthContext handles redirect to /dashboard
     } catch {
       setAuthError("Something went wrong. Try again.");
-    } finally {
       setAuthLoading(false);
     }
   };
 
   // HARD LOCK: Prevent scroll on body + html when not authenticated
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
@@ -125,7 +124,7 @@ export default function CorporateLandingPage() {
       document.body.style.height = '';
       document.documentElement.style.overflow = '';
     };
-  }, [user]);
+  }, [user, isLoading]);
 
   // Live Visitor Counter
   const [visitors, setVisitors] = useState(1430210);
@@ -198,7 +197,13 @@ export default function CorporateLandingPage() {
   }, []);
 
   return (
-    <div className={`${styles.container} ${!user ? styles.locked : ''}`}>
+    <div className={`${styles.container} ${!isLoading && !user ? styles.locked : ''}`}>
+      {/* Session loading spinner — prevents auth form flash */}
+      {isLoading && (
+        <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', zIndex: 9999 }}>
+          <div style={{ width: 48, height: 48, border: '3px solid rgba(177,76,255,0.3)', borderTopColor: '#B14CFF', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+        </div>
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -380,7 +385,7 @@ export default function CorporateLandingPage() {
         </motion.div>
       </header>
 
-      {user ? (
+      {!isLoading && user ? (
         <>
           {/* Live Statistics */}
           <section className={styles.statsSection}>
@@ -688,7 +693,7 @@ export default function CorporateLandingPage() {
         </div>
       </footer>
         </>
-      ) : (
+      ) : !isLoading ? (
         <section ref={authRef} id="signin" style={{ padding: '6rem 2rem', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(to bottom, transparent, rgba(139,46,255,0.05))', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
           <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div style={{ textAlign: 'center' }}>
@@ -764,7 +769,7 @@ export default function CorporateLandingPage() {
             </div>
           </div>
         </section>
-      )}
+      ) : null}
     </div>
   );
 }

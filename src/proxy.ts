@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -27,24 +27,24 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh the session if necessary
+  // IMPORTANT: Always call getUser() to refresh the session token.
+  // Do NOT use getSession() here — it does not validate server-side.
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
 
-  // PUBLIC ROUTES — the landing page has the login form built in
+  // PUBLIC ROUTES — accessible without authentication
   const publicPaths = [
-    '/',           // Landing page with inline auth
+    '/',  // Landing page with inline auth form
   ]
 
   const isPublicRoute = publicPaths.some(path => pathname === path)
   const isApiRoute = pathname.startsWith('/api')
   const isStaticAsset = /\.(svg|png|jpg|jpeg|gif|webp|ico|html|xml|txt|json|mp4|webm|css|js|woff|woff2|ttf)$/i.test(pathname)
 
-  // If the user is NOT logged in, and it's NOT a public route, NOT an API route, NOT a static asset
-  // → redirect them to / (which shows the inline auth form)
+  // If unauthenticated and not a public/api/static path → redirect to / (auth gate)
   if (!user && !isPublicRoute && !isApiRoute && !isStaticAsset) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
@@ -68,6 +68,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - public static assets
      */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|html|xml|txt|json)$).*)',
   ],
