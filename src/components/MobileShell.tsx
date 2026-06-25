@@ -1,14 +1,15 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import AuthScreen from "./AuthScreen";
 import BottomNav from "./BottomNav";
 import MobileAppBar from "./MobileAppBar";
 import DynamicIsland from "./DynamicIsland";
+import { useEffect } from "react";
 
 export default function MobileShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, isLoading } = useAuth();
 
   // Bypass Mobile Shell for Web Landing Page
@@ -34,9 +35,23 @@ export default function MobileShell({ children }: { children: React.ReactNode })
     );
   }
 
-  // Not logged in → show auth screen
+  // Not logged in → redirect to landing page (which has the login form)
   if (!user) {
-    return <AuthScreen />;
+    router.push("/");
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        height: '100dvh', background: '#000',
+      }}>
+        <div style={{
+          width: 24, height: 24,
+          border: '2.5px solid rgba(139,46,255,0.3)',
+          borderTopColor: '#B14CFF',
+          borderRadius: '50%',
+          animation: 'spin 0.6s linear infinite',
+        }} />
+      </div>
+    );
   }
 
   // Logged in → show the app

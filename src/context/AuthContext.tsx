@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 interface User {
   id: string;
@@ -22,47 +23,42 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
-  // Check for existing session on mount via the /api/auth/me endpoint
+  // Check for stored session on mount and listen to changes
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const res = await fetch("/api/auth/me");
-        const data = await res.json();
-        if (data.user) {
-          setUser({
-            id: data.user.id,
-            name: data.user.name || data.user.email?.split("@")[0] || "User",
-            email: data.user.email || "",
-            avatar: "/bohenixx.png",
-          });
-        }
-      } catch {
-        // No session — user stays null
-      } finally {
-        setIsLoading(false);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser({ 
+          id: session.user.id,
+          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          avatar: "/bohenixx.png" 
+        });
       }
-    };
-    checkSession();
-  }, []);
+      setIsLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser({ 
+          id: session.user.id,
+          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          avatar: "/bohenixx.png" 
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        return { success: false, error: data.error || "Invalid credentials" };
-      }
-      setUser({
-        id: data.user.id,
-        name: data.user.name || data.user.email?.split("@")[0] || "User",
-        email: data.user.email || "",
-        avatar: "/bohenixx.png",
-      });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return { success: false, error: error.message };
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
@@ -71,21 +67,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signup = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name }
+        }
       });
-      const data = await res.json();
-      if (!res.ok) {
-        return { success: false, error: data.error || "Error creating account" };
-      }
-      setUser({
-        id: data.user.id,
-        name: data.user.name || email.split("@")[0] || "User",
-        email: data.user.email || "",
-        avatar: "/bohenixx.png",
-      });
+      if (error) return { success: false, error: error.message };
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
@@ -93,11 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch {
-      // Best effort
-    }
+    await supabase.auth.signOut();
     setUser(null);
   };
 
