@@ -13,17 +13,27 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  mfaChallengeRequired: boolean;
+  mfaFactorId: string | null;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; mfaRequired?: boolean; factorId?: string }>;
   signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  completeMfaChallenge: (code: string) => Promise<{ success: boolean; error?: string }>;
+  cancelMfaChallenge: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+import { createClient } from "@/utils/supabase/client";
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [mfaChallengeRequired, setMfaChallengeRequired] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
   const router = useRouter();
+  const supabase = createClient();
 
   // Check for stored session on mount
   useEffect(() => {
@@ -43,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
   }, []);
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string; mfaRequired?: boolean; factorId?: string }> => {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -55,6 +65,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (!res.ok) {
         return { success: false, error: data.error || "Login failed" };
+      }
+
+      // Check MFA Status on login success
+      const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (!aalError && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+        const { data: factors } = await supabase.auth.mfa.listFactors();
+        const totpFactor = factors?.totp[0];
+        if (totpFactor) {
+          setMfaFactorId(totpFactor.id);
+          setMfaChallengeRequired(true);
+          return { success: true, mfaRequired: true, factorId: totpFactor.id };
+        }
       }
       
       setUser({
@@ -93,14 +115,74 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const loginWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback`
+        }
+      });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || "An unexpected error occurred" };
+    }
+  };
+
   const logout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     setUser(null);
+    setMfaChallengeRequired(false);
+    setMfaFactorId(null);
     router.push('/');
   };
 
+  const completeMfaChallenge = async (code: string) => {
+    if (!mfaFactorId) return { success: false, error: "No MFA factor selected" };
+    try {
+      const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({ factorId: mfaFactorId });
+      if (challengeError) return { success: false, error: challengeError.message };
+
+      const { error } = await supabase.auth.mfa.verify({
+        factorId: mfaFactorId,
+        challengeId: challenge.id,
+        code
+      });
+
+      if (error) return { success: false, error: error.message };
+      
+      // Successfully verified AAL2. Let's refresh the session.
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser({
+          id: user.id,
+          name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+          email: user.email || '',
+          avatar: "/bohenixx.png",
+        });
+      }
+
+      setMfaChallengeRequired(false);
+      setMfaFactorId(null);
+      router.push('/dashboard');
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || "An unexpected error occurred" };
+    }
+  };
+
+  const cancelMfaChallenge = () => {
+    setMfaChallengeRequired(false);
+    setMfaFactorId(null);
+    logout();
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, logout }}>
+    <AuthContext.Provider value={{ 
+      user, isLoading, mfaChallengeRequired, mfaFactorId, 
+      login, signup, loginWithGoogle, logout, completeMfaChallenge, cancelMfaChallenge 
+    }}>
       {children}
     </AuthContext.Provider>
   );

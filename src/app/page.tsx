@@ -14,6 +14,7 @@ import LaunchTimer from "@/components/LaunchTimer";
 import AskBohenix from "@/components/AskBohenix";
 import InstallButton from "@/components/InstallButton";
 import { useAuth } from "@/context/AuthContext";
+import MFAChallenge from "@/components/MFAChallenge";
 import { useNotification } from "@/context/NotificationContext";
 import { useRouter } from "next/navigation";
 
@@ -66,7 +67,7 @@ const services = [
 ];
 
 export default function CorporateLandingPage() {
-  const { user, isLoading, login, signup } = useAuth();
+  const { user, isLoading, mfaChallengeRequired, login, signup, loginWithGoogle } = useAuth();
   const { showNotification } = useNotification();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -695,14 +696,17 @@ export default function CorporateLandingPage() {
         </>
       ) : !isLoading ? (
         <section ref={authRef} id="signin" style={{ padding: '6rem 2rem', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(to bottom, transparent, rgba(139,46,255,0.05))', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
-          <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ textAlign: 'center' }}>
-              <Image src="/bohenixx.png" alt="Bohenix" width={80} height={80} style={{ borderRadius: '20px', marginBottom: '1rem' }} />
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#fff' }}>Bohenix ONE</h2>
-              <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '0.5rem' }}>
-                {authMode === "login" ? "Access your enterprise portal" : "Join the digital ecosystem"}
-              </p>
-            </div>
+          {mfaChallengeRequired ? (
+            <MFAChallenge />
+          ) : (
+            <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <Image src="/bohenixx.png" alt="Bohenix" width={80} height={80} style={{ borderRadius: '20px', marginBottom: '1rem' }} />
+                <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#fff' }}>Bohenix ONE</h2>
+                <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '0.5rem' }}>
+                  {authMode === "login" ? "Access your enterprise portal" : "Join the digital ecosystem"}
+                </p>
+              </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {authMode === "signup" && (
@@ -760,8 +764,13 @@ export default function CorporateLandingPage() {
               </div>
 
               <button
-                onClick={() => {
-                  showNotification("Google Sign-In is being configured. Please use email/password for now.", "info");
+                onClick={async () => {
+                  setAuthLoading(true);
+                  const res = await loginWithGoogle();
+                  if (!res.success) {
+                    setAuthError(res.error || "Failed to initialize Google Sign-In");
+                    setAuthLoading(false);
+                  }
                 }}
                 style={{ width: '100%', padding: '1rem', borderRadius: '14px', background: '#fff', color: '#000', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.5px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', minHeight: '52px', transition: 'opacity 0.2s, transform 0.1s' }}
               >
@@ -787,6 +796,7 @@ export default function CorporateLandingPage() {
               </button>
             </div>
           </div>
+          )}
         </section>
       ) : null}
     </div>
