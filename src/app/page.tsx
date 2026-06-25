@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRightIcon, Terminal, Shield, Database, Cloud, Code, BrainCircuit, Globe, Activity, FileText } from "lucide-react";
+import { ArrowRightIcon, Terminal, Shield, Database, Cloud, Code, BrainCircuit, Globe, Activity, FileText, LogIn, UserPlus } from "lucide-react";
 import styles from "./landing.module.css";
 import founderStyles from "./founder.module.css";
 import ParticlesBackground from "@/components/ParticlesBackground";
@@ -66,11 +66,42 @@ const services = [
 ];
 
 export default function CorporateLandingPage() {
-  const { user } = useAuth();
+  const { user, login, signup } = useAuth();
   const { showNotification } = useNotification();
   const router = useRouter();
-  const [pulseAuth, setPulseAuth] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Inline Auth State
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authName, setAuthName] = useState("");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const authRef = useRef<HTMLDivElement>(null);
+
+  const handleAuthSubmit = async () => {
+    setAuthError("");
+    if (!authEmail || !authPassword) { setAuthError("Please fill in all fields"); return; }
+    if (authMode === "signup" && !authName) { setAuthError("Please enter your name"); return; }
+    if (authPassword.length < 6) { setAuthError("Password must be at least 6 characters"); return; }
+    setAuthLoading(true);
+    try {
+      const result = authMode === "login"
+        ? await login(authEmail, authPassword)
+        : await signup(authName, authEmail, authPassword);
+      if (!result.success) {
+        setAuthError(result.error || "Something went wrong");
+      } else {
+        showNotification({ title: "Welcome!", message: authMode === "login" ? "Successfully signed in." : "Account created successfully.", type: "success" });
+      }
+    } catch {
+      setAuthError("Something went wrong. Try again.");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
   // HARD LOCK: Prevent scroll on body + html when not authenticated
   useEffect(() => {
@@ -124,12 +155,11 @@ export default function CorporateLandingPage() {
       e.preventDefault();
       showNotification({
         title: "Access Restricted",
-        message: "Please access the portal first to unlock all features and protect user data.",
+        message: "Please sign in to unlock all features.",
         type: "warning"
       });
-      setPulseAuth(true);
-      setTimeout(() => setPulseAuth(false), 2000);
-      setTimeout(() => router.push("/dashboard"), 1500);
+      // Scroll to the auth section
+      authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -284,7 +314,11 @@ export default function CorporateLandingPage() {
           <a href="#about" className={styles.navLink} onClick={handleProtectedNavigation}>About</a>
           <a href="#contact" className={styles.navLink} onClick={handleProtectedNavigation}>Contact</a>
           <InstallButton />
-          <Link href="/dashboard" className={styles.navBtn} style={pulseAuth ? { animation: 'pulse 1s infinite', transform: 'scale(1.05)', boxShadow: '0 0 25px #00E5FF', transition: 'all 0.3s' } : {}}>Access Portal</Link>
+          {user ? (
+            <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
+          ) : (
+            <button className={styles.navBtn} onClick={() => authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>Sign In</button>
+          )}
         </div>
         {/* Mobile Hamburger */}
         <button className={styles.mobileMenuBtn} onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">
@@ -301,7 +335,11 @@ export default function CorporateLandingPage() {
           <a href="#labs" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>BX Labs</a>
           <a href="#about" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>About</a>
           <a href="#contact" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>Contact</a>
-          <Link href="/dashboard" className={styles.mobileNavPortal} onClick={() => setMobileMenuOpen(false)}>Access Portal</Link>
+          {user ? (
+            <Link href="/dashboard" className={styles.mobileNavPortal} onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+          ) : (
+            <button className={styles.mobileNavPortal} onClick={() => { setMobileMenuOpen(false); authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>Sign In</button>
+          )}
         </div>
       )}
 
@@ -651,13 +689,80 @@ export default function CorporateLandingPage() {
       </footer>
         </>
       ) : (
-        <section style={{ padding: '8rem 2rem', minHeight: '50vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(to bottom, transparent, rgba(139,46,255,0.05))', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
-           <Shield size={64} color="rgba(255,255,255,0.1)" style={{ marginBottom: '2rem' }} />
-           <h2 style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '1rem', textAlign: 'center', fontWeight: 800 }}>Ecosystem Locked</h2>
-           <p style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '3rem', textAlign: 'center', fontSize: '1.2rem', maxWidth: '500px' }}>For security and data protection, please authenticate to access products, services, and live telemetry.</p>
-           <button onClick={(e) => handleProtectedNavigation(e)} className={styles.primaryCta} style={{ border: 'none', cursor: 'pointer' }}>
-             Unlock Ecosystem <ArrowRightIcon size={20} />
-           </button>
+        <section ref={authRef} id="signin" style={{ padding: '6rem 2rem', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(to bottom, transparent, rgba(139,46,255,0.05))', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
+          <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div style={{ textAlign: 'center' }}>
+              <Image src="/bohenixx.png" alt="Bohenix" width={64} height={64} style={{ borderRadius: '16px', marginBottom: '1rem' }} />
+              <h2 style={{ fontSize: '2rem', color: '#fff', marginBottom: '0.5rem', fontWeight: 800 }}>
+                {authMode === "login" ? "Welcome Back" : "Join Bohenix"}
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '1rem' }}>
+                {authMode === "login" ? "Sign in to access the full ecosystem" : "Create your account to get started"}
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {authMode === "signup" && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Full Name</label>
+                  <input
+                    type="text" value={authName} onChange={(e) => setAuthName(e.target.value)}
+                    placeholder="John Doe" autoComplete="name"
+                    style={{ width: '100%', padding: '0.9rem 1rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
+                  />
+                </div>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Email</label>
+                <input
+                  type="email" value={authEmail} onChange={(e) => setAuthEmail(e.target.value)}
+                  placeholder="you@email.com" autoComplete="email"
+                  style={{ width: '100%', padding: '0.9rem 1rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Password</label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? "text" : "password"} value={authPassword} onChange={(e) => setAuthPassword(e.target.value)}
+                    placeholder="••••••••" autoComplete={authMode === "login" ? "current-password" : "new-password"}
+                    style={{ width: '100%', padding: '0.9rem 1rem', paddingRight: '4rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAuthSubmit()}
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: '#B14CFF', fontSize: '0.8rem', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}>
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+
+              {authError && (
+                <p style={{ color: '#FF3366', fontSize: '0.85rem', textAlign: 'center', padding: '0.5rem', background: 'rgba(255,51,102,0.08)', borderRadius: '10px' }}>{authError}</p>
+              )}
+
+              <button
+                onClick={handleAuthSubmit} disabled={authLoading}
+                style={{ width: '100%', padding: '1rem', borderRadius: '14px', background: 'linear-gradient(135deg, #8B2EFF, #B14CFF)', color: '#fff', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.5px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', minHeight: '52px', opacity: authLoading ? 0.6 : 1, transition: 'opacity 0.2s, transform 0.1s' }}
+              >
+                {authLoading ? (
+                  <div style={{ width: 22, height: 22, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
+                ) : (
+                  <>{authMode === "login" ? <><LogIn size={18} /> Sign In</> : <><UserPlus size={18} /> Create Account</>}</>
+                )}
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+              <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)' }}>
+                {authMode === "login" ? "Don't have an account?" : "Already have an account?"}
+              </span>
+              <button
+                onClick={() => { setAuthMode(authMode === "login" ? "signup" : "login"); setAuthError(""); }}
+                style={{ color: '#B14CFF', fontSize: '0.9rem', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                {authMode === "login" ? "Create Account" : "Sign In"}
+              </button>
+            </div>
+          </div>
         </section>
       )}
     </div>
