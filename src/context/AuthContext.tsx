@@ -67,17 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: data.error || "Login failed" };
       }
 
-      // Check MFA Status on login success
-      const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-      if (!aalError && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
-        const { data: factors } = await supabase.auth.mfa.listFactors();
-        const totpFactor = factors?.totp[0];
-        if (totpFactor) {
-          setMfaFactorId(totpFactor.id);
-          setMfaChallengeRequired(true);
-          return { success: true, mfaRequired: true, factorId: totpFactor.id };
-        }
-      }
+      // MFA is disabled for now
       
       setUser({
         ...data.user,
