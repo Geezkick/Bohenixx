@@ -192,12 +192,34 @@ export default function CorporateLandingPage() {
                 "description": "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
                 "founder": {
                   "@type": "Person",
-                  "name": "Brian Nyarienya"
+                  "@id": "https://www.bohenix.africa/#founder",
+                  "name": "Brian Nyarienya",
+                  "jobTitle": "Founder & Visionary",
+                  "image": "https://www.bohenix.africa/brian.png",
+                  "url": "https://www.linkedin.com/in/brian-nyarienya-35892925b/",
+                  "sameAs": [
+                    "https://www.linkedin.com/in/brian-nyarienya-35892925b/",
+                    "https://x.com/bohenix_solutio"
+                  ]
                 },
                 "sameAs": [
                   "https://x.com/bohenix_solutio",
                   "https://www.linkedin.com/in/brian-nyarienya-35892925b/"
                 ]
+              },
+              {
+                "@type": "WebPage",
+                "@id": "https://www.bohenix.africa/#webpage",
+                "url": "https://www.bohenix.africa",
+                "name": "Bohenix ONE | Building Africa's Intelligent Digital Future",
+                "isPartOf": {
+                  "@id": "https://www.bohenix.africa/#website"
+                },
+                "about": {
+                  "@id": "https://www.bohenix.africa/#organization"
+                },
+                "description": "Bohenix ONE is the central ecosystem for AI, cybersecurity, cloud infrastructure, and enterprise software designed to scale Africa's digital economy.",
+                "text": "Building Africa's Intelligent Digital Future. Bohenix develops AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond. Our vision is to become Africa's leading technology ecosystem powering businesses, governments, and communities through intelligent digital solutions."
               },
               {
                 "@type": "WebSite",
