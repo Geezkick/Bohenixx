@@ -13,6 +13,7 @@ import TestimonialWall from "@/components/TestimonialWall";
 import LaunchTimer from "@/components/LaunchTimer";
 import AskBohenix from "@/components/AskBohenix";
 import InstallButton from "@/components/InstallButton";
+import AuthScreen from "@/components/AuthScreen";
 import { useAuth } from "@/context/AuthContext";
 import MFAChallenge from "@/components/MFAChallenge";
 import { useNotification } from "@/context/NotificationContext";
@@ -72,36 +73,7 @@ export default function CorporateLandingPage() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Inline Auth State
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
-  const [authName, setAuthName] = useState("");
-  const [authEmail, setAuthEmail] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
-  const [authLoading, setAuthLoading] = useState(false);
-  const [authError, setAuthError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const authRef = useRef<HTMLDivElement>(null);
-
-  const handleAuthSubmit = async () => {
-    setAuthError("");
-    if (!authEmail || !authPassword) { setAuthError("Please fill in all fields"); return; }
-    if (authMode === "signup" && !authName) { setAuthError("Please enter your name"); return; }
-    if (authPassword.length < 6) { setAuthError("Password must be at least 6 characters"); return; }
-    setAuthLoading(true);
-    try {
-      const result = authMode === "login"
-        ? await login(authEmail, authPassword)
-        : await signup(authName, authEmail, authPassword);
-      if (!result.success) {
-        setAuthError(result.error || "Something went wrong");
-        setAuthLoading(false);
-      }
-      // On success: AuthContext handles redirect to /dashboard
-    } catch {
-      setAuthError("Something went wrong. Try again.");
-      setAuthLoading(false);
-    }
-  };
 
   // HARD LOCK: Prevent scroll on body + html when not authenticated
   useEffect(() => {
@@ -695,109 +667,7 @@ export default function CorporateLandingPage() {
       </footer>
         </>
       ) : !isLoading ? (
-        <section ref={authRef} id="signin" style={{ padding: '6rem 2rem', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(to bottom, transparent, rgba(139,46,255,0.05))', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
-          {mfaChallengeRequired ? (
-            <MFAChallenge />
-          ) : (
-            <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              <div style={{ textAlign: 'center' }}>
-                <Image src="/bohenixx.png" alt="Bohenix" width={80} height={80} style={{ borderRadius: '20px', marginBottom: '1rem' }} />
-                <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#fff' }}>Bohenix ONE</h2>
-                <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '0.5rem' }}>
-                  {authMode === "login" ? "Access your enterprise portal" : "Join the digital ecosystem"}
-                </p>
-              </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {authMode === "signup" && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Full Name</label>
-                  <input
-                    type="text" value={authName} onChange={(e) => setAuthName(e.target.value)}
-                    placeholder="John Doe" autoComplete="name"
-                    style={{ width: '100%', padding: '0.9rem 1rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
-                  />
-                </div>
-              )}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Email</label>
-                <input
-                  type="email" value={authEmail} onChange={(e) => setAuthEmail(e.target.value)}
-                  placeholder="you@email.com" autoComplete="email"
-                  style={{ width: '100%', padding: '0.9rem 1rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
-                />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Password</label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type={showPassword ? "text" : "password"} value={authPassword} onChange={(e) => setAuthPassword(e.target.value)}
-                    placeholder="••••••••" autoComplete={authMode === "login" ? "current-password" : "new-password"}
-                    style={{ width: '100%', padding: '0.9rem 1rem', paddingRight: '4rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAuthSubmit()}
-                  />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: '#B14CFF', fontSize: '0.8rem', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}>
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-              </div>
-
-              {authError && (
-                <p style={{ color: '#FF3366', fontSize: '0.85rem', textAlign: 'center', padding: '0.5rem', background: 'rgba(255,51,102,0.08)', borderRadius: '10px' }}>{authError}</p>
-              )}
-
-              <button
-                onClick={handleAuthSubmit} disabled={authLoading}
-                style={{ width: '100%', padding: '1rem', borderRadius: '14px', background: 'linear-gradient(135deg, #8B2EFF, #B14CFF)', color: '#fff', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.5px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', minHeight: '52px', opacity: authLoading ? 0.6 : 1, transition: 'opacity 0.2s, transform 0.1s' }}
-              >
-                {authLoading ? (
-                  <div style={{ width: 22, height: 22, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
-                ) : (
-                  <>{authMode === "login" ? <><LogIn size={18} /> Sign In</> : <><UserPlus size={18} /> Create Account</>}</>
-                )}
-              </button>
-
-              <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
-                <span style={{ color: 'rgba(255,255,255,0.5)', padding: '0 1rem', fontSize: '0.85rem' }}>OR</span>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
-              </div>
-
-              <button
-                onClick={async () => {
-                  setAuthLoading(true);
-                  const res = await loginWithGoogle();
-                  if (!res.success) {
-                    setAuthError(res.error || "Failed to initialize Google Sign-In");
-                    setAuthLoading(false);
-                  }
-                }}
-                style={{ width: '100%', padding: '1rem', borderRadius: '14px', background: '#fff', color: '#000', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.5px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', minHeight: '52px', transition: 'opacity 0.2s, transform 0.1s' }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                Sign in with Google
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-              <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)' }}>
-                {authMode === "login" ? "Don't have an account?" : "Already have an account?"}
-              </span>
-              <button
-                onClick={() => { setAuthMode(authMode === "login" ? "signup" : "login"); setAuthError(""); }}
-                style={{ color: '#B14CFF', fontSize: '0.9rem', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-              >
-                {authMode === "login" ? "Create Account" : "Sign In"}
-              </button>
-            </div>
-          </div>
-          )}
-        </section>
+        <AuthScreen />
       ) : null}
     </div>
   );
