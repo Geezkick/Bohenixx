@@ -75,29 +75,7 @@ export default function CorporateLandingPage() {
 
   const authRef = useRef<HTMLDivElement>(null);
 
-  // HARD LOCK: Prevent scroll on body + html when not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.height = '100%';
-      document.documentElement.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      document.documentElement.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-      document.documentElement.style.overflow = '';
-    };
-  }, [user, isLoading]);
+
 
   // Live Visitor Counter
   const [visitors, setVisitors] = useState(1430210);
@@ -122,15 +100,14 @@ export default function CorporateLandingPage() {
     setInquiryMsg("");
     showNotification({ title: "Opening Mail Client", message: "Directing to your secure email client...", type: "success" });
   };
-  const handleProtectedNavigation = (e: React.MouseEvent) => {
+  const handleProtectedAction = (e: React.MouseEvent) => {
     if (!user) {
       e.preventDefault();
       showNotification({
-        title: "Access Restricted",
-        message: "Please sign in to unlock all features.",
+        title: "Sign In Required",
+        message: "Please sign in to access services and subscribe to our newsletter.",
         type: "warning"
       });
-      // Scroll to the auth section
       authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
@@ -170,7 +147,7 @@ export default function CorporateLandingPage() {
   }, []);
 
   return (
-    <div className={`${styles.container} ${!isLoading && !user ? styles.locked : ''}`}>
+    <div className={styles.container}>
       {/* Session loading spinner — prevents auth form flash */}
       {isLoading && (
         <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000', zIndex: 9999 }}>
@@ -308,11 +285,11 @@ export default function CorporateLandingPage() {
           <span className={styles.brandName}>Bohenix</span>
         </div>
         <div className={styles.navLinks}>
-          <a href="#products" className={styles.navLink} onClick={handleProtectedNavigation}>Products</a>
-          <a href="#services" className={styles.navLink} onClick={handleProtectedNavigation}>Services</a>
-          <a href="#labs" className={styles.navLink} onClick={handleProtectedNavigation}>BX Labs</a>
-          <a href="#about" className={styles.navLink} onClick={handleProtectedNavigation}>About</a>
-          <a href="#contact" className={styles.navLink} onClick={handleProtectedNavigation}>Contact</a>
+          <a href="#products" className={styles.navLink}>Products</a>
+          <a href="#services" className={styles.navLink}>Services</a>
+          <a href="#labs" className={styles.navLink}>BX Labs</a>
+          <a href="#about" className={styles.navLink}>About</a>
+          <a href="#contact" className={styles.navLink}>Contact</a>
           <InstallButton />
           {user ? (
             <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
@@ -330,11 +307,11 @@ export default function CorporateLandingPage() {
       {mobileMenuOpen && (
         <div className={styles.mobileNav}>
           <button className={styles.mobileNavClose} onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">✕</button>
-          <a href="#products" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>Products</a>
-          <a href="#services" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>Services</a>
-          <a href="#labs" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>BX Labs</a>
-          <a href="#about" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>About</a>
-          <a href="#contact" onClick={(e) => { setMobileMenuOpen(false); handleProtectedNavigation(e); }}>Contact</a>
+          <a href="#products" onClick={() => setMobileMenuOpen(false)}>Products</a>
+          <a href="#services" onClick={() => setMobileMenuOpen(false)}>Services</a>
+          <a href="#labs" onClick={() => setMobileMenuOpen(false)}>BX Labs</a>
+          <a href="#about" onClick={() => setMobileMenuOpen(false)}>About</a>
+          <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a>
           {user ? (
             <Link href="/dashboard" className={styles.mobileNavPortal} onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
           ) : (
@@ -370,18 +347,17 @@ export default function CorporateLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
           >
-            <a href="#products" className={styles.primaryCta} onClick={handleProtectedNavigation}>
+            <a href="#products" className={styles.primaryCta}>
               Explore Products <ArrowRightIcon size={20} />
             </a>
-            <a href="#contact" className={styles.secondaryCta} onClick={handleProtectedNavigation}>
+            <a href="#contact" className={styles.secondaryCta}>
               Contact Us
             </a>
           </motion.div>
         </motion.div>
       </header>
 
-      {!isLoading && user ? (
-        <>
+
           {/* Live Statistics */}
           <section className={styles.statsSection}>
             <div className={styles.statItem}>
@@ -522,14 +498,14 @@ export default function CorporateLandingPage() {
               <ul className={styles.serviceList} style={{ marginBottom: '2rem' }}>
                 {svc.items.map(item => <li key={item}>{item}</li>)}
               </ul>
-              <Link href={svc.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#00E5FF', fontWeight: 600, textDecoration: 'none', marginTop: 'auto' }}>
+              <Link href={svc.href} onClick={handleProtectedAction} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#00E5FF', fontWeight: 600, textDecoration: 'none', marginTop: 'auto' }}>
                 Explore Service <ArrowRightIcon size={16} />
               </Link>
             </motion.div>
           ))}
         </motion.div>
         <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-          <Link href="/services/request" className={styles.primaryCta} style={{ display: 'inline-flex', background: '#fff', color: '#000' }}>
+          <Link href="/services/request" onClick={handleProtectedAction} className={styles.primaryCta} style={{ display: 'inline-flex', background: '#fff', color: '#000' }}>
             Request Services <ArrowRightIcon size={20} />
           </Link>
         </div>
@@ -639,7 +615,7 @@ export default function CorporateLandingPage() {
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email (to reply to)" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
               <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder="Direct message to ceo@bohenix.africa..." rows={4} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
-              <button type="button" onClick={handleSendInquiry} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}>Send Email Inquiry</button>
+              <button type="button" onClick={(e) => { if (!user) handleProtectedAction(e); else handleSendInquiry(); }} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}>Send Email Inquiry / Newsletter</button>
             </form>
           </div>
 
@@ -687,10 +663,17 @@ export default function CorporateLandingPage() {
           </div>
         </div>
       </footer>
-        </>
-      ) : !isLoading ? (
-        <AuthScreen />
-      ) : null}
+
+
+      {!user && (
+        <section ref={authRef} id="auth" className={styles.section} style={{ paddingTop: '2rem', paddingBottom: '4rem', background: 'rgba(0,0,0,0.8)' }}>
+          <div className={styles.sectionHeader}>
+            <h2>Sign In / Register</h2>
+            <p>Unlock premium services, newsletter access, and personalized support.</p>
+          </div>
+          <AuthScreen />
+        </section>
+      )}
     </div>
   );
 }
