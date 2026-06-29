@@ -27,17 +27,34 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
+  // IMPORTANT: OAuth routes must be allowed to run without auth redirects.
+  // The callback route must exchange the code before any session exists.
+  const pathname = request.nextUrl.pathname
+
+  // Normalize to avoid trailing slash edge-cases.
+  const normalizedPathname = pathname.endsWith('/')
+    ? pathname.slice(0, -1)
+    : pathname
+
+  // IMPORTANT: OAuth routes must be allowed to run without auth redirects.
+  // Use explicit allowlisting to guarantee we never redirect during the OAuth exchange.
+  const isOAuthPublicRoute =
+    normalizedPathname === '/api/auth/callback' ||
+    normalizedPathname === '/api/auth/google'
+
+  if (isOAuthPublicRoute) return supabaseResponse
+
+
+
   // Refresh the session if necessary
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const pathname = request.nextUrl.pathname
-
   // PUBLIC ROUTES — these are the ONLY pages accessible without authentication
   // Everything else is locked behind the portal
   const publicPaths = [
-    '/',           // Landing page (has its own client-side lock for scrolling)
+    '/',           // Landing page
     '/dashboard',  // Auth screen lives here — must be accessible to log in
     '/products',   // The products page is a showcase
     '/developers', // Developer portal is informational
