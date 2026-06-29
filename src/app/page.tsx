@@ -433,14 +433,14 @@ export default function CorporateLandingPage() {
                 </div>
                 <div>
                   <h3 className={styles.appName}>{app.name}</h3>
-                  <span className={styles.appStatus} style={{ background: `rgba(0,200,83,0.1)`, color: '#00C853' }}>
-                    LIVE
+                  <span className={styles.appStatus} style={{ background: `rgba(255,152,0,0.1)`, color: '#FF9800' }}>
+                    IN DEVELOPMENT
                   </span>
                 </div>
               </div>
               <p className={styles.appDesc}>{app.desc}</p>
               <Link href={app.href} target="_blank" className={styles.appLink} style={{ color: app.color }}>
-                Launch Platform <ArrowRightIcon size={16} />
+                Preview Platform <ArrowRightIcon size={16} />
               </Link>
               <div className={styles.cardGlow} style={{ background: app.color }} />
             </motion.div>
