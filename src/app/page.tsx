@@ -8,7 +8,7 @@ import { ArrowRightIcon, Terminal, Shield, Database, Cloud, Code, BrainCircuit, 
 import styles from "./landing.module.css";
 import founderStyles from "./founder.module.css";
 import ParticlesBackground from "@/components/ParticlesBackground";
-import CobeGlobe from "@/components/CobeGlobe";
+// import CobeGlobe from "@/components/CobeGlobe";
 import TestimonialWall from "@/components/TestimonialWall";
 import LaunchTimer from "@/components/LaunchTimer";
 import AskBohenix from "@/components/AskBohenix";
@@ -490,7 +490,7 @@ export default function CorporateLandingPage() {
           </p>
         </div>
         <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
-          <CobeGlobe />
+          {/* <CobeGlobe /> */}
         </div>
       </section>
 
