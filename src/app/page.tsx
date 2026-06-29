@@ -381,7 +381,6 @@ export default function CorporateLandingPage() {
           <a href="#about" className={styles.navLink}>About</a>
           <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.navLink} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit' }}>Contact</button>
           {user ? (
-            <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
           ) : (
             <button className={styles.navBtn} onClick={() => authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>Sign In</button>
           )}
@@ -402,7 +401,6 @@ export default function CorporateLandingPage() {
           <a href="#about" onClick={() => setMobileMenuOpen(false)}>About</a>
           <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a>
           {user ? (
-            <Link href="/dashboard" className={styles.mobileNavPortal} onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
           ) : (
             <button className={styles.mobileNavPortal} onClick={() => { setMobileMenuOpen(false); authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>Sign In</button>
           )}
