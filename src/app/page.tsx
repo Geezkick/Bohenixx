@@ -75,7 +75,22 @@ export default function CorporateLandingPage() {
 
   const authRef = useRef<HTMLDivElement>(null);
 
-
+  // Restore scrolling for the landing page (overriding layout.tsx hard-lock)
+  useEffect(() => {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    document.documentElement.style.overflow = '';
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
 
   // Live Visitor Counter
   const [visitors, setVisitors] = useState(1430210);
