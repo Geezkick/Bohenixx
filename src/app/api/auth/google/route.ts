@@ -9,8 +9,6 @@ export async function GET() {
       provider: 'google',
       options: {
         redirectTo: 'https://bohenix.africa/api/auth/callback',
-        // For local testing, uncomment below:
-        // redirectTo: 'http://localhost:3000/api/auth/callback',
       },
     });
 
@@ -21,7 +19,6 @@ export async function GET() {
       );
     }
 
-    // Redirect to Google's OAuth consent screen
     if (data.url) {
       return NextResponse.redirect(data.url);
     }
