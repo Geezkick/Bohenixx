@@ -53,7 +53,6 @@ const services = [
   { 
     title: "Data Engineering & Business Intelligence", 
     icon: <Database size={32} color="#FFFFFF"/>, 
-    desc: "We turn raw, scattered data into strategic intelligence through modern data pipelines, real-time analytics dashboards, and data lake architecture. Our team designs end-to-end data ecosystems that empower leadership with actionable insights, automate reporting workflows, and unlock the full value of your organizational data.",
     items: ["Real-Time Analytics Dashboards", "ETL & Data Pipeline Engineering", "Data Lake & Warehouse Design", "Business Intelligence Reporting", "Data Governance & Quality", "Custom KPI Frameworks"],
     href: "/services/data-analytics"
   },
