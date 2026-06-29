@@ -16,6 +16,7 @@
 .textGold {
   background: linear-gradient(90deg, #FFD700, #FDB931);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -379,6 +380,7 @@
   font-weight: 800;
   background: linear-gradient(135deg, #fff, #aaa);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

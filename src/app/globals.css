@@ -84,10 +84,9 @@ body {
 /* Disable drag and drop on images */
 img {
   -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
 }
 
 /* Standalone PWA: add status bar padding */
