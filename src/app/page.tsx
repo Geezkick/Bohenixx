@@ -102,7 +102,7 @@ export default function CorporateLandingPage() {
   const [inquiryPortfolio, setInquiryPortfolio] = useState("");
   const [isSendingInquiry, setIsSendingInquiry] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-  const [contactTarget, setContactTarget] = useState("ceo@bohenix.africa");
+  const [contactTarget, setContactTarget] = useState("hello@bohenix.africa");
 
   const openContactModal = (target: string, e?: React.MouseEvent) => {
     if (e) e.preventDefault();
@@ -374,7 +374,7 @@ export default function CorporateLandingPage() {
           <a href="#services" className={styles.navLink}>Services</a>
           <a href="#labs" className={styles.navLink}>BX Labs</a>
           <a href="#about" className={styles.navLink}>About</a>
-          <button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} className={styles.navLink} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit' }}>Contact</button>
+          <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.navLink} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit' }}>Contact</button>
           {user ? (
             <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
           ) : (
@@ -758,10 +758,10 @@ export default function CorporateLandingPage() {
             </button>
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <select value={contactTarget} onChange={(e) => setContactTarget(e.target.value)} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', appearance: 'none', cursor: 'pointer' }}>
+                <option value="hello@bohenix.africa" style={{ background: '#111' }}>hello@bohenix.africa (General Inquiries)</option>
                 <option value="ceo@bohenix.africa" style={{ background: '#111' }}>ceo@bohenix.africa (Investors & Partners)</option>
                 <option value="career@bohenix.africa" style={{ background: '#111' }}>career@bohenix.africa (Job Applications)</option>
                 <option value="support@bohenix.africa" style={{ background: '#111' }}>support@bohenix.africa (Technical Support)</option>
-                <option value="hello@bohenix.africa" style={{ background: '#111' }}>hello@bohenix.africa (General Inquiries)</option>
                 <option value="info@bohenix.africa" style={{ background: '#111' }}>info@bohenix.africa (Information)</option>
               </select>
               <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email Address" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
@@ -783,9 +783,11 @@ export default function CorporateLandingPage() {
           <div className={styles.footerCol}>
             <h4>Contact Center</h4>
             <ul>
+              <li><button onClick={(e) => openContactModal('hello@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>hello@bohenix.africa</button></li>
               <li><button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>ceo@bohenix.africa</button></li>
               <li><button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>career@bohenix.africa</button></li>
               <li><button onClick={(e) => openContactModal('support@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>support@bohenix.africa</button></li>
+              <li><button onClick={(e) => openContactModal('info@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>info@bohenix.africa</button></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

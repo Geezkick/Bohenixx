@@ -129,3 +129,59 @@ export const getSignatureHTML = (department: string, email: string) => `
     <a href="mailto:${email}" style="color: #00E5FF; text-decoration: none;">${email}</a> | <a href="${WEBSITE_URL}" style="color: #555; text-decoration: none;">bohenix.africa</a>
   </div>
 `;
+
+export const getWelcomeEmailTemplate = (name: string) => {
+  const content = `
+    <h2>Welcome to the Bohenix Ecosystem</h2>
+    <p>Hi ${name},</p>
+    <p>Your account has been successfully created. You now have access to the entire Bohenix ONE platform, including our suite of AI-powered applications built for Africa.</p>
+    <table class="data-table">
+      <tr><td>Platform:</td><td>Bohenix ONE</td></tr>
+      <tr><td>Status:</td><td><strong style="color: #00C853;">Active</strong></td></tr>
+    </table>
+    <p>Here's what you can explore:</p>
+    <ul style="padding-left: 20px; color: ${TEXT_MUTED};">
+      <li><strong style="color: #fff;">Mboka</strong> — AI Job Matching for Skilled Labour</li>
+      <li><strong style="color: #fff;">Vuna</strong> — AI-Powered Agricultural Commerce</li>
+      <li><strong style="color: #fff;">Safura</strong> — Autonomous Food Scanner & Diet Planner</li>
+      <li><strong style="color: #fff;">NjiaSafe</strong> — Road Safety Intelligence</li>
+      <li><strong style="color: #fff;">Fixxo</strong> — On-Demand Repair Services</li>
+    </ul>
+    <a href="${WEBSITE_URL}/dashboard" class="btn">Open Dashboard</a>
+    <br/><br/>
+    <p>Best regards,<br/><strong>The Bohenix Team</strong></p>
+  `;
+  return wrapHTML(content, `Welcome to Bohenix, ${name}!`, "Welcome to Bohenix ONE");
+};
+
+export const getLoginAlertTemplate = (name: string, ip: string, timestamp: string) => {
+  const content = `
+    <h2>New Sign-In Detected</h2>
+    <p>Hi ${name},</p>
+    <p>We detected a new sign-in to your Bohenix account. If this was you, no action is needed.</p>
+    <table class="data-table">
+      <tr><td>Time:</td><td>${timestamp}</td></tr>
+      <tr><td>IP Address:</td><td><code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">${ip}</code></td></tr>
+    </table>
+    <p style="color: ${TEXT_MUTED};">If you did not sign in, please secure your account immediately by changing your password.</p>
+    <a href="mailto:support@bohenix.africa" class="btn" style="background-color: #FF3D00;">Report Suspicious Activity</a>
+  `;
+  return wrapHTML(content, "A new sign-in was detected on your Bohenix account.", "Security Alert - New Sign-In");
+};
+
+export const getSecurityAlertTemplate = (name: string, eventType: string, details: string) => {
+  const content = `
+    <h2 style="color: #FF3D00;">Security Alert</h2>
+    <p>Hi ${name},</p>
+    <p>A security event was triggered on your Bohenix account:</p>
+    <table class="data-table">
+      <tr><td>Event:</td><td><strong style="color: #FF3D00;">${eventType}</strong></td></tr>
+      <tr><td>Details:</td><td>${details}</td></tr>
+      <tr><td>Time:</td><td>${new Date().toISOString()}</td></tr>
+    </table>
+    <p>If you did not initiate this action, please contact our support team immediately.</p>
+    <a href="mailto:support@bohenix.africa" class="btn" style="background-color: #FF3D00;">Contact Support</a>
+  `;
+  return wrapHTML(content, `Security Alert: ${eventType}`, "Bohenix Security Alert");
+};
+
