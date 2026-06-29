@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
   const router = useRouter();
 
-  // Check for stored session on mount
   useEffect(() => {
     fetch('/api/auth/me')
       .then((res) => res.json())
@@ -64,13 +63,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: data.error || "Login failed" };
       }
 
-      // MFA is disabled for now
-      
       setUser({
         ...data.user,
         avatar: "/bohenixx.png",
       });
-      router.push('/dashboard');
+      router.push('/');
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
@@ -95,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         ...data.user,
         avatar: "/bohenixx.png",
       });
-      router.push('/dashboard');
+      router.push('/');
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
@@ -103,8 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const loginWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
-    // Google OAuth is handled server-side now or via a different method if we aren't using the client supabase
-    window.location.href = '/api/auth/google'; // Redirect to a server-side route that handles Google OAuth
+    window.location.href = '/api/auth/google';
     return { success: true };
   };
 
