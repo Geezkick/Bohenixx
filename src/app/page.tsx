@@ -75,7 +75,7 @@ export default function CorporateLandingPage() {
   const authRef = useRef<HTMLDivElement>(null);
 
   // Live Analytics Data
-  const [visitors, setVisitors] = useState<number>(1430210);
+  const [visitors, setVisitors] = useState<number>(0);
 
   useEffect(() => {
     // Record visit and fetch real-time stats
@@ -83,7 +83,7 @@ export default function CorporateLandingPage() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setVisitors(prev => Math.max(prev, data.visitors));
+          setVisitors(data.visitors);
         }
       })
       .catch(err => console.error("Error fetching analytics:", err));
@@ -98,16 +98,35 @@ export default function CorporateLandingPage() {
   // Contact Form State
   const [inquiryEmail, setInquiryEmail] = useState("");
   const [inquiryMsg, setInquiryMsg] = useState("");
+  const [isSendingInquiry, setIsSendingInquiry] = useState(false);
 
-  const handleSendInquiry = () => {
+  const handleSendInquiry = async () => {
     if(!inquiryEmail || !inquiryMsg) {
       showNotification({ title: "Missing Fields", message: "Please provide both an email and a message.", type: "warning" });
       return;
     }
-    window.open(`mailto:ceo@bohenix.africa?subject=Ecosystem Inquiry from ${inquiryEmail}&body=${encodeURIComponent(inquiryMsg)}`);
-    setInquiryEmail("");
-    setInquiryMsg("");
-    showNotification({ title: "Opening Mail Client", message: "Directing to your secure email client...", type: "success" });
+    
+    setIsSendingInquiry(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inquiryEmail, message: inquiryMsg, subject: `Ecosystem Inquiry from ${inquiryEmail}` })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        showNotification({ title: "Message Sent", message: "Your inquiry has been successfully delivered to our team.", type: "success" });
+        setInquiryEmail("");
+        setInquiryMsg("");
+      } else {
+        showNotification({ title: "Delivery Failed", message: data.error || "Failed to send message.", type: "error" });
+      }
+    } catch (err) {
+      showNotification({ title: "Network Error", message: "Could not send the message. Please check your connection.", type: "error" });
+    } finally {
+      setIsSendingInquiry(false);
+    }
   };
   const handleProtectedAction = (e: React.MouseEvent) => {
     if (!user) {
@@ -683,7 +702,7 @@ export default function CorporateLandingPage() {
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email (to reply to)" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
               <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder="Direct message to ceo@bohenix.africa..." rows={4} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
-              <button type="button" onClick={(e) => { if (!user) handleProtectedAction(e); else handleSendInquiry(); }} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}>Send Email Inquiry / Newsletter</button>
+              <button type="button" disabled={isSendingInquiry} onClick={(e) => { if (!user) handleProtectedAction(e); else handleSendInquiry(); }} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1 }}>{isSendingInquiry ? "Sending..." : "Send Email Inquiry / Newsletter"}</button>
             </form>
           </div>
 

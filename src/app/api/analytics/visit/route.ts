@@ -4,8 +4,7 @@ import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
-// Persistent warm counter — never drops, only goes up
-let warmVisitorCount = 1430210;
+// Track actual DB counts
 
 export async function POST(req: Request) {
   try {
@@ -36,25 +35,17 @@ export async function POST(req: Request) {
       where: { country: { not: 'Unknown' } }
     });
 
-    // Always go up, never drop
-    const newCount = 1430210 + totalVisitors;
-    if (newCount > warmVisitorCount) {
-      warmVisitorCount = newCount;
-    }
-
     return NextResponse.json({
       success: true,
-      visitors: warmVisitorCount,
+      visitors: totalVisitors,
       countries: totalCountries.length
     });
   } catch (error: any) {
-    // Fallback: increment warm counter so it never returns 0
-    warmVisitorCount += 1;
-
+    // Fallback in case of DB error
     return NextResponse.json({
-      success: true,
-      visitors: warmVisitorCount,
-      countries: 1,
+      success: false,
+      visitors: 0,
+      countries: 0,
       isFallback: true
     });
   }
