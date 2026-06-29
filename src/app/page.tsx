@@ -12,7 +12,6 @@ import CobeGlobe from "@/components/CobeGlobe";
 import TestimonialWall from "@/components/TestimonialWall";
 import LaunchTimer from "@/components/LaunchTimer";
 import AskBohenix from "@/components/AskBohenix";
-import InstallButton from "@/components/InstallButton";
 import AuthScreen from "@/components/AuthScreen";
 import { useAuth } from "@/context/AuthContext";
 import MFAChallenge from "@/components/MFAChallenge";
@@ -305,7 +304,6 @@ export default function CorporateLandingPage() {
           <a href="#labs" className={styles.navLink}>BX Labs</a>
           <a href="#about" className={styles.navLink}>About</a>
           <a href="#contact" className={styles.navLink}>Contact</a>
-          <InstallButton />
           {user ? (
             <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
           ) : (
