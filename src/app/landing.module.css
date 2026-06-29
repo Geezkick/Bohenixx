@@ -577,19 +577,9 @@
   .hero { padding: 7rem 1rem 3rem; }
 }
 
-/* ─── Pulse Animation for Access Portal ─── */
+/* ─── Pulse Animation ─── */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
 }
 
-/* ─── Auth Gate: Locked Scroll State ─── */
-.locked {
-  overflow: hidden !important;
-  overflow-y: hidden !important;
-  max-height: 100vh !important;
-  max-height: 100dvh !important;
-  touch-action: none !important;
-  -webkit-overflow-scrolling: auto !important;
-  overscroll-behavior: none !important;
-}

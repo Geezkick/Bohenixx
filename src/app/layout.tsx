@@ -84,7 +84,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh', overflow: 'hidden' }}>
+      <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
         <NotificationProvider>
           <AuthProvider>
             <MobileShell>{children}</MobileShell>

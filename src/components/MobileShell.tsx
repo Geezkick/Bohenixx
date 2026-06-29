@@ -12,6 +12,21 @@ export default function MobileShell({ children }: { children: React.ReactNode })
   const router = useRouter();
   const { user, isLoading } = useAuth();
 
+  // For non-landing pages, lock body scrolling so the app-scroll-container handles it
+  useEffect(() => {
+    if (pathname !== "/") {
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100dvh';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    };
+  }, [pathname]);
+
   // Bypass Mobile Shell for Web Landing Page
   if (pathname === "/") {
     return <>{children}</>;
