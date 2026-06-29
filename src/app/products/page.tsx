@@ -1,17 +1,25 @@
-import { createClient } from '@/utils/supabase/server';
+"use client";
+
 import NativeHeader from '@/components/NativeHeader';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { ArrowRightIcon } from 'lucide-react';
 
-// Force dynamic rendering since we are fetching from Supabase directly in a Server Component
-export const dynamic = 'force-dynamic';
+const ecosystem = [
+  { id: "njiasafe", name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", color: "#E0E0E0", href: "https://njiasafe.six.vercel.app", price: "Free", status: "Active" },
+  { id: "bxomni", name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", color: "#B14CFF", href: "https://bohenixx.vercel.app", price: "Enterprise", status: "Active" },
+  { id: "fixxo", name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", color: "#2979FF", href: "https://fixxo.vercel.app", price: "Free", status: "Active" },
+  { id: "mboka", name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Mboka uses intelligent geo-matching, verified worker profiles, and community-driven reviews so the right worker meets the right employer — fast, local, and trusted.", icon: "/mboka.png", color: "#FF6D00", href: "https://mboka.vercel.app", price: "Free", status: "Active" },
+  { id: "vuna", name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Vuna creates a living marketplace where farmers, buyers, and communities engage, connect, and trade — with intelligent content allocation ensuring every harvest story finds its audience.", icon: "/vuna.png", color: "#76FF03", href: "https://vunashorts.vercel.app", price: "Free", status: "Active" },
+  { id: "kwelify", name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", color: "#E0E0E0", href: "https://kwelify.vercel.app", price: "Pro", status: "Active" },
+  { id: "safura", name: "Safura", desc: "An autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and country of origin without any manual input. Safura empowers you to plan balanced meals, avoid potential allergies, request diet plans inspired by any cuisine worldwide, and maintain a healthy lifestyle with data-driven precision.", icon: "/safura.png", color: "#00E5FF", href: "https://safura-ai.vercel.app", price: "Free", status: "Active" },
+];
 
-export default async function ProductsPage() {
-  const supabase = await createClient();
-  
-  const { data: products, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('status', 'active');
+export default function ProductsPage() {
+  // Since we require auth via middleware for /products, we assume the user is signed in here.
+  // But we still wrap the link just in case.
+  const { user } = useAuth();
 
   return (
     <>
@@ -25,21 +33,8 @@ export default async function ProductsPage() {
             </p>
           </div>
 
-          {error && (
-            <div style={{ padding: '2rem', background: 'rgba(255,51,102,0.1)', color: '#FF3366', borderRadius: '16px', textAlign: 'center' }}>
-              Failed to load products. Please ensure your Supabase database is configured correctly.
-            </div>
-          )}
-
-          {!error && (!products || products.length === 0) && (
-            <div style={{ padding: '4rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', textAlign: 'center' }}>
-              <h3 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '1rem' }}>No products found</h3>
-              <p style={{ color: 'rgba(255,255,255,0.5)' }}>Products will appear here once added to your Supabase database.</p>
-            </div>
-          )}
-
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-            {products?.map((product: any) => (
+            {ecosystem.map((product) => (
               <div 
                 key={product.id}
                 style={{
@@ -50,30 +45,56 @@ export default async function ProductsPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '1rem',
-                  transition: 'transform 0.2s ease',
+                  transition: 'transform 0.2s ease, border-color 0.2s ease',
                   cursor: 'pointer'
                 }}
+                onMouseOver={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'}
+                onMouseOut={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
               >
-                {product.image_url ? (
-                  <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
-                    <Image src={product.image_url} alt={product.name} width={60} height={60} style={{ objectFit: 'cover' }} />
-                  </div>
-                ) : (
-                  <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'linear-gradient(135deg, #B14CFF, #00E5FF)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.5rem', color: '#fff' }}>
-                    {product.name.charAt(0)}
-                  </div>
-                )}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  {product.icon ? (
+                    <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                      <Image src={product.icon} alt={product.name} width={60} height={60} style={{ objectFit: 'cover' }} />
+                    </div>
+                  ) : (
+                    <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'linear-gradient(135deg, #B14CFF, #00E5FF)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.5rem', color: '#fff' }}>
+                      {product.name.charAt(0)}
+                    </div>
+                  )}
+                  
+                  <span style={{ background: 'rgba(0, 229, 255, 0.1)', color: '#00E5FF', padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    {product.status}
+                  </span>
+                </div>
                 
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', margin: 0 }}>{product.name}</h3>
-                <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, margin: 0, flex: 1 }}>{product.description}</p>
+                <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, margin: 0, flex: 1, fontSize: '0.95rem' }}>{product.desc}</p>
                 
-                <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#00E5FF' }}>
-                    ${parseFloat(product.price).toLocaleString()}
+                <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>
+                    {product.price}
                   </span>
-                  <button style={{ background: '#fff', color: '#000', border: 'none', padding: '0.5rem 1rem', borderRadius: '99px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer' }}>
-                    Get Access
-                  </button>
+                  
+                  <Link 
+                    href={user ? product.href : "/dashboard"} 
+                    target={user ? "_blank" : "_self"}
+                    style={{ 
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      background: '#fff', 
+                      color: '#000', 
+                      border: 'none', 
+                      padding: '0.6rem 1.25rem', 
+                      borderRadius: '99px', 
+                      fontWeight: 600, 
+                      fontSize: '0.9rem', 
+                      cursor: 'pointer',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    Open App <ArrowRightIcon size={16} />
+                  </Link>
                 </div>
               </div>
             ))}

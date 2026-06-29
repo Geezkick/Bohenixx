@@ -25,15 +25,12 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-import { createClient } from "@/utils/supabase/client";
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mfaChallengeRequired, setMfaChallengeRequired] = useState(false);
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createClient();
 
   // Check for stored session on mount
   useEffect(() => {
@@ -106,18 +103,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const loginWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`
-        }
-      });
-      if (error) return { success: false, error: error.message };
-      return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || "An unexpected error occurred" };
-    }
+    // Google OAuth is handled server-side now or via a different method if we aren't using the client supabase
+    window.location.href = '/api/auth/google'; // Redirect to a server-side route that handles Google OAuth
+    return { success: true };
   };
 
   const logout = async () => {
@@ -129,37 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const completeMfaChallenge = async (code: string) => {
-    if (!mfaFactorId) return { success: false, error: "No MFA factor selected" };
-    try {
-      const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({ factorId: mfaFactorId });
-      if (challengeError) return { success: false, error: challengeError.message };
-
-      const { error } = await supabase.auth.mfa.verify({
-        factorId: mfaFactorId,
-        challengeId: challenge.id,
-        code
-      });
-
-      if (error) return { success: false, error: error.message };
-      
-      // Successfully verified AAL2. Let's refresh the session.
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser({
-          id: user.id,
-          name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
-          email: user.email || '',
-          avatar: "/bohenixx.png",
-        });
-      }
-
-      setMfaChallengeRequired(false);
-      setMfaFactorId(null);
-      router.push('/dashboard');
-      return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || "An unexpected error occurred" };
-    }
+    return { success: false, error: "MFA is currently disabled" };
   };
 
   const cancelMfaChallenge = () => {

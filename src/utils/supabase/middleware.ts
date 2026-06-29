@@ -39,6 +39,8 @@ export async function updateSession(request: NextRequest) {
   const publicPaths = [
     '/',           // Landing page (has its own client-side lock for scrolling)
     '/dashboard',  // Auth screen lives here — must be accessible to log in
+    '/products',   // The products page is a showcase
+    '/developers', // Developer portal is informational
   ]
 
   const isPublicRoute = publicPaths.some(path => pathname === path)

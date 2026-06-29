@@ -78,20 +78,25 @@ export default function CorporateLandingPage() {
   const [visitors, setVisitors] = useState<number>(0);
 
   useEffect(() => {
-    // Record visit and fetch real-time stats
+    // Record visit on mount
     fetch('/api/analytics/visit', { method: 'POST' })
       .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setVisitors(data.visitors);
-        }
-      })
       .catch(err => console.error("Error fetching analytics:", err));
 
-    // Real-time counter — increments every 3 seconds, never drops
-    const interval = setInterval(() => {
-      setVisitors(prev => prev + 1);
-    }, 3000);
+    // Real-time counter — polls the actual server count every 5 seconds
+    const fetchCount = () => {
+      fetch('/api/analytics/count')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.visitors > 0) {
+            setVisitors(data.visitors);
+          }
+        })
+        .catch(err => console.error("Error fetching analytics count:", err));
+    };
+
+    fetchCount(); // Initial fetch
+    const interval = setInterval(fetchCount, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -524,9 +529,26 @@ export default function CorporateLandingPage() {
                 </div>
               </div>
               <p className={styles.appDesc}>{app.desc}</p>
-              <Link href={app.href} target="_blank" className={styles.appLink} style={{ color: app.color }}>
+              <a 
+                href={user ? app.href : '#'} 
+                onClick={(e) => {
+                  if (!user) {
+                    e.preventDefault();
+                    showNotification({
+                      title: "Sign In Required",
+                      message: "Please sign in to preview platforms.",
+                      type: "warning"
+                    });
+                    authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  } else {
+                    window.open(app.href, '_blank');
+                  }
+                }} 
+                className={styles.appLink} 
+                style={{ color: app.color, cursor: 'pointer' }}
+              >
                 Preview Platform <ArrowRightIcon size={16} />
-              </Link>
+              </a>
               <div className={styles.cardGlow} style={{ background: app.color }} />
             </motion.div>
           ))}
@@ -796,7 +818,7 @@ export default function CorporateLandingPage() {
               <li><a href="#about">About Us</a></li>
               <li><a href="#careers">Careers</a></li>
               <li><a href="#">Newsroom</a></li>
-              <li><a href="#">Developer Portal</a></li>
+              <li><Link href="/developers">Developer Portal</Link></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

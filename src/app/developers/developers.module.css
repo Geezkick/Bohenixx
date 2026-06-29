@@ -1,0 +1,116 @@
+.container {
+  min-height: 100vh;
+  background: #050505;
+  color: #fff;
+  padding: 6rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(139,46,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+.hero { text-align: center; margin-bottom: 5rem; }
+.badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.25rem; background: rgba(139,46,255,0.12);
+  border: 1px solid rgba(139,46,255,0.25); border-radius: 99px;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #B14CFF; margin-bottom: 2rem;
+}
+.badgeDot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #00E5FF; box-shadow: 0 0 8px #00E5FF;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+.heroTitle {
+  font-size: 3.5rem; font-weight: 900; letter-spacing: -1.5px; line-height: 1.1;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #fff 40%, #B14CFF 70%, #00E5FF);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.heroSub { font-size: 1.25rem; color: rgba(255,255,255,0.55); max-width: 650px; margin: 0 auto 2.5rem; line-height: 1.7; }
+.heroActions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.primaryBtn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem; background: #B14CFF; color: #fff;
+  border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.primaryBtn:hover { background: #9B30FF; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(177,76,255,0.3); }
+.secondaryBtn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem; background: rgba(255,255,255,0.05); color: #fff;
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.secondaryBtn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+.sectionTitle { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -0.5px; }
+.sectionDesc { color: rgba(255,255,255,0.5); font-size: 1.05rem; margin-bottom: 3rem; max-width: 600px; line-height: 1.6; }
+.section { margin-bottom: 5rem; }
+.quickStart {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 2.5rem; margin-bottom: 5rem;
+}
+.quickStartTitle { font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; color: #00E5FF; display: flex; align-items: center; gap: 0.75rem; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.step { display: flex; gap: 1rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); transition: border-color 0.2s; }
+.step:hover { border-color: rgba(139,46,255,0.3); }
+.stepNumber { width: 36px; height: 36px; min-width: 36px; border-radius: 10px; background: linear-gradient(135deg, #B14CFF, #00E5FF); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; }
+.stepTitle { font-weight: 700; margin-bottom: 0.35rem; font-size: 1rem; }
+.stepDesc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.endpointGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
+.endpointCard {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 2rem; transition: all 0.3s; position: relative; overflow: hidden;
+}
+.endpointCard:hover { border-color: rgba(139,46,255,0.3); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.endpointCard::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #B14CFF, #00E5FF); opacity: 0; transition: opacity 0.3s; }
+.endpointCard:hover::after { opacity: 1; }
+.methodBadge { display: inline-flex; padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+.methodGet { background: rgba(0,200,83,0.15); color: #00C853; }
+.methodPost { background: rgba(0,229,255,0.15); color: #00E5FF; }
+.endpointPath { font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem; }
+.endpointDesc { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.5; margin-bottom: 1rem; }
+.endpointMeta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.metaTag { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem; background: rgba(255,255,255,0.04); border-radius: 6px; font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+.codeBlock { background: #0D0D0D; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; margin-bottom: 2rem; }
+.codeHeader { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1.25rem; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06); }
+.codeLang { font-size: 0.8rem; font-weight: 700; color: #B14CFF; letter-spacing: 0.5px; text-transform: uppercase; }
+.codeCopy { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.35rem 0.85rem; color: rgba(255,255,255,0.6); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+.codeCopy:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.codeBody { padding: 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.8); overflow-x: auto; white-space: pre; }
+.sdkGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+.sdkCard { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; transition: all 0.3s; }
+.sdkCard:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-2px); }
+.sdkIcon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; }
+.sdkName { font-size: 1.15rem; font-weight: 700; }
+.sdkDesc { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.sdkStatus { display: inline-flex; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; width: fit-content; }
+.backLink { display: inline-flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.95rem; font-weight: 600; margin-bottom: 2rem; transition: color 0.2s; }
+.backLink:hover { color: #fff; }
+.footerCta { text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, rgba(139,46,255,0.08), rgba(0,229,255,0.05)); border-radius: 24px; border: 1px solid rgba(139,46,255,0.15); }
+.footerCtaTitle { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+.footerCtaDesc { color: rgba(255,255,255,0.5); font-size: 1.05rem; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+.rateLimitGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.rateLimitCard { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 1.5rem; text-align: center; }
+.rateLimitValue { font-size: 2rem; font-weight: 800; color: #B14CFF; margin-bottom: 0.25rem; }
+.rateLimitLabel { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+@media (max-width: 768px) {
+  .container { padding: 5rem 1rem 3rem; }
+  .heroTitle { font-size: 2.2rem; }
+  .heroSub { font-size: 1rem; }
+  .endpointGrid { grid-template-columns: 1fr; }
+  .sectionTitle { font-size: 1.75rem; }
+  .quickStart { padding: 1.5rem; }
+  .steps { grid-template-columns: 1fr; }
+}
