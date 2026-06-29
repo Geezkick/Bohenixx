@@ -74,13 +74,22 @@ export default function CorporateLandingPage() {
 
   const authRef = useRef<HTMLDivElement>(null);
 
-  // Live Visitor Counter
-  const [visitors, setVisitors] = useState(1430210);
+  // Live Analytics Data
+  const [visitors, setVisitors] = useState<number | null>(null);
+  const [activeCountries, setActiveCountries] = useState<string[]>(["Nairobi, KE", "Lagos, NG", "Johannesburg, ZA"]);
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setVisitors(prev => prev + Math.floor(Math.random() * 5) + 1);
-    }, 2500);
-    return () => clearInterval(interval);
+    fetch('/api/analytics/visit', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setVisitors(data.visitors);
+          if (data.activeCountries && data.activeCountries.length > 0) {
+            setActiveCountries(data.activeCountries);
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching analytics:", err));
   }, []);
 
   // Contact Form State
@@ -384,7 +393,7 @@ export default function CorporateLandingPage() {
             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 10px #00E5FF', animation: 'pulse 1.5s infinite' }} />
             <div>
                <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 600 }}>Live Ecosystem Visitors</div>
-               <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff', fontFamily: 'monospace', lineHeight: 1 }}>{visitors.toLocaleString()}</div>
+               <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff', fontFamily: 'monospace', lineHeight: 1 }}>{visitors !== null ? visitors.toLocaleString() : '...'}</div>
             </div>
           </div>
 
@@ -394,9 +403,11 @@ export default function CorporateLandingPage() {
             for Africa's connected future.
           </p>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <span style={{ padding: '0.5rem 1rem', background: 'rgba(139,46,255,0.1)', border: '1px solid rgba(139,46,255,0.3)', borderRadius: '99px', color: '#B14CFF' }}>Nairobi, KE</span>
-            <span style={{ padding: '0.5rem 1rem', background: 'rgba(139,46,255,0.1)', border: '1px solid rgba(139,46,255,0.3)', borderRadius: '99px', color: '#B14CFF' }}>Lagos, NG</span>
-            <span style={{ padding: '0.5rem 1rem', background: 'rgba(139,46,255,0.1)', border: '1px solid rgba(139,46,255,0.3)', borderRadius: '99px', color: '#B14CFF' }}>Johannesburg, ZA</span>
+            {activeCountries.map((country, idx) => (
+              <span key={idx} style={{ padding: '0.5rem 1rem', background: 'rgba(139,46,255,0.1)', border: '1px solid rgba(139,46,255,0.3)', borderRadius: '99px', color: '#B14CFF' }}>
+                {country}
+              </span>
+            ))}
           </div>
         </div>
         <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>

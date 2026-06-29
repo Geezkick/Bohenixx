@@ -54,3 +54,13 @@ model Testimonial {
   approved  Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model SiteVisit {
+  id        String   @id @default(cuid())
+  ipHash    String
+  country   String?
+  city      String?
+  createdAt DateTime @default(now())
+
+  @@index([ipHash])
+}
