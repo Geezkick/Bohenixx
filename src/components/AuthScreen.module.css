@@ -76,12 +76,14 @@
 .highlight {
   background: linear-gradient(90deg, #B14CFF, #00E5FF);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .highlightWarm {
   background: linear-gradient(90deg, #FFD700, #FF6B35);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -165,6 +167,7 @@
   outline: none;
   transition: border-color 0.25s ease, background 0.25s ease;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 .input::placeholder {
