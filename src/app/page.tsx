@@ -98,7 +98,24 @@ export default function CorporateLandingPage() {
   // Contact Form State
   const [inquiryEmail, setInquiryEmail] = useState("");
   const [inquiryMsg, setInquiryMsg] = useState("");
+  const [inquiryName, setInquiryName] = useState("");
+  const [inquiryPortfolio, setInquiryPortfolio] = useState("");
   const [isSendingInquiry, setIsSendingInquiry] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [contactTarget, setContactTarget] = useState("ceo@bohenix.africa");
+
+  const openContactModal = (target: string, e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (!user) {
+      showNotification({ title: "Sign In Required", message: "Please sign in to send inquiries.", type: "warning" });
+      authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    setContactTarget(target);
+    if (!inquiryEmail) setInquiryEmail(user.email);
+    if (!inquiryName) setInquiryName(user.name);
+    setIsContactModalOpen(true);
+  };
 
   const handleSendInquiry = async () => {
     if(!inquiryEmail || !inquiryMsg) {
@@ -108,17 +125,30 @@ export default function CorporateLandingPage() {
     
     setIsSendingInquiry(true);
     try {
-      const res = await fetch('/api/contact', {
+      let endpoint = '/api/contact';
+      let payload: any = { email: inquiryEmail, message: inquiryMsg, subject: `Website Inquiry to ${contactTarget}`, targetEmail: contactTarget };
+
+      if (contactTarget === 'support@bohenix.africa') {
+        endpoint = '/api/support';
+        payload = { email: inquiryEmail, message: inquiryMsg, subject: 'Support Request' };
+      } else if (contactTarget === 'career@bohenix.africa') {
+        endpoint = '/api/career';
+        payload = { email: inquiryEmail, name: inquiryName || 'Applicant', position: 'General Application', portfolioUrl: inquiryPortfolio, coverLetter: inquiryMsg };
+      }
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: inquiryEmail, message: inquiryMsg, subject: `Ecosystem Inquiry from ${inquiryEmail}` })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       
       if (data.success) {
-        showNotification({ title: "Message Sent", message: "Your inquiry has been successfully delivered to our team.", type: "success" });
+        showNotification({ title: "Message Sent", message: "Your inquiry has been successfully delivered.", type: "success" });
         setInquiryEmail("");
         setInquiryMsg("");
+        setInquiryPortfolio("");
+        setIsContactModalOpen(false);
       } else {
         showNotification({ title: "Delivery Failed", message: data.error || "Failed to send message.", type: "error" });
       }
@@ -303,6 +333,33 @@ export default function CorporateLandingPage() {
       {/* AI Widget */}
       <AskBohenix />
       
+      {/* Dynamic Contact Modal */}
+      {isContactModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
+          <div style={{ background: '#111', padding: '3rem', borderRadius: '24px', width: '90%', maxWidth: '500px', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
+            <button onClick={() => setIsContactModalOpen(false)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', color: '#fff', fontSize: '1.5rem', cursor: 'pointer' }}>✕</button>
+            <h3 style={{ fontSize: '1.8rem', marginBottom: '0.5rem', color: '#fff' }}>Send Inquiry</h3>
+            <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem' }}>Directly to <strong style={{ color: '#00E5FF' }}>{contactTarget}</strong></p>
+            
+            <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email Address" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+              
+              {contactTarget === 'career@bohenix.africa' && (
+                <>
+                  <input type="text" value={inquiryName} onChange={(e) => setInquiryName(e.target.value)} placeholder="Full Name" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                  <input type="url" value={inquiryPortfolio} onChange={(e) => setInquiryPortfolio(e.target.value)} placeholder="LinkedIn or Portfolio URL" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+                </>
+              )}
+              
+              <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder={contactTarget === 'career@bohenix.africa' ? "Brief Cover Letter or Summary..." : "Type your message here..."} rows={5} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
+              <button type="button" disabled={isSendingInquiry} onClick={handleSendInquiry} style={{ background: '#B14CFF', color: '#fff', padding: '1rem', borderRadius: '12px', border: 'none', fontSize: '1.1rem', fontWeight: 600, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1 }}>
+                {isSendingInquiry ? "Sending..." : "Send Message"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Global Background */}
       <ParticlesBackground />
 
@@ -317,7 +374,7 @@ export default function CorporateLandingPage() {
           <a href="#services" className={styles.navLink}>Services</a>
           <a href="#labs" className={styles.navLink}>BX Labs</a>
           <a href="#about" className={styles.navLink}>About</a>
-          <a href="#contact" className={styles.navLink}>Contact</a>
+          <button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} className={styles.navLink} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit' }}>Contact</button>
           {user ? (
             <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
           ) : (
@@ -620,18 +677,18 @@ export default function CorporateLandingPage() {
           <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem' }}>
             Join us in building the future. We offer open positions, internship opportunities, and graduate programs.
           </p>
-          <a href="mailto:career@bohenix.africa" className={styles.secondaryCta} style={{ display: 'inline-block' }}>
+          <button onClick={(e) => openContactModal('career@bohenix.africa', e)} className={styles.secondaryCta} style={{ display: 'inline-block', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
             Apply: career@bohenix.africa
-          </a>
+          </button>
         </div>
         <div style={{ flex: 1, minWidth: '300px' }}>
           <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Investors & Partners</h2>
           <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem' }}>
             Collaborating with governments, NGOs, enterprise clients, and investors to scale impact.
           </p>
-          <a href="mailto:ceo@bohenix.africa" className={styles.primaryCta} style={{ display: 'inline-block' }}>
+          <button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} className={styles.primaryCta} style={{ display: 'inline-block', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
             Contact: ceo@bohenix.africa
-          </a>
+          </button>
         </div>
       </section>
 
@@ -687,10 +744,10 @@ export default function CorporateLandingPage() {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 LinkedIn
               </a>
-              <a href="mailto:career@bohenix.africa" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
+              <button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                 Careers
-              </a>
+              </button>
               <a href="https://reddit.com/r/bohenix" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', fontWeight: 600 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.248-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.561-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
                 Reddit
@@ -700,9 +757,16 @@ export default function CorporateLandingPage() {
               Start Customer Service Chat
             </button>
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email (to reply to)" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
-              <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder="Direct message to ceo@bohenix.africa..." rows={4} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
-              <button type="button" disabled={isSendingInquiry} onClick={(e) => { if (!user) handleProtectedAction(e); else handleSendInquiry(); }} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1 }}>{isSendingInquiry ? "Sending..." : "Send Email Inquiry / Newsletter"}</button>
+              <select value={contactTarget} onChange={(e) => setContactTarget(e.target.value)} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', appearance: 'none', cursor: 'pointer' }}>
+                <option value="ceo@bohenix.africa" style={{ background: '#111' }}>ceo@bohenix.africa (Investors & Partners)</option>
+                <option value="career@bohenix.africa" style={{ background: '#111' }}>career@bohenix.africa (Job Applications)</option>
+                <option value="support@bohenix.africa" style={{ background: '#111' }}>support@bohenix.africa (Technical Support)</option>
+                <option value="hello@bohenix.africa" style={{ background: '#111' }}>hello@bohenix.africa (General Inquiries)</option>
+                <option value="info@bohenix.africa" style={{ background: '#111' }}>info@bohenix.africa (Information)</option>
+              </select>
+              <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email Address" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }} />
+              <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder={`Direct message to ${contactTarget}...`} rows={4} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical' }}></textarea>
+              <button type="button" disabled={isSendingInquiry} onClick={(e) => { if (!user) handleProtectedAction(e); else handleSendInquiry(); }} style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', fontSize: '1.1rem', fontWeight: 600, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1 }}>{isSendingInquiry ? "Sending..." : "Send Email Inquiry"}</button>
             </form>
           </div>
 
@@ -719,7 +783,9 @@ export default function CorporateLandingPage() {
           <div className={styles.footerCol}>
             <h4>Contact Center</h4>
             <ul>
-              <li><a href="mailto:ceo@bohenix.africa">ceo@bohenix.africa</a></li>
+              <li><button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>ceo@bohenix.africa</button></li>
+              <li><button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>career@bohenix.africa</button></li>
+              <li><button onClick={(e) => openContactModal('support@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>support@bohenix.africa</button></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

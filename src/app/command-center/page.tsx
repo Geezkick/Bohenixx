@@ -80,6 +80,13 @@ export default async function CommandCenter() {
             <input type="text" name="action" placeholder="Action description..." required className={styles.input} />
             <button type="submit" className={styles.btn}>Broadcast Event</button>
           </form>
+
+          <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <h3>Communication Systems</h3>
+            <a href="/command-center/emails" className={styles.btn} style={{ display: 'inline-block', textDecoration: 'none', background: '#00E5FF', color: '#000' }}>
+              View Email Management Dashboard
+            </a>
+          </div>
         </section>
       </div>
     </main>
