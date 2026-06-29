@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, MessageSquarePlus, X } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useNotification } from '@/context/NotificationContext';
 import styles from './TestimonialWall.module.css';
 
 interface Testimonial {
@@ -18,6 +20,9 @@ export default function TestimonialWall() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const { user } = useAuth();
+  const { showNotification } = useNotification();
   
   // Form state
   const [formData, setFormData] = useState({ name: '', company: '', message: '', rating: 5 });
@@ -77,7 +82,21 @@ export default function TestimonialWall() {
           <h2 className={styles.title}>Client Acknowledgments</h2>
           <p className={styles.subtitle}>See what our partners and clients say about us.</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className={styles.postBtn}>
+        <button 
+          onClick={() => {
+            if (user) {
+              setIsModalOpen(true);
+            } else {
+              showNotification({
+                title: "Sign In Required",
+                message: "Please sign in to share your experience and post a review.",
+                type: "warning"
+              });
+              document.getElementById('auth')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }} 
+          className={styles.postBtn}
+        >
           <MessageSquarePlus size={18} />
           Post Review
         </button>
