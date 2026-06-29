@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRightIcon, Terminal, Shield, Database, Cloud, Code, BrainCircuit, Globe, Activity, FileText, LogIn, UserPlus } from "lucide-react";
+import { ArrowRightIcon, Terminal, Shield, Database, Cloud, Code, BrainCircuit, Activity, FileText, LogIn, UserPlus } from "lucide-react";
 import styles from "./landing.module.css";
 import founderStyles from "./founder.module.css";
 import ParticlesBackground from "@/components/ParticlesBackground";
@@ -22,10 +22,10 @@ const ecosystem = [
   { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", color: "#E0E0E0", href: "https://njiasafe.six.vercel.app" },
   { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", color: "#E0E0E0", href: "https://bohenixx.vercel.app" },
   { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", color: "#E0E0E0", href: "https://fixxo.vercel.app" },
-  { name: "Mboka", desc: "AI job matching platform that connects skilled laborers and employers by nearest location, reviews, and verified expertise.", icon: "/mboka.png", color: "#E0E0E0", href: "https://mboka.vercel.app" },
-  { name: "Vuna", desc: "AI-powered agri-commerce platform where farmers showcase produce through video, connect with buyers, and trade directly.", icon: "/vuna.png", color: "#E0E0E0", href: "https://vunashorts.vercel.app" },
+  { name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Mboka uses intelligent geo-matching, verified worker profiles, and community-driven reviews so the right worker meets the right employer — fast, local, and trusted.", icon: "/mboka.png", color: "#E0E0E0", href: "https://mboka.vercel.app" },
+  { name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Vuna creates a living marketplace where farmers, buyers, and communities engage, connect, and trade — with intelligent content allocation ensuring every harvest story finds its audience.", icon: "/vuna.png", color: "#E0E0E0", href: "https://vunashorts.vercel.app" },
   { name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", color: "#E0E0E0", href: "https://kwelify.vercel.app" },
-  { name: "Safura", desc: "AI food scanner that autonomously analyzes nutritional values, detects allergens, identifies origin, and helps you plan healthy, balanced meals.", icon: "/safura.png", color: "#E0E0E0", href: "https://safura-ai.vercel.app" },
+  { name: "Safura", desc: "An autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and country of origin without any manual input. Safura empowers you to plan balanced meals, avoid potential allergies, request diet plans inspired by any cuisine worldwide, and maintain a healthy lifestyle with data-driven precision.", icon: "/safura.png", color: "#E0E0E0", href: "https://safura-ai.vercel.app" },
 ];
 
 const services = [
@@ -76,7 +76,6 @@ export default function CorporateLandingPage() {
 
   // Live Analytics Data
   const [visitors, setVisitors] = useState<number>(1430210);
-  const [countryCount, setCountryCount] = useState<number>(3);
 
   useEffect(() => {
     // Record visit and fetch real-time stats
@@ -85,15 +84,14 @@ export default function CorporateLandingPage() {
       .then(data => {
         if (data.success) {
           setVisitors(prev => Math.max(prev, data.visitors));
-          if (data.countries) setCountryCount(data.countries);
         }
       })
       .catch(err => console.error("Error fetching analytics:", err));
 
-    // Keep the counter ticking in real-time — never drops
+    // Real-time counter — increments every 3 seconds, never drops
     const interval = setInterval(() => {
       setVisitors(prev => prev + 1);
-    }, 8000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -394,30 +392,20 @@ export default function CorporateLandingPage() {
         <div style={{ flex: 1, minWidth: '300px' }}>
           <h2 style={{ fontSize: '3.5rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-1px' }}>Active Across Africa</h2>
           
-          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-            {/* Live Visitor Counter */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(139,46,255,0.1)', padding: '1rem 1.5rem', borderRadius: '16px', border: '1px solid rgba(139,46,255,0.2)' }}>
-              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 10px #00E5FF', animation: 'pulse 1.5s infinite' }} />
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 600 }}>Live Visitors</div>
-                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff', fontFamily: 'monospace', lineHeight: 1 }}>{visitors.toLocaleString()}</div>
-              </div>
-            </div>
-            {/* Country Counter */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(0,229,255,0.08)', padding: '1rem 1.5rem', borderRadius: '16px', border: '1px solid rgba(0,229,255,0.2)' }}>
-              <Globe size={24} color="#00E5FF" />
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 600 }}>Countries Reached</div>
-                <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff', fontFamily: 'monospace', lineHeight: 1 }}>{countryCount}</div>
-              </div>
+          {/* Live Visitor Counter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(139,46,255,0.1)', padding: '1rem 1.5rem', borderRadius: '16px', border: '1px solid rgba(139,46,255,0.2)', marginBottom: '2rem', width: 'fit-content' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 10px #00E5FF', animation: 'pulse 1.5s infinite' }} />
+            <div>
+              <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 600 }}>Live Visitors</div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff', fontFamily: 'monospace', lineHeight: 1 }}>{visitors.toLocaleString()}</div>
             </div>
           </div>
 
           <p style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: '1rem' }}>
-            Our digital infrastructure is expanding across the continent and beyond. Every visitor, every interaction, and every connection is tracked in real time — powering the data-driven foundation of Africa&apos;s connected future.
+            The Bohenix ecosystem is growing rapidly across the African continent — from coastal cities to inland communities — connecting people, businesses, and opportunities through intelligent technology that understands local context and delivers real-world impact at scale.
           </p>
           <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>
-            This data reflects live, real-time analytics from users accessing the Bohenix ecosystem globally.
+            Live visitor count reflects real-time telemetry recorded as the Bohenix ecosystem grows. This counter advances continuously and never resets — every interaction is a milestone.
           </p>
         </div>
         <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
@@ -498,7 +486,7 @@ export default function CorporateLandingPage() {
       <section id="services" className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2>Enterprise Services</h2>
-          <p>We provide world-class engineering, AI, and cybersecurity services.</p>
+          <p>End-to-end technology services engineered for scale — from ambitious startups to government institutions and Fortune-class enterprises. Bohenix delivers production-grade solutions that work in the real world.</p>
         </div>
         <motion.div 
           className={styles.servicesGrid}
@@ -532,26 +520,74 @@ export default function CorporateLandingPage() {
       <section id="labs" className={styles.section} style={{ background: 'linear-gradient(135deg, rgba(139,46,255,0.05), transparent)' }}>
         <div className={styles.sectionHeader}>
           <h2>BX Labs</h2>
-          <p>Our dedicated research and innovation division — where cutting-edge ideas become production-ready technology.</p>
+          <p>Our dedicated research and innovation division — where cutting-edge ideas become production-ready technology that reshapes industries across Africa and the world.</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+
+        {/* Labs Mission Statement */}
+        <div style={{ maxWidth: '800px', margin: '0 auto 3rem', textAlign: 'center', padding: '2rem', background: 'rgba(177,76,255,0.05)', borderRadius: '24px', border: '1px solid rgba(177,76,255,0.15)' }}>
+          <p style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.8 }}>
+            BX Labs is Bohenix&apos;s frontier research engine — a dedicated environment where our scientists, engineers, and product architects push the boundaries of what&apos;s possible. Every product in the Bohenix ecosystem has roots in Labs research. We operate at the intersection of applied AI, systems engineering, and deep technology to deliver breakthrough innovations that are commercially viable, ethically grounded, and built for Africa&apos;s unique challenges.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
           {[
-            { title: 'Autonomous AI Systems', desc: 'Building self-learning AI agents that can operate, adapt, and optimize without human intervention across complex business environments.' },
-            { title: 'Computer Vision & Spatial AI', desc: 'Developing real-time visual recognition systems for food analysis, safety monitoring, and smart city infrastructure.' },
-            { title: 'Edge Computing & IoT', desc: 'Engineering low-latency processing solutions that bring intelligence to devices at the edge — from agricultural sensors to urban mobility systems.' },
-            { title: 'Blockchain & Decentralized Systems', desc: 'Researching distributed ledger technology for transparent supply chains, digital identity, and decentralized finance across African markets.' },
-            { title: 'Smart Cities & Urban Intelligence', desc: 'Designing the digital nervous systems of tomorrow\'s cities — integrating traffic, energy, safety, and citizen services into unified platforms.' },
-            { title: 'Natural Language Processing', desc: 'Creating multilingual AI models that understand and process African languages for inclusive digital products and services.' },
+            {
+              title: 'Autonomous AI Systems',
+              tag: 'Core Research',
+              desc: 'We engineer self-learning AI agents capable of operating, adapting, and self-optimizing across complex, real-world business environments — without continuous human supervision. Our agents are designed with safety guardrails, interpretability layers, and rollback mechanisms to ensure reliable performance in high-stakes operations.',
+              items: ['Multi-agent orchestration frameworks', 'Adaptive decision-tree architectures', 'Self-healing pipeline design', 'Human-in-the-loop override protocols']
+            },
+            {
+              title: 'Computer Vision & Spatial AI',
+              tag: 'Applied Research',
+              desc: 'Our computer vision team develops real-time visual recognition and spatial intelligence systems powering Safura\'s food scanning, smart city surveillance, agricultural crop analysis, and industrial quality control. We train models on diverse African datasets to ensure accuracy across varied lighting, environments, and cultural contexts.',
+              items: ['Real-time food & object recognition', 'Satellite & drone image processing', 'Crop disease detection systems', 'Smart CCTV & safety analytics']
+            },
+            {
+              title: 'Edge Computing & IoT Intelligence',
+              tag: 'Infrastructure Research',
+              desc: 'We design low-latency, compute-efficient solutions that bring AI inference directly to the device — enabling Bohenix products to function reliably even in low-connectivity environments. Our edge stack powers agricultural sensors, road safety hardware, and smart city nodes across the continent.',
+              items: ['On-device ML model compression', 'Agricultural IoT sensor networks', 'Offline-first architecture patterns', 'Real-time telemetry aggregation']
+            },
+            {
+              title: 'Blockchain & Decentralized Systems',
+              tag: 'Emerging Technology',
+              desc: 'BX Labs is pioneering the use of distributed ledger technology to solve Africa-specific challenges: opaque supply chains, fragmented digital identity, and excluded financial communities. Our research covers DeFi protocols, self-sovereign identity, and tokenized commodity trading built for African market structures.',
+              items: ['Transparent agri-supply chains', 'Digital identity & self-sovereign credentials', 'Tokenized commodity exchange protocols', 'Smart contracts for micro-transactions']
+            },
+            {
+              title: 'Smart Cities & Urban Intelligence',
+              tag: 'Systems Research',
+              desc: 'We design integrated urban intelligence platforms — the digital nervous systems of Africa\'s rapidly growing cities. Our research unifies traffic flow optimization, energy grid management, emergency response, and citizen service delivery into unified, AI-coordinated city operating systems that local governments can deploy and govern.',
+              items: ['Adaptive traffic signal intelligence', 'AI-driven energy load balancing', 'Emergency dispatch optimization', 'Citizen services data integration']
+            },
+            {
+              title: 'African Natural Language Processing',
+              tag: 'Language AI',
+              desc: 'Language is infrastructure. BX Labs is building multilingual AI models capable of understanding, generating, and reasoning in African languages — from Kiswahili and Hausa to Amharic and Zulu. Our NLP systems power voice interfaces, chatbots, document processing, and sentiment analytics designed specifically for African linguistic diversity.',
+              items: ['Kiswahili, Hausa & Amharic NLP models', 'Cross-lingual semantic search', 'Voice-to-text for local dialects', 'Sentiment analysis for African markets']
+            },
           ].map(lab => (
-            <div key={lab.title} style={{ padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#B14CFF', marginBottom: '0.75rem' }}>{lab.title}</h4>
-              <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>{lab.desc}</p>
+            <div key={lab.title} style={{ padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+                <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#B14CFF', margin: 0 }}>{lab.title}</h4>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '1px', padding: '0.3rem 0.75rem', background: 'rgba(177,76,255,0.15)', borderRadius: '99px', color: '#B14CFF', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{lab.tag}</span>
+              </div>
+              <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: 0 }}>{lab.desc}</p>
+              <ul style={{ margin: 0, padding: '0 0 0 1.2rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                {lab.items.map(item => (
+                  <li key={item} style={{ fontSize: '0.82rem', color: 'rgba(0,229,255,0.7)', lineHeight: 1.5 }}>{item}</li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          {['Emerging Technology', 'AI Innovation', 'Robotics', 'Smart Cities', 'Digital Infrastructure', 'Open Research'].map(feature => (
-            <div key={feature} style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '99px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.9rem' }}>
+
+        {/* Labs Tags */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+          {['Frontier AI Research', 'Applied Machine Learning', 'Robotics & Automation', 'Smart City Systems', 'Deep Tech Infrastructure', 'Open Research Publications', 'African Language AI', 'Ethical AI Design'].map(feature => (
+            <div key={feature} style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '99px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
               {feature}
             </div>
           ))}
