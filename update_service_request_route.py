@@ -1,4 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import os
+
+path = "src/app/api/services/request/route.ts"
+
+content = '''import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/utils/mailer";
@@ -68,3 +72,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+'''
+
+with open(path, "w") as f:
+    f.write(content)
+
+print(f"Updated {path}")

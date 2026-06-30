@@ -52,13 +52,10 @@ model User {
   sessions      Session[]
   apiKeys       ApiKey[]
   webhooks      Webhook[]
-  eventRsvps    EventRsvp[]
-  serviceRequests ServiceRequest[]
 }
 
 model ServiceRequest {
   id        String   @id @default(cuid())
-  userId    String?
   service   String
   budget    String
   timeline  String
@@ -66,9 +63,6 @@ model ServiceRequest {
   email     String
   status    String   @default("PENDING")
   createdAt DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
 }
 
 model ActivityLog {
@@ -176,16 +170,5 @@ model Webhook {
   createdAt   DateTime  @default(now())
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-}
-
-model EventRsvp {
-  id        String   @id @default(cuid())
-  userId    String
-  eventId   String
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, eventId])
   @@index([userId])
 }

@@ -50,15 +50,10 @@ model User {
   createdAt     DateTime  @default(now())
   accounts      Account[]
   sessions      Session[]
-  apiKeys       ApiKey[]
-  webhooks      Webhook[]
-  eventRsvps    EventRsvp[]
-  serviceRequests ServiceRequest[]
 }
 
 model ServiceRequest {
   id        String   @id @default(cuid())
-  userId    String?
   service   String
   budget    String
   timeline  String
@@ -66,20 +61,14 @@ model ServiceRequest {
   email     String
   status    String   @default("PENDING")
   createdAt DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
 }
 
 model ActivityLog {
   id        String   @id @default(cuid())
-  userId    String?
   app       String
   action    String
   color     String
   createdAt DateTime @default(now())
-
-  @@index([userId])
 }
 
 model Telemetry {
@@ -147,45 +136,4 @@ model JobApplication {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   @@index([email])
-}
-
-
-model ApiKey {
-  id         String    @id @default(cuid())
-  userId     String
-  name       String
-  keyPrefix  String
-  keyHash    String    @unique
-  lastUsedAt DateTime?
-  createdAt  DateTime  @default(now())
-  revokedAt  DateTime?
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model Webhook {
-  id          String    @id @default(cuid())
-  userId      String
-  url         String
-  description String?
-  secret      String
-  isActive    Boolean   @default(true)
-  lastStatus  String?
-  lastSentAt  DateTime?
-  createdAt   DateTime  @default(now())
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model EventRsvp {
-  id        String   @id @default(cuid())
-  userId    String
-  eventId   String
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, eventId])
-  @@index([userId])
 }

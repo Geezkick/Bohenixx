@@ -1,4 +1,8 @@
-"use client";
+import os
+
+path = "src/app/dashboard/page.tsx"
+
+content = '''"use client";
 
 import React, { useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
@@ -127,3 +131,9 @@ export default function DashboardOverview() {
     </>
   );
 }
+'''
+
+with open(path, "w") as f:
+    f.write(content)
+
+print(f"Wrote {path}")
