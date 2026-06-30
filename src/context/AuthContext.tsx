@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       }).catch(() => {});
+      router.push("/dashboard");
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
@@ -61,7 +62,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error };
-      await signIn("credentials", { email, password, redirect: false });
+      const signInRes = await signIn("credentials", { email, password, redirect: false });
+      if (signInRes?.error) return { success: false, error: "Account created but login failed" };
+      router.push("/dashboard");
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
@@ -70,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginWithGoogle = async (redirectTo?: string) => {
     try {
-      await signIn("google", { callbackUrl: redirectTo || "/" });
+      await signIn("google", { callbackUrl: redirectTo || "/dashboard" });
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message };
