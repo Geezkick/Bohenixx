@@ -525,16 +525,17 @@ export default function CorporateLandingPage() {
                 </div>
               </div>
               <p className={styles.appDesc}>{app.desc}</p>
-              {user?.email === 'nyarienyabrian05@gmail.com' ? (
+              {user?.email === 'nyarienyabrian05@gmail.com' && (
                 
-                  href={app.href}
+                  href="#"
                   onClick={(e) => { e.preventDefault(); window.open(app.href, '_blank'); }}
                   className={styles.appLink}
                   style={{ color: app.color, cursor: 'pointer' }}
                 >
                   Preview Platform <ArrowRightIcon size={16} />
                 </a>
-              ) : (
+              )}
+              {user?.email !== 'nyarienyabrian05@gmail.com' && (
                 <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', marginTop: '0.5rem' }}>
                   🚀 Launching soon
                 </p>
