@@ -6,18 +6,18 @@ import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.bohenix.africa'),
+  metadataBase: new URL("https://www.bohenix.africa"),
   title: { default: "Bohenix ONE | Intelligent Digital Future", template: "%s | Bohenix ONE" },
-  description: "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
+  description: "Bohenix Technologies builds AI, mobility, fintech, productivity solutions for Africa.",
   authors: [{ name: "Brian Nyarienya", url: "https://www.bohenix.africa" }],
   creator: "Brian Nyarienya",
   publisher: "Bohenix Technologies",
   formatDetection: { email: false, address: false, telephone: false },
   manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Bohenix ONE' },
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Bohenix ONE" },
   openGraph: {
-    title: "Bohenix ONE | Africa's Intelligent Digital Future",
-    description: "Architecting a Cognitive Tech-Ecosystem to autonomously scale Africa's Digital Infrastructure.",
+    title: "Bohenix ONE | Africa s Intelligent Digital Future",
+    description: "Architecting a Cognitive Tech-Ecosystem for Africa.",
     url: "https://www.bohenix.africa",
     siteName: "Bohenix",
     locale: "en_US",
@@ -26,33 +26,29 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bohenix ONE | Africa's Intelligent Digital Future",
-    description: "AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions.",
+    title: "Bohenix ONE | Africa s Intelligent Digital Future",
+    description: "AI, mobility, fintech, productivity solutions.",
     creator: "@bohenix_solutio",
     images: ["/bohenixx.png"],
   },
   alternates: { canonical: "https://www.bohenix.africa" },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
-  },
-  verification: { google: '49bfe151a4d9e4d4' },
+  robots: { index: true, follow: true },
+  verification: { google: "49bfe151a4d9e4d4" },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#000000',
-  width: 'device-width',
+  themeColor: "#000000",
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: 'cover',
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
+      <body style={{ display: "flex", flexDirection: "column", minHeight: "100dvh" }}>
         <SessionWrapper>
           <NotificationProvider>
             <AuthProvider>
