@@ -14,8 +14,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string, totpCode?: string) => Promise<{ success: boolean; error?: string; requiresTwoFactor?: boolean }>;
+  signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string; requiresTwoFactor?: boolean }>;
   loginWithGoogle: (redirectTo?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
@@ -37,10 +37,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     : null;
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, totpCode?: string) => {
     try {
-      const res = await signIn("credentials", { email, password, redirect: false });
-      if (res?.error) return { success: false, error: "Invalid email or password" };
+      const res = await signIn("credentials", { email, password, totpCode, redirect: false });
+      if (res?.error) {
+        if (res.error.includes("2FA_REQUIRED")) {
+          return { success: false, requiresTwoFactor: true };
+        }
+        if (res.error.includes("2FA_INVALID")) {
+          return { success: false, requiresTwoFactor: true, error: "Invalid authentication code" };
+        }
+        return { success: false, error: "Invalid email or password" };
+      }
       fetch("/api/auth/login-notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

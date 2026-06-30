@@ -19,6 +19,8 @@ export default function AuthScreen() {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
+  const [totpCode, setTotpCode] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleSubmit = async () => {
@@ -63,13 +65,18 @@ export default function AuthScreen() {
     try {
       const result =
         mode === "login"
-          ? await login(email, password)
+          ? await login(email, password, requiresTwoFactor ? totpCode : undefined)
           : await signup(name, email, password);
 
       if (!result.success) {
-        setError(
-          result.error || (mode === "login" ? "Invalid credentials" : "Error creating account")
-        );
+        if (result.requiresTwoFactor) {
+          setRequiresTwoFactor(true);
+          if (result.error) setError(result.error);
+        } else {
+          setError(
+            result.error || (mode === "login" ? "Invalid credentials" : "Error creating account")
+          );
+        }
       }
     } catch {
       setError("Something went wrong. Try again.");
@@ -95,6 +102,8 @@ export default function AuthScreen() {
     setSuccessMsg("");
     setName("");
     setPassword("");
+    setRequiresTwoFactor(false);
+    setTotpCode("");
   };
 
   // Deep storytelling phrases
@@ -230,6 +239,22 @@ export default function AuthScreen() {
                     {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
+              </div>
+            )}
+
+            {requiresTwoFactor && (
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Authentication Code</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoFocus
+                  value={totpCode}
+                  onChange={(e) => setTotpCode(e.target.value)}
+                  placeholder="6-digit code or backup code"
+                  className={styles.input}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                />
               </div>
             )}
 

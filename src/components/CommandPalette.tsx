@@ -9,15 +9,18 @@ import {
 } from "./Icons";
 
 const MOCK_LINKS = [
+  { name: "Dashboard Overview", href: "/dashboard", icon: <SignalIcon size={18} color="#00E5FF" />, category: "Dashboard" },
+  { name: "Products & Services", href: "/dashboard/subscriptions", icon: <ShoppingBagIcon size={18} color="#B14CFF" />, category: "Dashboard" },
+  { name: "BX Labs", href: "/dashboard/labs", icon: <ZapIcon size={18} color="#B14CFF" />, category: "Dashboard" },
+  { name: "Events", href: "/dashboard/events", icon: <FileTextIcon size={18} color="#B14CFF" />, category: "Dashboard" },
+  { name: "Developer Portal", href: "/dashboard/developer", icon: <SettingsIcon size={18} color="#00E5FF" />, category: "Dashboard" },
+  { name: "Account Settings", href: "/dashboard/settings", icon: <SettingsIcon size={18} color="#22c55e" />, category: "Dashboard" },
   { name: "NjiaSafe Dashboard", href: "https://njiasafe.six.vercel.app", icon: <ShieldIcon size={18} color="#00C853" />, category: "Apps" },
   { name: "Mboka Marketplace", href: "https://mboka.vercel.app", icon: <ShoppingBagIcon size={18} color="#FF6D00" />, category: "Apps" },
   { name: "Fixxo Repairs", href: "https://fixxo.vercel.app", icon: <SettingsIcon size={18} color="#2979FF" />, category: "Apps" },
   { name: "Vuna AgriTech", href: "https://vunashorts.vercel.app", icon: <SignalIcon size={18} color="#76FF03" />, category: "Apps" },
   { name: "Safura Health", href: "https://safura-ai.vercel.app", icon: <ZapIcon size={18} color="#00E5FF" />, category: "Apps" },
-  { name: "Product Catalog", href: "/store", icon: <ShoppingBagIcon size={18} color="#B14CFF" />, category: "Store" },
-  { name: "Service Request", href: "/services/request", icon: <FileTextIcon size={18} color="#B14CFF" />, category: "Services" },
-  { name: "Settings", href: "/settings", icon: <SettingsIcon size={18} color="#B14CFF" />, category: "System" },
-  { name: "Documentation", href: "/docs", icon: <BookOpenIcon size={18} color="#B14CFF" />, category: "System" },
+  { name: "Developer Documentation", href: "/developers", icon: <BookOpenIcon size={18} color="#B14CFF" />, category: "System" },
 ];
 
 export default function CommandPalette() {
