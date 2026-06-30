@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { sendEmail } from '@/utils/mailer';
 import { getLoginAlertTemplate } from '@/utils/emailTemplates';
+
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -11,20 +14,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 });
     }
 
-    const supabase = await createClient();
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !user.password) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 });
     }
 
-    // Send Login Alert Email (fire-and-forget)
-    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'Unknown';
-    const userName = data.user?.user_metadata?.name || email.split('@')[0] || 'User';
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 });
+    }
+
+    const ip = req.headers.get('x-forwarded-for') || 'Unknown';
+    const userName = user.name || email.split('@')[0];
     const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Africa/Nairobi', dateStyle: 'full', timeStyle: 'long' });
 
     sendEmail({
@@ -35,10 +36,9 @@ export async function POST(req: Request) {
       type: 'SYSTEM'
     }).catch(err => console.error("Login alert email failed:", err));
 
-    return NextResponse.json({ user: data.user });
+    return NextResponse.json({ user: { id: user.id, email: user.email, name: user.name } });
   } catch (error) {
     console.error("Login Error:", error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }
-
