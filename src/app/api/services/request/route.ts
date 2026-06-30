@@ -1,46 +1,29 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { PrismaClient } from '@prisma/client';
 import { sendEmail } from '@/utils/mailer';
 import { getContactConfirmationTemplate, getInternalAlertTemplate } from '@/utils/emailTemplates';
 
+const prisma = new PrismaClient();
+
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const body = await req.json();
-    const { service, budget, timeline, details, email } = body;
+    const { service, budget, timeline, details, email } = await req.json();
 
-    // Map Service Request to Contacts table structure
-    const name = `Service Request: ${service}`;
-    const message = `Budget: ${budget}\nTimeline: ${timeline}\nDetails: ${details}`;
+    const request = await prisma.serviceRequest.create({
+      data: { service, budget, timeline, details, email }
+    });
 
-    const { data, error } = await supabase
-      .from('contacts')
-      .insert([
-        { name, email, message }
-      ])
-      .select();
-
-    if (error) {
-      throw error;
-    }
-
-    // Send internal notification to info@ about the service request
     sendEmail({
       to: 'info@bohenix.africa',
       from: 'bohenixa@bohenix.africa',
       replyTo: email,
       subject: `New Service Request: ${service}`,
       html: getInternalAlertTemplate("New Service Request Submitted", {
-        "Service": service,
-        "Budget": budget,
-        "Timeline": timeline,
-        "Email": email,
-        "Details": details
+        "Service": service, "Budget": budget, "Timeline": timeline, "Email": email, "Details": details
       }),
       type: 'CONTACT'
     }).catch(err => console.error("Service request alert failed:", err));
 
-    // Send auto-responder to the customer
     sendEmail({
       to: email,
       from: 'info@bohenix.africa',
@@ -49,9 +32,8 @@ export async function POST(req: Request) {
       type: 'CONTACT'
     }).catch(err => console.error("Service confirmation failed:", err));
 
-    return NextResponse.json({ success: true, request: data });
+    return NextResponse.json({ success: true, request });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/context/AuthContext";
 import MobileShell from "@/components/MobileShell";
 import { NotificationProvider } from "@/context/NotificationContext";
+import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,17 +16,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Brian Nyarienya", url: "https://www.bohenix.africa" }],
   creator: "Brian Nyarienya",
   publisher: "Bohenix Technologies",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  formatDetection: { email: false, address: false, telephone: false },
   manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'Bohenix ONE',
-  },
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Bohenix ONE' },
   openGraph: {
     title: "Bohenix ONE | Africa's Intelligent Digital Future",
     description: "Architecting a Cognitive Tech-Ecosystem to autonomously scale Africa's Digital Infrastructure. AI, mobility, fintech, and enterprise solutions.",
@@ -33,14 +26,7 @@ export const metadata: Metadata = {
     siteName: "Bohenix",
     locale: "en_US",
     type: "website",
-    images: [
-      {
-        url: "/bohenixx.png",
-        width: 512,
-        height: 512,
-        alt: "Bohenix ONE - Digital Ecosystem",
-      },
-    ],
+    images: [{ url: "/bohenixx.png", width: 512, height: 512, alt: "Bohenix ONE - Digital Ecosystem" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -49,23 +35,13 @@ export const metadata: Metadata = {
     creator: "@bohenix_solutio",
     images: ["/bohenixx.png"],
   },
-  alternates: {
-    canonical: "https://www.bohenix.africa",
-  },
+  alternates: { canonical: "https://www.bohenix.africa" },
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
+    googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
-  verification: {
-    google: '49bfe151a4d9e4d4',
-  },
+  verification: { google: '49bfe151a4d9e4d4' },
 };
 
 export const viewport: Viewport = {
@@ -77,19 +53,17 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
-        <NotificationProvider>
-          <AuthProvider>
-            <MobileShell>{children}</MobileShell>
-          </AuthProvider>
-        </NotificationProvider>
+        <SessionWrapper>
+          <NotificationProvider>
+            <AuthProvider>
+              <MobileShell>{children}</MobileShell>
+            </AuthProvider>
+          </NotificationProvider>
+        </SessionWrapper>
       </body>
     </html>
   );

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
 
 interface User {
   id: string;
@@ -23,191 +23,82 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function mapSupabaseUser(supabaseUser: any): User {
-  return {
-    id: supabaseUser.id,
-    name:
-      supabaseUser.user_metadata?.full_name ||
-      supabaseUser.user_metadata?.name ||
-      supabaseUser.email?.split("@")[0] ||
-      "User",
-    email: supabaseUser.email || "",
-    avatar: supabaseUser.user_metadata?.avatar_url || "/bohenixx.png",
-  };
-}
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const supabase = createClient();
+  const isLoading = status === "loading";
 
-  // Initialize auth state from Supabase session + listen for changes
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(mapSupabaseUser(session.user));
+  const user: User | null = session?.user
+    ? {
+        id: (session.user as any).id || "",
+        name: session.user.name || session.user.email?.split("@")[0] || "User",
+        email: session.user.email || "",
+        avatar: session.user.image || "/bohenixx.png",
       }
-      setIsLoading(false);
-    });
+    : null;
 
-    // Listen for auth state changes (handles Google OAuth redirect, token refresh, etc.)
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser(mapSupabaseUser(session.user));
-      } else {
-        setUser(null);
-      }
-      setIsLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  /**
-   * Email + Password Login
-   * Uses Supabase client directly so cookies are set in the browser automatically.
-   * Then fires login alert email on the server side (fire-and-forget).
-   */
-  const login = useCallback(
-    async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-        if (error) {
-          return { success: false, error: error.message };
-        }
-
-        if (data.user) {
-          setUser(mapSupabaseUser(data.user));
-          // Fire login alert email (non-blocking)
-          fetch("/api/auth/login-notify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, userId: data.user.id }),
-          }).catch(() => {});
-        }
-
-        return { success: true };
-      } catch (err: any) {
-        return { success: false, error: err.message || "An unexpected error occurred" };
-      }
-    },
-    [supabase]
-  );
-
-  /**
-   * Email + Password Sign Up
-   * Uses Supabase client directly. Fires welcome email on server side.
-   */
-  const signup = useCallback(
-    async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { name, full_name: name },
-          },
-        });
-
-        if (error) {
-          return { success: false, error: error.message };
-        }
-
-        if (data.user) {
-          setUser(mapSupabaseUser(data.user));
-          // Fire welcome + admin emails (non-blocking)
-          fetch("/api/auth/register-notify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, userId: data.user.id }),
-          }).catch(() => {});
-        }
-
-        return { success: true };
-      } catch (err: any) {
-        return { success: false, error: err.message || "An unexpected error occurred" };
-      }
-    },
-    [supabase]
-  );
-
-  /**
-   * Google OAuth
-   * Redirects to /api/auth/google which initiates the Supabase OAuth flow.
-   */
-  const loginWithGoogle = useCallback(
-    async (redirectTo?: string): Promise<{ success: boolean; error?: string }> => {
-      const next = redirectTo || (typeof window !== "undefined" ? window.location.pathname : "/") || "/";
-      
-      // Use Supabase client directly for Google OAuth — cleaner than the proxy route
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
-
-      if (error) {
-        return { success: false, error: error.message };
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
-      }
-
+  const login = async (email: string, password: string) => {
+    try {
+      const res = await signIn("credentials", { email, password, redirect: false });
+      if (res?.error) return { success: false, error: "Invalid email or password" };
+      fetch("/api/auth/login-notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }).catch(() => {});
       return { success: true };
-    },
-    [supabase]
-  );
+    } catch (err: any) {
+      return { success: false, error: err.message || "An unexpected error occurred" };
+    }
+  };
 
-  /**
-   * Logout — signs out both client and server side.
-   */
-  const logout = useCallback(async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+  const signup = async (name: string, email: string, password: string) => {
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.error };
+      await signIn("credentials", { email, password, redirect: false });
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || "An unexpected error occurred" };
+    }
+  };
+
+  const loginWithGoogle = async (redirectTo?: string) => {
+    try {
+      await signIn("google", { callbackUrl: redirectTo || "/" });
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  const logout = async () => {
+    await signOut({ redirect: false });
     router.push("/");
     router.refresh();
-  }, [supabase, router]);
+  };
 
-  /**
-   * Password Reset — sends Supabase magic reset email.
-   */
-  const resetPassword = useCallback(
-    async (email: string): Promise<{ success: boolean; error?: string }> => {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/auth/reset-password`,
+  const resetPassword = async (email: string) => {
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
-      if (error) return { success: false, error: error.message };
+      if (!res.ok) return { success: false, error: "Failed to send reset email" };
       return { success: true };
-    },
-    [supabase]
-  );
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        login,
-        signup,
-        loginWithGoogle,
-        logout,
-        resetPassword,
-      }}
-    >
+    <AuthContext.Provider value={{ user, isLoading, login, signup, loginWithGoogle, logout, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
@@ -215,8 +106,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (context === undefined) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };
