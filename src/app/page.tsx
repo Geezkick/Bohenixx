@@ -525,26 +525,20 @@ export default function CorporateLandingPage() {
                 </div>
               </div>
               <p className={styles.appDesc}>{app.desc}</p>
-              <a 
-                href={user ? app.href : '#'} 
-                onClick={(e) => {
-                  if (!user) {
-                    e.preventDefault();
-                    showNotification({
-                      title: "Sign In Required",
-                      message: "Please sign in to preview platforms.",
-                      type: "warning"
-                    });
-                    authRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  } else {
-                    window.open(app.href, '_blank');
-                  }
-                }} 
-                className={styles.appLink} 
-                style={{ color: app.color, cursor: 'pointer' }}
-              >
-                Preview Platform <ArrowRightIcon size={16} />
-              </a>
+              {user?.email === 'nyarienyabrian05@gmail.com' ? (
+                
+                  href={app.href}
+                  onClick={(e) => { e.preventDefault(); window.open(app.href, '_blank'); }}
+                  className={styles.appLink}
+                  style={{ color: app.color, cursor: 'pointer' }}
+                >
+                  Preview Platform <ArrowRightIcon size={16} />
+                </a>
+              ) : (
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', marginTop: '0.5rem' }}>
+                  🚀 Launching soon
+                </p>
+              )}
               <div className={styles.cardGlow} style={{ background: app.color }} />
             </motion.div>
           ))}
