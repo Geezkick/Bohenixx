@@ -49,6 +49,34 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body style={{ display: "flex", flexDirection: "column", minHeight: "100dvh" }}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Bohenix",
+              url: "https://www.bohenix.africa",
+              logo: "https://www.bohenix.africa/bohenixx.png",
+              description:
+                "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
+              founder: {
+                "@type": "Person",
+                name: "Brian Nyarienya",
+                jobTitle: "Founder & Visionary",
+                sameAs: [
+                  "https://www.instagram.com/bohenixofficial",
+                  "https://github.com/Geezkick",
+                ],
+              },
+              sameAs: [
+                "https://www.instagram.com/bohenixofficial",
+                "https://m.twitch.tv/bohenix/about",
+              ],
+            }),
+          }}
+        />
+
         <SessionWrapper>
           <NotificationProvider>
             <AuthProvider>

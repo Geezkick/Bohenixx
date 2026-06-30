@@ -714,7 +714,7 @@ export default function CorporateLandingPage() {
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
           >
-            {`"Our goal is not just to build software, but to architect the digital nervous system of Africa. From smart mobility to AI-driven ecosystems, we are creating the foundation for a sustainable and hyper-connected future."`.split(' ').map((word, i) => (
+            {`"Most people are still modeling the future. We're already deploying it. Bohenix isn't building software — we're building the infrastructure layer Africa hasn't named yet: the compute, the autonomy, the systems everything else will eventually run on."`.split(' ').map((word, i) => (
               <motion.span key={i} variants={staggerItem} style={{ display: 'inline-block', marginRight: '4px' }}>
                 {word}
               </motion.span>

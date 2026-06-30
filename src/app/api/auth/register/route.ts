@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { sendEmail } from '@/utils/mailer';
 import { getWelcomeEmailTemplate, getInternalAlertTemplate } from '@/utils/emailTemplates';
+
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -11,46 +14,47 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
     }
 
-    const supabase = await createClient();
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name }
-      }
-    });
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return NextResponse.json({ error: 'An account with this email already exists' }, { status: 400 });
     }
 
-    // Send Welcome Email to new user (fire-and-forget — don't block registration)
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+
     sendEmail({
       to: email,
       from: 'hello@bohenix.africa',
       subject: `Welcome to Bohenix ONE, ${name}!`,
       html: getWelcomeEmailTemplate(name),
-      type: 'SYSTEM'
-    }).catch(err => console.error("Welcome email failed:", err));
+      type: 'SYSTEM',
+    }).catch((err) => console.error('Welcome email failed:', err));
 
-    // Notify admin of new signup
     sendEmail({
       to: 'bohenixa@bohenix.africa',
       from: 'bohenixa@bohenix.africa',
       subject: `New Account Created: ${name} (${email})`,
-      html: getInternalAlertTemplate("New User Registration", {
-        "Name": name,
-        "Email": email,
-        "Time": new Date().toISOString()
+      html: getInternalAlertTemplate('New User Registration', {
+        Name: name,
+        Email: email,
+        Time: new Date().toISOString(),
+        'User ID': user.id,
       }),
-      type: 'SYSTEM'
-    }).catch(err => console.error("Admin alert failed:", err));
+      type: 'SYSTEM',
+    }).catch((err) => console.error('Admin alert failed:', err));
 
-    return NextResponse.json({ user: data.user });
+    return NextResponse.json({
+      user: { id: user.id, email: user.email, name: user.name },
+    });
   } catch (error) {
-    console.error("Register Error:", error);
+    console.error('Register Error:', error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }
-
