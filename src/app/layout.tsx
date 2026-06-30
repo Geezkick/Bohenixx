@@ -7,12 +7,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.bohenix.africa'),
-  title: {
-    default: "Bohenix ONE | Intelligent Digital Future",
-    template: "%s | Bohenix ONE"
-  },
-  description: "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond. Founded by Brian Nyarienya.",
-  keywords: ["Bohenix", "Bohenix Technologies", "Bohenix Solutions", "Brian Nyarienya", "Africa Tech Startup", "Digital Ecosystem", "Enterprise Software", "Artificial Intelligence", "Cybersecurity", "Cloud Infrastructure", "Bohenix ONE", "African Technology", "Tech Ecosystem Africa"],
+  title: { default: "Bohenix ONE | Intelligent Digital Future", template: "%s | Bohenix ONE" },
+  description: "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
   authors: [{ name: "Brian Nyarienya", url: "https://www.bohenix.africa" }],
   creator: "Brian Nyarienya",
   publisher: "Bohenix Technologies",
@@ -21,17 +17,17 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Bohenix ONE' },
   openGraph: {
     title: "Bohenix ONE | Africa's Intelligent Digital Future",
-    description: "Architecting a Cognitive Tech-Ecosystem to autonomously scale Africa's Digital Infrastructure. AI, mobility, fintech, and enterprise solutions.",
+    description: "Architecting a Cognitive Tech-Ecosystem to autonomously scale Africa's Digital Infrastructure.",
     url: "https://www.bohenix.africa",
     siteName: "Bohenix",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/bohenixx.png", width: 512, height: 512, alt: "Bohenix ONE - Digital Ecosystem" }],
+    images: [{ url: "/bohenixx.png", width: 512, height: 512, alt: "Bohenix ONE" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Bohenix ONE | Africa's Intelligent Digital Future",
-    description: "AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
+    description: "AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions.",
     creator: "@bohenix_solutio",
     images: ["/bohenixx.png"],
   },
