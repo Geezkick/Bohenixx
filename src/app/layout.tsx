@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: "https://www.bohenix.africa" },
   robots: { index: true, follow: true },
-  verification: { google: "49bfe151a4d9e4d4" },
+  verification: { google: "b8uLptdmDvhxX4RQtWQR9Phuo55ztiOEki2NyEPWujQ" },
 };
 
 export const viewport: Viewport = {
