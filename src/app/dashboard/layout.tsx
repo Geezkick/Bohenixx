@@ -49,10 +49,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [pathname]);
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/?auth=required");
-    }
-  }, [user, isLoading, router]);
+    // Middleware handles protected routing, but we can do custom logic if needed.
+  }, [user, isLoading]);
 
   const handleLogout = async () => {
     await logout();

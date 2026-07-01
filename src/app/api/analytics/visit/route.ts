@@ -6,10 +6,11 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
+    const rawIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
+    const firstIp = rawIp.split(',')[0].trim();
     const country = req.headers.get('x-vercel-ip-country') || 'Unknown';
     const city = req.headers.get('x-vercel-ip-city') || 'Unknown';
-    const ipHash = crypto.createHash('sha256').update(ip).digest('hex');
+    const ipHash = crypto.createHash('sha256').update(firstIp).digest('hex');
 
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const recent = await prisma.siteVisit.findFirst({

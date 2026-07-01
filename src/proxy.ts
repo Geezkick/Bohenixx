@@ -18,6 +18,11 @@ export async function proxy(request: NextRequest) {
   const isApiRoute = pathname.startsWith('/api/')
   const isStaticAsset = /\.(svg|png|jpg|jpeg|gif|webp|ico|html|xml|txt|json|mp4|webm|css|js|woff|woff2|ttf|otf)$/i.test(pathname)
 
+  // If user tries to access sign-in but already has a token, redirect to dashboard
+  if (token && pathname === '/sign-in') {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
   if (!token && !isPublicRoute && !isApiRoute && !isStaticAsset) {
     const url = request.nextUrl.clone()
     url.pathname = '/'

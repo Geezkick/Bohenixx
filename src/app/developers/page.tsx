@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowRightIcon, Terminal, Shield, Code, Database, Cloud, BrainCircuit } from "lucide-react";
+import { ArrowRightIcon, Terminal, Shield, Code, Database, Cloud, BrainCircuit, Car, Wrench, Briefcase, Leaf, BookOpen, Scan } from "lucide-react";
 import styles from "./developers.module.css";
 
 const endpoints = [
@@ -27,13 +27,13 @@ const sdks = [
 ];
 
 const ecosystemApps = [
-  { name: "NjiaSafe", desc: "Road safety and smart mobility platform.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app" },
-  { name: "BX Omni", desc: "AI-powered Digital Operations Twin.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app" },
-  { name: "Fixxo", desc: "Smart maintenance and service marketplace.", icon: "/fixxo.png", href: "https://fixxo.vercel.app" },
-  { name: "Mboka", desc: "AI-powered job matching platform.", icon: "/mboka.png", href: "https://mboka.vercel.app" },
-  { name: "Vuna", desc: "AI-curated farming video platform.", icon: "/vuna.png", href: "https://vunashorts.vercel.app" },
-  { name: "Kwelify", desc: "Adaptive learning technology platform.", icon: "/bohenixx.png", href: "https://kwelify.vercel.app" },
-  { name: "Safura", desc: "Autonomous AI food scanner.", icon: "/safura.png", href: "https://safura-ai.vercel.app" },
+  { name: "NjiaSafe", desc: "Road safety and smart mobility platform.", Icon: Car, href: "https://njiasafe.six.vercel.app", color: "#FF3366" },
+  { name: "BX Omni", desc: "AI-powered Digital Operations Twin.", Icon: BrainCircuit, href: "https://bohenixx.vercel.app", color: "#00E5FF" },
+  { name: "Fixxo", desc: "Smart maintenance and service marketplace.", Icon: Wrench, href: "https://fixxo.vercel.app", color: "#F59E0B" },
+  { name: "Mboka", desc: "AI-powered job matching platform.", Icon: Briefcase, href: "https://mboka.vercel.app", color: "#8B5CF6" },
+  { name: "Vuna", desc: "AI-curated farming video platform.", Icon: Leaf, href: "https://vunashorts.vercel.app", color: "#22C55E" },
+  { name: "Kwelify", desc: "Adaptive learning technology platform.", Icon: BookOpen, href: "https://kwelify.vercel.app", color: "#3B82F6" },
+  { name: "Safura", desc: "Autonomous AI food scanner.", Icon: Scan, href: "https://safura-ai.vercel.app", color: "#EC4899" },
 ];
 
 export default function DeveloperPortal() {
@@ -223,8 +223,8 @@ console.log(result.success ? 'Sent!' : 'Failed');`;
           <div className={styles.endpointGrid}>
             {ecosystemApps.map(app => (
               <div key={app.name} className={styles.endpointCard} style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
-                <div style={{ width: 56, height: 56, minWidth: 56, borderRadius: 16, overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
-                  <Image src={app.icon} alt={app.name} width={56} height={56} style={{ objectFit: 'cover' }} />
+                <div style={{ width: 56, height: 56, minWidth: 56, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', color: app.color }}>
+                  <app.Icon size={28} />
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.35rem' }}>{app.name}</div>

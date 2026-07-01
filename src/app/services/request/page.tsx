@@ -195,7 +195,7 @@ export default function ServiceRequest() {
                   <CheckIcon size={48} color="#00E5FF" />
                 </div>
                 <h2>Request Received</h2>
-                <p>Thank you for choosing Bohenix. Our engineering team will review your request for <strong>{formData.service}</strong> and contact you at {formData.email} within 24 hours.</p>
+                <p>Thank you for choosing Bohenix. Our engineering team will review your request for <strong>{formData.service === 'Other' ? customService : formData.service}</strong> and contact you at {formData.email} within 24 hours.</p>
                 <button type="button" className={styles.nextBtn} onClick={() => window.location.href = '/'}>Return Home</button>
               </div>
             )}

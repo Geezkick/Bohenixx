@@ -28,6 +28,24 @@ export async function POST(req: NextRequest) {
 
     const { service, budget, timeline, details, email } = await req.json();
 
+    const getTargetEmail = (svc: string) => {
+      const supportServices = ["Cybersecurity Audit", "IT Consulting", "Cloud Infrastructure"];
+      const helloServices = [
+        "AI & Machine Learning", 
+        "Web Application Development", 
+        "Mobile App Development", 
+        "Enterprise Software (ERP/CRM)", 
+        "Data Analytics & BI", 
+        "UI/UX Design"
+      ];
+      
+      if (supportServices.includes(svc)) return "support@bohenix.africa";
+      if (helloServices.includes(svc)) return "hello@bohenix.africa";
+      return "info@bohenix.africa";
+    };
+
+    const targetEmail = getTargetEmail(service);
+
     const request = await db.serviceRequest.create({
       data: { service, budget, timeline, details, email, userId },
     });
@@ -42,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
 
     sendEmail({
-      to: "info@bohenix.africa",
+      to: targetEmail,
       from: "bohenixa@bohenix.africa",
       replyTo: email,
       subject: `New Service Request: ${service}`,
@@ -58,7 +76,7 @@ export async function POST(req: NextRequest) {
 
     sendEmail({
       to: email,
-      from: "info@bohenix.africa",
+      from: targetEmail,
       subject: "Service Request Received - Bohenix Solutions",
       html: getContactConfirmationTemplate(""),
       type: "CONTACT",
