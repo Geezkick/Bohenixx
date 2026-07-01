@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     sendEmail({
       to: targetEmail,
-      from: "bohenixa@bohenix.africa",
+      from: targetEmail,
       replyTo: email,
       subject: `New Service Request: ${service}`,
       html: getInternalAlertTemplate("New Service Request Submitted", {

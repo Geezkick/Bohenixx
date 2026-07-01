@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, animate } from "framer-motion";
 import { ArrowRightIcon, Shield, Database, Cloud, Code, BrainCircuit } from "lucide-react";
 import styles from "./landing.module.css";
 
@@ -16,6 +16,42 @@ const CobeGlobe = dynamic(() => import("@/components/CobeGlobe"), { ssr: false }
 import { useAuth } from "@/context/AuthContext";
 import { useNotification } from "@/context/NotificationContext";
 import { useRouter } from "next/navigation";
+
+function AnimatedNumber({ value }: { value: number }) {
+  const nodeRef = useRef<HTMLSpanElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (nodeRef.current) observer.observe(nodeRef.current);
+    return () => observer.disconnect();
+  }, []);
+  
+  useEffect(() => {
+    const node = nodeRef.current;
+    if (node && inView) {
+      const controls = animate(0, value, {
+        duration: 2,
+        ease: "easeOut",
+        onUpdate(v) {
+          node.textContent = Math.round(v).toLocaleString();
+        }
+      });
+      return () => controls.stop();
+    }
+  }, [value, inView]);
+
+  return <span ref={nodeRef}>0</span>;
+}
+
 
 const ecosystem = [
   { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app" },
@@ -279,16 +315,16 @@ export default function CorporateLandingPage() {
         <div className={styles.contentContainer}>
           <div className={styles.statsGrid}>
             <div className={styles.statItem}>
-              <div className={styles.statNumber}>{stats.products}+</div>
+              <div className={styles.statNumber}><AnimatedNumber value={stats.products} />+</div>
               <div className={styles.statLabel}>Digital Ecosystem Products</div>
             </div>
             <div className={styles.statItem}>
-              <div className={styles.statNumber}>{stats.users.toLocaleString()}+</div>
+              <div className={styles.statNumber}><AnimatedNumber value={stats.users} />+</div>
               <div className={styles.statLabel}>Active Platform Users</div>
             </div>
             <div className={styles.statItem}>
-              <div className={styles.statNumber}>{stats.countries}</div>
-              <div className={styles.statLabel}>African Countries</div>
+              <div className={styles.statNumber}><AnimatedNumber value={stats.countries} /></div>
+              <div className={styles.statLabel}>Global Countries Reached</div>
             </div>
           </div>
         </div>
@@ -298,20 +334,20 @@ export default function CorporateLandingPage() {
       <section id="presence" className={styles.section}>
         <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem' }}>
           <div style={{ flex: 1, minWidth: '300px' }}>
-            <h2 style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Active Across Africa</h2>
+            <h2 style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Active Globally</h2>
             
             {/* Total Visitor Counter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', background: 'rgba(255,255,255,0.03)', padding: '1.5rem 2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '2.5rem', width: 'fit-content' }}>
               <div>
                 <div style={{ color: '#B3B3B8', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600, marginBottom: '6px' }}>Total Global Visitors</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                  <div style={{ fontSize: '42px', fontWeight: 700, color: '#fff', lineHeight: 1, letterSpacing: '-1px' }}>{visitors > 0 ? visitors.toLocaleString() : '...'}</div>
+                  <div style={{ fontSize: '42px', fontWeight: 700, color: '#fff', lineHeight: 1, letterSpacing: '-1px' }}><AnimatedNumber value={visitors} /></div>
                 </div>
               </div>
             </div>
 
             <p style={{ fontSize: '18px', color: '#B3B3B8', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-              The Bohenix ecosystem is growing rapidly across the African continent — from coastal cities to inland communities — connecting people, businesses, and opportunities through intelligent technology that understands local context and delivers real-world impact at scale.
+              The Bohenix ecosystem is growing rapidly across the African continent and globally — connecting people, businesses, and opportunities through intelligent technology that understands local context and delivers real-world impact at scale.
             </p>
           </div>
           <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>

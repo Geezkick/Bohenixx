@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     await sendEmail({
       to: 'career@bohenix.africa',
-      from: 'bohenixa@bohenix.africa',
+      from: 'career@bohenix.africa',
       replyTo: email,
       subject: `New Application: ${name} for ${position}`,
       html: alertHtml,

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     await sendEmail({
       to: 'support@bohenix.africa',
-      from: 'bohenixa@bohenix.africa',
+      from: 'support@bohenix.africa',
       replyTo: email,
       subject: `New Ticket #${ticketNumber}: ${ticket.subject}`,
       html: alertHtml,

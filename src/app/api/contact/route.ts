@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     await sendEmail({
       to: toAddress,
-      from: 'bohenixa@bohenix.africa', // Internal system account
+      from: toAddress, // Internal system account (must exist on HostAfrica)
       replyTo: email,
       subject: subject || `New Inquiry from ${email}`,
       html: alertHtml,

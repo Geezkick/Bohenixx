@@ -36,8 +36,8 @@ export async function POST(req: Request) {
     }).catch((err) => console.error('Welcome email failed:', err));
 
     sendEmail({
-      to: 'bohenixa@bohenix.africa',
-      from: 'bohenixa@bohenix.africa',
+      to: 'hello@bohenix.africa',
+      from: 'hello@bohenix.africa',
       subject: `New Account Created: ${name} (${email})`,
       html: getInternalAlertTemplate('New User Registration', {
         Name: name,

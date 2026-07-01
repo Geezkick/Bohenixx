@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     sendEmail({
       to: email,
-      from: 'bohenixa@bohenix.africa',
+      from: 'hello@bohenix.africa',
       subject: 'New Sign-In to Your Bohenix Account',
       html: getLoginAlertTemplate(userName, ip, timestamp),
       type: 'SYSTEM',

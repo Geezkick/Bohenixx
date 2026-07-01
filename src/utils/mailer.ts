@@ -3,27 +3,13 @@ import { db } from '@/lib/db';
 
 export interface SendEmailOptions {
   to: string;
-  from?: string; // Should be one of the 6 bohenix emails
+  from?: string; // Should be one of the bohenix emails
   subject: string;
   text?: string;
   html: string;
   replyTo?: string;
   type: 'CONTACT' | 'SUPPORT' | 'CAREER' | 'ALERT' | 'SYSTEM';
 }
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'mail.bohenix.africa',
-  port: Number(process.env.SMTP_PORT) || 465,
-  secure: true,
-  auth: {
-    // We authenticate using the main CEO account, but send FROM the specific department aliases
-    user: process.env.SMTP_USER || 'ceo@bohenix.africa',
-    pass: process.env.SMTP_PASS || '@yovanny254.', 
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
 
 /**
  * Sends an email and logs the transaction to the database
@@ -36,7 +22,21 @@ export async function sendEmail(options: SendEmailOptions) {
   if (fromAddress.includes('support')) fromName = 'Bohenix Support';
   else if (fromAddress.includes('career')) fromName = 'Bohenix Careers';
   else if (fromAddress.includes('ceo')) fromName = 'Bohenix Executive';
-  else if (fromAddress.includes('bohenixa')) fromName = 'Bohenix System';
+  else if (fromAddress.includes('info')) fromName = 'Bohenix Info';
+
+  // Create transporter dynamically to authenticate as the sender
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'mail.bohenix.africa',
+    port: Number(process.env.SMTP_PORT) || 465,
+    secure: true,
+    auth: {
+      user: fromAddress, // Authenticate as the exact department
+      pass: process.env.SMTP_PASS || '@yovanny254.', 
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
 
   try {
     const info = await transporter.sendMail({
