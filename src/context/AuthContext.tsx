@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       }).catch(() => {});
-      router.push("/dashboard");
+      window.location.assign("/dashboard");
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!res.ok) return { success: false, error: data.error };
       const signInRes = await signIn("credentials", { email, password, redirect: false });
       if (signInRes?.error) return { success: false, error: "Account created but login failed" };
-      router.push("/dashboard");
+      window.location.assign("/dashboard");
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
