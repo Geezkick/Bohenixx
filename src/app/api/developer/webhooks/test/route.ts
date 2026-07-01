@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await logActivity(userId, "Tested Webhook", webhook.url.substring(0, 30) + "...", "#00E5FF");
+    await logActivity({ userId, app: webhook.url.substring(0, 30) + "...", action: "Tested Webhook", color: "#00E5FF" });
 
     return NextResponse.json({ success, httpStatus });
   } catch (error) {

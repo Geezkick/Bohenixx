@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/context/AuthContext";
-import MobileShell from "@/components/MobileShell";
 import { NotificationProvider } from "@/context/NotificationContext";
 import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
@@ -13,10 +12,8 @@ export const metadata: Metadata = {
   creator: "Brian Nyarienya",
   publisher: "Bohenix Technologies",
   formatDetection: { email: false, address: false, telephone: false },
-  manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Bohenix ONE" },
   openGraph: {
-    title: "Bohenix ONE | Africa s Intelligent Digital Future",
+    title: "Bohenix ONE | Africa's Intelligent Digital Future",
     description: "Architecting a Cognitive Tech-Ecosystem for Africa.",
     url: "https://www.bohenix.africa",
     siteName: "Bohenix",
@@ -26,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bohenix ONE | Africa s Intelligent Digital Future",
+    title: "Bohenix ONE | Africa's Intelligent Digital Future",
     description: "AI, mobility, fintech, productivity solutions.",
     creator: "@bohenix_solutio",
     images: ["/bohenixx.png"],
@@ -40,15 +37,12 @@ export const viewport: Viewport = {
   themeColor: "#000000",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body style={{ display: "flex", flexDirection: "column", minHeight: "100dvh" }}>
+      <body>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -80,7 +74,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SessionWrapper>
           <NotificationProvider>
             <AuthProvider>
-              <MobileShell>{children}</MobileShell>
+              {children}
             </AuthProvider>
           </NotificationProvider>
         </SessionWrapper>

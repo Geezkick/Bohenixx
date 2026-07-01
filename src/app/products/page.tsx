@@ -1,10 +1,9 @@
 "use client";
 
-import NativeHeader from '@/components/NativeHeader';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 
 const ecosystem = [
   { id: "njiasafe", name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", color: "#E0E0E0", href: "https://njiasafe.six.vercel.app", price: "Free", status: "Active" },
@@ -23,7 +22,12 @@ export default function ProductsPage() {
 
   return (
     <>
-      <NativeHeader title="Bohenix Products" />
+      <header style={{ height: "64px", padding: "0 2rem", display: "flex", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(5,5,5,0.9)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 100 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "8px", color: "#B14CFF", textDecoration: "none", fontWeight: 600 }}>
+          <ArrowLeftIcon size={20} />
+          Back to Home
+        </Link>
+      </header>
       <main style={{ padding: '6rem 2rem 2rem', minHeight: '100vh', background: '#050505' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>

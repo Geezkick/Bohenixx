@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "./request.module.css";
-import NativeHeader from "@/components/NativeHeader";
+import Link from "next/link";
 import { ArrowRightIcon, ArrowLeftIcon, CheckIcon } from "@/components/Icons";
 
 const SERVICES = [
@@ -44,7 +44,12 @@ export default function ServiceRequest() {
 
   return (
     <>
-      <NativeHeader title="Service Request" />
+      <header style={{ height: "64px", padding: "0 2rem", display: "flex", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(5,5,5,0.9)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 100 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "8px", color: "#B14CFF", textDecoration: "none", fontWeight: 600 }}>
+          <ArrowLeftIcon size={20} />
+          Back to Home
+        </Link>
+      </header>
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.header}>

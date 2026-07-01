@@ -1,11 +1,17 @@
 "use client";
 
-import NativeHeader from "@/components/NativeHeader";
+import Link from "next/link";
+import { ArrowLeftIcon } from "lucide-react";
 
 export default function TermsOfServicePage() {
   return (
     <>
-      <NativeHeader title="Terms of Service" />
+      <header style={{ height: "64px", padding: "0 2rem", display: "flex", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(5,5,5,0.9)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 100 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "8px", color: "#B14CFF", textDecoration: "none", fontWeight: 600 }}>
+          <ArrowLeftIcon size={20} />
+          Back to Home
+        </Link>
+      </header>
       <main style={{ padding: "6rem 2rem 4rem", minHeight: "100vh", background: "#050505", color: "#fff" }}>
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <h1 style={{ fontSize: "2.5rem", fontWeight: 800, marginBottom: "1rem" }}>Terms of Service</h1>

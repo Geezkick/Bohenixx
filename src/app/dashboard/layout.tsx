@@ -3,18 +3,38 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, CreditCard, FlaskConical, Calendar, Code2, LogOut, Menu } from "lucide-react";
+import {
+  LayoutDashboard,
+  CreditCard,
+  FlaskConical,
+  Calendar,
+  Code2,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  Home,
+  Package,
+  Briefcase,
+  ChevronRight,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./dashboard.module.css";
 import Image from "next/image";
-import { useState as useImgState } from "react";
 
 const navItems = [
-  { name: "Overview", href: "/dashboard", icon: <LayoutDashboard size={20} /> },
-  { name: "Products & Services", href: "/dashboard/subscriptions", icon: <CreditCard size={20} /> },
-  { name: "BX Labs", href: "/dashboard/labs", icon: <FlaskConical size={20} /> },
-  { name: "Events", href: "/dashboard/events", icon: <Calendar size={20} /> },
-  { name: "Developer Portal", href: "/dashboard/developer", icon: <Code2 size={20} /> },
+  { name: "Overview", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
+  { name: "Products & Services", href: "/dashboard/subscriptions", icon: <CreditCard size={18} /> },
+  { name: "BX Labs", href: "/dashboard/labs", icon: <FlaskConical size={18} /> },
+  { name: "Events", href: "/dashboard/events", icon: <Calendar size={18} /> },
+  { name: "Developer Portal", href: "/dashboard/developer", icon: <Code2 size={18} /> },
+  { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
+];
+
+const siteLinks = [
+  { name: "Homepage", href: "/", icon: <Home size={16} /> },
+  { name: "Products", href: "/products", icon: <Package size={16} /> },
+  { name: "Services", href: "/services/request", icon: <Briefcase size={16} /> },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -41,8 +61,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (isLoading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#000" }}>
-        <div style={{ color: "#00E5FF", fontSize: "1rem" }}>Loading...</div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#050505" }}>
+        <div style={{ width: 32, height: 32, border: "3px solid rgba(177,76,255,0.2)", borderTopColor: "#B14CFF", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
       </div>
     );
   }
@@ -51,20 +71,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className={styles.dashboardContainer}>
+      {/* Sidebar overlay for mobile */}
       {isSidebarOpen && (
         <div
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 90 }}
+          className={styles.sidebarOverlay}
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
+      {/* Sidebar */}
       <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ""}`}>
-        <Link href="/" className={styles.sidebarLogo}>
-          <Image src="/bohenixx.png" alt="Bohenix Logo" width={32} height={32} />
-          <span className={styles.brandName}>Bohenix ONE</span>
-        </Link>
+        <div className={styles.sidebarTop}>
+          <Link href="/" className={styles.sidebarLogo}>
+            <Image src="/bohenixx.png" alt="Bohenix Logo" width={28} height={28} />
+            <span className={styles.brandName}>Bohenix ONE</span>
+          </Link>
+          <button className={styles.sidebarClose} onClick={() => setIsSidebarOpen(false)}>
+            <X size={20} />
+          </button>
+        </div>
 
         <nav className={styles.navLinks}>
+          <span className={styles.navLabel}>Dashboard</span>
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -74,41 +102,76 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             );
           })}
+
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Bohenix</span>
+          {siteLinks.map((item) => (
+            <Link key={item.name} href={item.href} className={styles.navLink}>
+              {item.icon}
+              {item.name}
+              <ChevronRight size={14} style={{ marginLeft: "auto", opacity: 0.4 }} />
+            </Link>
+          ))}
         </nav>
 
         <div className={styles.sidebarFooter}>
+          <Link href="/dashboard/settings" className={styles.userCard}>
+            {user?.avatar && !imgError ? (
+              <Image
+                src={user.avatar}
+                alt="Profile"
+                width={32}
+                height={32}
+                style={{ borderRadius: "50%", objectFit: "cover" }}
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className={styles.avatarSmall}>
+                {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 600, fontSize: "0.85rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {user?.name || "User"}
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {user?.email || ""}
+              </div>
+            </div>
+          </Link>
           <button onClick={handleLogout} className={styles.signOutBtn}>
-            <LogOut size={20} />
+            <LogOut size={18} />
             Sign Out
           </button>
         </div>
       </aside>
 
+      {/* Main content area */}
       <main className={styles.mainContent}>
         <header className={styles.header}>
           <button className={styles.mobileToggle} onClick={() => setIsSidebarOpen(true)} aria-label="Open Menu">
-            <Menu size={24} />
+            <Menu size={22} />
           </button>
 
-          <div className={styles.userProfile}>
-            <span style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>
-              {user?.name || user?.email || "User"}
-            </span>
-            {user?.avatar && !imgError ? (
-              <Image
-                src={user.avatar}
-                alt="Profile"
-                width={36}
-                height={36}
-                className={styles.avatar}
-                onError={() => setImgError(true)}
-                style={{ borderRadius: "50%" }}
-              />
-            ) : (
-              <div className={styles.avatar} style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,229,255,0.2)", borderRadius: "50%", width: 36, height: 36, fontSize: "1rem", color: "#00E5FF", fontWeight: 600 }}>
-                {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
-              </div>
-            )}
+          <div className={styles.headerRight}>
+            <Link href="/dashboard/settings" className={styles.userProfile}>
+              <span className={styles.userNameHeader}>
+                {user?.name || user?.email || "User"}
+              </span>
+              {user?.avatar && !imgError ? (
+                <Image
+                  src={user.avatar}
+                  alt="Profile"
+                  width={34}
+                  height={34}
+                  style={{ borderRadius: "50%", objectFit: "cover" }}
+                  onError={() => setImgError(true)}
+                />
+              ) : (
+                <div className={styles.avatarSmall}>
+                  {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
+                </div>
+              )}
+            </Link>
           </div>
         </header>
 

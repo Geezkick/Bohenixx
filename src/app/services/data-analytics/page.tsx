@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Database, BarChart3, DatabaseZap, PieChart, ActivitySquare, ArrowRight, CheckCircle2 } from "lucide-react";
-import NativeHeader from "@/components/NativeHeader";
+import { ArrowLeftIcon } from "lucide-react";
 import styles from "../services.module.css";
 
 const features = [
@@ -40,7 +40,12 @@ const advantages = [
 export default function DataAnalyticsPage() {
   return (
     <main className={styles.main}>
-      <NativeHeader title="Data Analytics" />
+      <header style={{ height: "64px", padding: "0 2rem", display: "flex", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(5,5,5,0.9)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 100 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "8px", color: "#B14CFF", textDecoration: "none", fontWeight: 600 }}>
+          <ArrowLeftIcon size={20} />
+          Back to Home
+        </Link>
+      </header>
       
       <section className={styles.hero}>
         <div className={styles.heroGlow} style={{ background: '#00E676' }}></div>
