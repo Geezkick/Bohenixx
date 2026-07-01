@@ -185,7 +185,7 @@ export default function CorporateLandingPage() {
             {user ? (
               <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
             ) : (
-              <button onClick={() => loginWithGoogle()} className={styles.navBtn} style={{ cursor: "pointer", border: "none" }}>Sign In</button>
+              <Link href="/sign-in" className={styles.navBtn} style={{ cursor: "pointer", border: "none", textDecoration: "none" }}>Sign In</Link>
             )}
           </div>
         </div>
@@ -509,12 +509,13 @@ export default function CorporateLandingPage() {
             </ul>
           </div>
           <div className={styles.footerCol}>
-            <h4>Company</h4>
+            <h4>Contact Center</h4>
             <ul>
-              <li><Link href="#company">About Us</Link></li>
-              <li><button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>Careers</button></li>
-              <li><button onClick={(e) => openContactModal('hello@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>Contact</button></li>
-              <li><Link href="#labs">BX Labs</Link></li>
+              <li><button onClick={(e) => openContactModal('hello@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>hello@bohenix.africa</button></li>
+              <li><button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>ceo@bohenix.africa</button></li>
+              <li><button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>career@bohenix.africa</button></li>
+              <li><button onClick={(e) => openContactModal('support@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>support@bohenix.africa</button></li>
+              <li><button onClick={(e) => openContactModal('info@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>info@bohenix.africa</button></li>
             </ul>
           </div>
           <div className={styles.footerCol}>
