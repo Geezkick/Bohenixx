@@ -437,9 +437,9 @@
 
 .footerGrid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 6rem;
-  max-width: 1280px;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: 2rem;
+  max-width: 1400px;
   margin: 0 auto 80px;
 }
 
