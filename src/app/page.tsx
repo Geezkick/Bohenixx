@@ -340,16 +340,21 @@ export default function CorporateLandingPage() {
                   <div className={styles.showcaseIcon}>
                     <Image src={product.icon} alt={product.name} width={36} height={36} />
                   </div>
-                  <h3 className={styles.showcaseTitle}>{product.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    <h3 className={styles.showcaseTitle} style={{ margin: 0 }}>{product.name}</h3>
+                    <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', padding: '4px 10px', background: 'rgba(255,152,0,0.1)', borderRadius: '99px', color: '#FF9800', textTransform: 'uppercase' }}>
+                      IN DEVELOPMENT
+                    </span>
+                  </div>
                   <p className={styles.showcaseDesc}>{product.desc}</p>
-                  {user ? (
+                  {user?.email === 'nyarienyabrian05@gmail.com' ? (
                     <a href={product.href} target="_blank" className={styles.showcaseLink}>
                       Access Platform <ArrowRightIcon size={16} />
                     </a>
                   ) : (
-                    <button onClick={() => loginWithGoogle()} className={styles.showcaseLink} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
-                      Sign in to Access <ArrowRightIcon size={16} />
-                    </button>
+                    <p style={{ fontSize: '13px', color: '#B3B3B8', marginTop: '0.5rem', fontWeight: 500 }}>
+                      🚀 Launching soon from BX Labs
+                    </p>
                   )}
                 </div>
                 <div className={styles.showcaseVisual}>
