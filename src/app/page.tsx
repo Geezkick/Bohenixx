@@ -72,22 +72,20 @@ export default function CorporateLandingPage() {
     const fetchCount = () => {
       fetch('/api/analytics/count')
         .then(res => res.json())
-        .then(data => { if (data.success && data.visitors > 0) setVisitors(data.visitors); })
+        .then(data => {
+          if (data.success) {
+            setVisitors(data.visitors || 0);
+            setStats({
+              products: ecosystem.length,
+              users: data.users || 0,
+              countries: data.countries || 0
+            });
+          }
+        })
         .catch(() => {});
     };
     fetchCount();
     const interval = setInterval(fetchCount, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setStats(prev => ({
-        products: Math.min(prev.products + 1, 7),
-        users: Math.min(prev.users + 120, 12000),
-        countries: Math.min(prev.countries + 1, 15)
-      }));
-    }, 50);
     return () => clearInterval(interval);
   }, []);
 
@@ -337,30 +335,30 @@ export default function CorporateLandingPage() {
                 variants={fadeUp} 
                 className={styles.showcaseCard}
               >
+                <div className={styles.showcaseIcon}>
+                  <Image src={product.icon} alt={product.name} width={36} height={36} />
+                </div>
+                
                 <div className={styles.showcaseContent}>
-                  <div className={styles.showcaseIcon}>
-                    <Image src={product.icon} alt={product.name} width={36} height={36} />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
                     <h3 className={styles.showcaseTitle} style={{ margin: 0 }}>{product.name}</h3>
                     <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', padding: '4px 10px', background: 'rgba(255,152,0,0.1)', borderRadius: '99px', color: '#FF9800', textTransform: 'uppercase' }}>
                       IN DEVELOPMENT
                     </span>
                   </div>
                   <p className={styles.showcaseDesc}>{product.desc}</p>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
                   {user?.email === 'nyarienyabrian05@gmail.com' ? (
                     <a href={product.href} target="_blank" className={styles.showcaseLink}>
                       Access Platform <ArrowRightIcon size={16} />
                     </a>
                   ) : (
-                    <p style={{ fontSize: '13px', color: '#B3B3B8', marginTop: '0.5rem', fontWeight: 500 }}>
-                      🚀 Launching soon from BX Labs
+                    <p style={{ fontSize: '13px', color: '#B3B3B8', fontWeight: 500, margin: 0 }}>
+                      🚀 Launching soon
                     </p>
                   )}
-                </div>
-                <div className={styles.showcaseVisual}>
-                  <Image src={product.icon} alt={product.name} width={120} height={120} style={{ opacity: 0.1, filter: "blur(20px)", transform: "scale(2)" }} />
-                  <Image src={product.icon} alt={product.name} width={120} height={120} style={{ position: "absolute", zIndex: 2 }} />
                 </div>
               </motion.div>
             ))}

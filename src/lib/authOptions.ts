@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: { strategy: "jwt" },
-  pages: { signIn: "/" },
+  pages: { signIn: "/sign-in" },
   callbacks: {
     async jwt({ token, user, account }) {
       // On initial sign-in, persist the user ID into the JWT
