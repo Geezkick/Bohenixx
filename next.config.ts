@@ -1,6 +1,4 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -9,9 +7,9 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-      { protocol: "https", hostname: "avatars.githubusercontent.com" },
-      { protocol: "https", hostname: "*.googleusercontent.com" },
+      { protocol: "https" as const, hostname: "lh3.googleusercontent.com" },
+      { protocol: "https" as const, hostname: "avatars.githubusercontent.com" },
+      { protocol: "https" as const, hostname: "*.googleusercontent.com" },
     ],
   },
 };
