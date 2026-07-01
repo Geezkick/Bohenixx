@@ -58,8 +58,21 @@ export default function RealGlobe() {
         pointLng="lng"
         pointColor="color"
         pointAltitude="size"
-        pointRadius={1.5}
+        pointRadius={0.5}
         pointsMerge={false}
+        ringsData={markerData}
+        ringColor="color"
+        ringMaxRadius={(d: any) => d.size * 15}
+        ringPropagationSpeed={2}
+        ringRepeatPeriod={1500}
+        labelsData={markerData}
+        labelLat="lat"
+        labelLng="lng"
+        labelText="name"
+        labelSize={1.2}
+        labelDotRadius={0.3}
+        labelColor={() => 'rgba(255, 255, 255, 0.8)'}
+        labelResolution={2}
         onGlobeReady={() => {
           if (globeEl.current) {
             globeEl.current.controls().autoRotate = true;

@@ -221,9 +221,6 @@ export default function CorporateLandingPage() {
       <section className={styles.hero}>
         <div className={styles.heroGrid}>
           <motion.div initial="hidden" animate="show" variants={stagger}>
-            <motion.div variants={fadeUp} className={styles.heroLabel}>
-              AI • Software • Digital Infrastructure
-            </motion.div>
             <motion.h1 variants={fadeUp} className={styles.title}>
               Building Africa's <br />
               <span className={styles.textPurple}>Intelligent</span> <br />
@@ -311,7 +308,7 @@ export default function CorporateLandingPage() {
               The Bohenix ecosystem is growing rapidly across the African continent — from coastal cities to inland communities — connecting people, businesses, and opportunities through intelligent technology that understands local context and delivers real-world impact at scale.
             </p>
           </div>
-          <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center', background: '#111114', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.08)', padding: '2rem' }}>
+          <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
             <CobeGlobe />
           </div>
         </div>
@@ -382,6 +379,11 @@ export default function CorporateLandingPage() {
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className={styles.sectionHeader}>
             <h2>Enterprise Solutions</h2>
             <p>End-to-end technological excellence for organizations that require absolute reliability and scale. Bohenix delivers production-grade solutions that work in the real world.</p>
+            <div style={{ marginTop: '2rem' }}>
+              <Link href="/services/request" className={styles.primaryCta} style={{ display: 'inline-flex' }}>
+                 Request Service
+              </Link>
+            </div>
           </motion.div>
 
           <div className={styles.servicesGrid}>
@@ -520,6 +522,7 @@ export default function CorporateLandingPage() {
           <div className={styles.footerCol}>
             <h4>Company & Services</h4>
             <ul>
+              <li><Link href="/services/request">Service Request</Link></li>
               <li><a href="#solutions">Enterprise Solutions</a></li>
               <li><a href="#company">About Us</a></li>
               <li><button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>Careers</button></li>
