@@ -58,13 +58,8 @@ export default function RealGlobe() {
         pointLng="lng"
         pointColor="color"
         pointAltitude="size"
-        pointRadius={0.5}
+        pointRadius={1.0}
         pointsMerge={false}
-        ringsData={markerData}
-        ringColor="color"
-        ringMaxRadius={(d: any) => d.size * 15}
-        ringPropagationSpeed={2}
-        ringRepeatPeriod={1500}
         labelsData={markerData}
         labelLat="lat"
         labelLng="lng"

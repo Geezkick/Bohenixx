@@ -30,26 +30,31 @@ const ecosystem = [
 const services = [
   { 
     title: "Enterprise Software Engineering", 
+    icon: <Code size={32} color="#7B2DFF" />,
     desc: "Production-grade software systems, from high-traffic web platforms to complex SaaS products and ERP integrations built for extreme scale.",
     items: ["Full-Stack Web Applications", "Cross-Platform Mobile Apps", "SaaS Product Development", "Enterprise Resource Planning", "API Design & Integration", "Legacy System Modernization"],
   },
   { 
     title: "Artificial Intelligence & Machine Learning", 
+    icon: <BrainCircuit size={32} color="#7B2DFF" />,
     desc: "Intelligent systems that transform operations. Custom AI agents, predictive models, NLP, and autonomous decision frameworks.",
     items: ["Custom AI Agents & Copilots", "Workflow Automation & RPA", "Predictive Analytics & Forecasting", "Natural Language Processing", "Computer Vision Solutions", "AI Model Training & Fine-Tuning"],
   },
   { 
     title: "Cybersecurity & Compliance", 
+    icon: <Shield size={32} color="#7B2DFF" />,
     desc: "Proactive threat detection, penetration testing, and compliance auditing. We build security into every layer.",
     items: ["Penetration Testing & Red Teaming", "Security Operations Center (SOC)", "Zero-Trust Architecture", "Compliance & Regulatory Auditing", "Incident Response & Recovery", "Vulnerability Management"],
   },
   { 
     title: "Data Engineering & Business Intelligence", 
+    icon: <Database size={32} color="#7B2DFF" />,
     desc: "Scalable data pipelines and real-time analytics to turn raw information into actionable business intelligence.",
     items: ["Real-Time Analytics Dashboards", "ETL & Data Pipeline Engineering", "Data Lake & Warehouse Design", "Business Intelligence Reporting", "Data Governance & Quality", "Custom KPI Frameworks"],
   },
   { 
     title: "Cloud Infrastructure & DevOps", 
+    icon: <Cloud size={32} color="#7B2DFF" />,
     desc: "Resilient cloud environments across AWS, GCP, and Azure with automated CI/CD pipelines, container orchestration, and 24/7 monitoring.",
     items: ["Multi-Cloud Architecture", "Kubernetes Orchestration", "CI/CD Pipeline Automation", "Infrastructure as Code (IaC)", "24/7 Monitoring & Alerting", "Cost Optimization & FinOps"],
   },
@@ -396,7 +401,7 @@ export default function CorporateLandingPage() {
                 variants={fadeUp} 
                 className={styles.serviceCard}
               >
-                <BrainCircuit size={32} color="#7B2DFF" />
+                {service.icon || <BrainCircuit size={32} color="#7B2DFF" />}
                 <h3>{service.title}</h3>
                 <p className={styles.serviceDesc}>{service.desc}</p>
                 <ul className={styles.serviceList}>
@@ -439,6 +444,30 @@ export default function CorporateLandingPage() {
                 <p style={{ fontSize: '15px', color: '#B3B3B8', lineHeight: 1.6, margin: 0 }}>{lab.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About & Vision Section */}
+      <section id="about" className={styles.section} style={{ background: 'rgba(255,255,255,0.01)' }}>
+        <div className={styles.contentContainer}>
+          <div className={styles.sectionHeader}>
+            <h2>About Bohenix</h2>
+            <p>Our vision and mission to transform the digital landscape.</p>
+          </div>
+          <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
+            <motion.div style={{ flex: 1, minWidth: '300px' }} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+              <h3 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#B14CFF', fontWeight: 600 }}>Vision</h3>
+              <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.7)' }}>
+                To become Africa's leading technology ecosystem powering businesses, governments, and communities through intelligent digital solutions.
+              </p>
+            </motion.div>
+            <motion.div style={{ flex: 1, minWidth: '300px' }} initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+              <h3 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#00E5FF', fontWeight: 600 }}>Mission</h3>
+              <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.7)' }}>
+                Building transformative software products that solve real-world problems and create sustainable economic growth.
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>
