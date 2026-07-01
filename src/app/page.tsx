@@ -421,10 +421,13 @@ export default function CorporateLandingPage() {
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className={styles.sectionHeader}>
             <h2>Enterprise Solutions</h2>
             <p>End-to-end technological excellence for organizations that require absolute reliability and scale. Bohenix delivers production-grade solutions that work in the real world.</p>
-            <div style={{ marginTop: '2rem' }}>
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/services/request" className={styles.primaryCta} style={{ display: 'inline-flex' }}>
                  Request Service
               </Link>
+              <button onClick={(e) => openContactModal('support@bohenix.africa', e)} className={styles.secondaryCta} style={{ display: 'inline-flex', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)' }}>
+                Contact Support
+              </button>
             </div>
           </motion.div>
 
@@ -520,9 +523,12 @@ export default function CorporateLandingPage() {
             <p style={{ fontSize: '24px', lineHeight: 1.6, color: '#fff', fontStyle: 'italic', marginBottom: '2rem' }}>
               "Most people are still modeling the future. We're already deploying it. Bohenix isn't building software — we're building the infrastructure layer Africa hasn't named yet."
             </p>
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} className={styles.primaryCta} style={{ cursor: 'pointer' }}>
                 Contact Founder
+              </button>
+              <button onClick={(e) => openContactModal('info@bohenix.africa', e)} className={styles.secondaryCta} style={{ cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)' }}>
+                Media & Info
               </button>
             </div>
           </div>
