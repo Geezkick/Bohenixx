@@ -10,8 +10,10 @@ const SERVICES = [
   "AI & Machine Learning",
   "Cloud Infrastructure",
   "UI/UX Design",
-  "Cybersecurity",
-  "Consulting & Strategy"
+  "Cybersecurity Audit",
+  "Data Analytics & BI",
+  "IT Consulting",
+  "Other"
 ];
 
 export default function ServiceRequest() {
@@ -23,6 +25,7 @@ export default function ServiceRequest() {
     details: "",
     email: ""
   });
+  const [customService, setCustomService] = useState("");
 
   const nextStep = () => setStep(s => Math.min(4, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
@@ -33,7 +36,10 @@ export default function ServiceRequest() {
       await fetch('/api/services/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          service: formData.service === 'Other' ? customService : formData.service
+        })
       });
       // Optionally redirect to checkout for a consultation fee, or just show success
       nextStep(); // Move to success step
@@ -77,8 +83,25 @@ export default function ServiceRequest() {
                     </button>
                   ))}
                 </div>
+                {formData.service === 'Other' && (
+                  <div style={{ marginTop: '1.5rem' }}>
+                    <label className={styles.label} style={{ display: 'block', marginBottom: '0.5rem', color: '#B3B3B8' }}>Please specify the service you need</label>
+                    <input 
+                      type="text" 
+                      value={customService} 
+                      onChange={e => setCustomService(e.target.value)} 
+                      className={styles.input} 
+                      placeholder="e.g. Custom Blockchain Solution" 
+                    />
+                  </div>
+                )}
                 <div className={styles.navButtons}>
-                  <button type="button" className={styles.nextBtn} onClick={nextStep} disabled={!formData.service}>
+                  <button 
+                    type="button" 
+                    className={styles.nextBtn} 
+                    onClick={nextStep} 
+                    disabled={!formData.service || (formData.service === 'Other' && !customService.trim())}
+                  >
                     Next <ArrowRightIcon size={16} />
                   </button>
                 </div>

@@ -300,26 +300,15 @@ export default function CorporateLandingPage() {
           <div style={{ flex: 1, minWidth: '300px' }}>
             <h2 style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Active Across Africa</h2>
             
-            {/* Live Visitor Counter */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)', padding: '1.5rem 2rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', marginBottom: '2.5rem', width: 'fit-content', backdropFilter: 'blur(10px)' }}>
-              <div style={{ position: 'relative', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: 'rgba(0, 229, 255, 0.2)', animation: 'pulseRing 2s infinite cubic-bezier(0.4, 0, 0.6, 1)' }} />
-                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 20px #00E5FF' }} />
-              </div>
+            {/* Total Visitor Counter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', background: 'rgba(255,255,255,0.03)', padding: '1.5rem 2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '2.5rem', width: 'fit-content' }}>
               <div>
-                <div style={{ color: '#00E5FF', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700, marginBottom: '6px' }}>Current Live Traffic</div>
+                <div style={{ color: '#B3B3B8', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600, marginBottom: '6px' }}>Total Global Visitors</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                  <div style={{ fontSize: '42px', fontWeight: 800, color: '#fff', lineHeight: 1, letterSpacing: '-1px' }}>{visitors > 0 ? visitors.toLocaleString() : 'Active'}</div>
-                  {visitors > 0 && <span style={{ fontSize: '14px', color: '#B3B3B8', fontWeight: 500 }}>users</span>}
+                  <div style={{ fontSize: '42px', fontWeight: 700, color: '#fff', lineHeight: 1, letterSpacing: '-1px' }}>{visitors > 0 ? visitors.toLocaleString() : '...'}</div>
                 </div>
               </div>
             </div>
-            <style dangerouslySetInnerHTML={{__html: `
-              @keyframes pulseRing {
-                0% { transform: scale(0.5); opacity: 1; }
-                100% { transform: scale(2.5); opacity: 0; }
-              }
-            `}} />
 
             <p style={{ fontSize: '18px', color: '#B3B3B8', lineHeight: 1.6, marginBottom: '1.5rem' }}>
               The Bohenix ecosystem is growing rapidly across the African continent — from coastal cities to inland communities — connecting people, businesses, and opportunities through intelligent technology that understands local context and delivers real-world impact at scale.
@@ -460,14 +449,14 @@ export default function CorporateLandingPage() {
         </div>
       </section>
 
-      {/* About & Vision Section */}
-      <section id="about" className={styles.section} style={{ background: 'rgba(255,255,255,0.01)' }}>
+      {/* Company Section (About & Founder) */}
+      <section id="company" className={styles.section} style={{ background: 'rgba(255,255,255,0.01)' }}>
         <div className={styles.contentContainer}>
           <div className={styles.sectionHeader}>
-            <h2>About Bohenix</h2>
+            <h2>Company & Vision</h2>
             <p>Our vision and mission to transform the digital landscape.</p>
           </div>
-          <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap', marginBottom: '6rem' }}>
             <motion.div style={{ flex: 1, minWidth: '300px' }} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <h3 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#B14CFF', fontWeight: 600 }}>Vision</h3>
               <p style={{ fontSize: '1.2rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.7)' }}>
@@ -481,12 +470,9 @@ export default function CorporateLandingPage() {
               </p>
             </motion.div>
           </div>
-        </div>
-      </section>
 
-      {/* Founder Profile */}
-      <section id="company" className={styles.section}>
-        <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center', padding: '2rem 0' }}>
+          {/* Founder Profile */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center' }}>
           <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
             <div style={{ position: 'relative', width: '100%', maxWidth: '350px', aspectRatio: '3/4', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(123,45,255,0.3)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
               <Image src="/brian.png" alt="Brian Nyarienya - Founder" layout="fill" objectFit="cover" />
@@ -504,6 +490,7 @@ export default function CorporateLandingPage() {
               </button>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
