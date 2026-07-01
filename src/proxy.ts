@@ -4,33 +4,40 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  const isOAuthRoute = pathname.startsWith('/api/auth/')
-  if (isOAuthRoute) {
-    const res = NextResponse.next({ request })
-    res.headers.set('X-Frame-Options', 'DENY')
-    return res
+  // Always allow NextAuth API routes through without any checks
+  if (pathname.startsWith('/api/auth/')) {
+    return NextResponse.next()
   }
 
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
-
-  const publicPaths = ['/', '/products', '/developers', '/apps', '/services', '/sign-in']
-  const isPublicRoute = publicPaths.some(p => pathname === p || pathname.startsWith(p + '/'))
+  // Skip static assets and other API routes
   const isApiRoute = pathname.startsWith('/api/')
   const isStaticAsset = /\.(svg|png|jpg|jpeg|gif|webp|ico|html|xml|txt|json|mp4|webm|css|js|woff|woff2|ttf|otf)$/i.test(pathname)
 
-  // If user tries to access sign-in but already has a token, redirect to dashboard
+  if (isApiRoute || isStaticAsset) {
+    return NextResponse.next()
+  }
+
+  // Public paths that don't require authentication
+  const publicPaths = ['/', '/products', '/developers', '/apps', '/services', '/sign-in', '/privacy', '/terms']
+  const isPublicRoute = publicPaths.some(p => pathname === p || pathname.startsWith(p + '/'))
+
+  // Try to get the JWT token
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
+
+  // If user is already signed in and tries to access /sign-in, redirect to dashboard
   if (token && pathname === '/sign-in') {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  if (!token && !isPublicRoute && !isApiRoute && !isStaticAsset) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    url.searchParams.set('auth', 'required')
-    return NextResponse.redirect(url)
+  // If user is NOT signed in and tries to access a protected route, redirect to /sign-in
+  if (!token && !isPublicRoute) {
+    const signInUrl = new URL('/sign-in', request.url)
+    signInUrl.searchParams.set('callbackUrl', pathname)
+    return NextResponse.redirect(signInUrl)
   }
 
-  const res = NextResponse.next({ request })
+  // Add security headers
+  const res = NextResponse.next()
   res.headers.set('X-Frame-Options', 'DENY')
   res.headers.set('X-Content-Type-Options', 'nosniff')
   res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')

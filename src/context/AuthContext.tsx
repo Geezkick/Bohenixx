@@ -51,20 +51,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       }
 
-      const res = await signIn("credentials", { email, password, totpCode, redirect: false });
+      const res = await signIn("credentials", {
+        email,
+        password,
+        totpCode,
+        redirect: false,
+        callbackUrl: "/dashboard",
+      });
+
       if (res?.error) {
+        if (res.error.includes("2FA_REQUIRED")) {
+          return { success: false, requiresTwoFactor: true };
+        }
         if (res.error.includes("2FA_INVALID")) {
           return { success: false, requiresTwoFactor: true, error: "Invalid authentication code" };
         }
         return { success: false, error: "Invalid email or password" };
       }
-      fetch("/api/auth/login-notify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      }).catch(() => {});
-      window.location.assign("/dashboard");
-      return { success: true };
+
+      if (res?.ok) {
+        // Send login notification in the background
+        fetch("/api/auth/login-notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }).catch(() => {});
+
+        // Use router.push + router.refresh to properly update the session
+        // instead of window.location.assign which can race with cookie setting
+        router.push("/dashboard");
+        router.refresh();
+        return { success: true };
+      }
+
+      return { success: false, error: "Login failed. Please try again." };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
     }
@@ -79,10 +99,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error };
-      const signInRes = await signIn("credentials", { email, password, redirect: false });
-      if (signInRes?.error) return { success: false, error: "Account created but login failed" };
-      window.location.assign("/dashboard");
-      return { success: true };
+
+      const signInRes = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/dashboard",
+      });
+
+      if (signInRes?.error) {
+        return { success: false, error: "Account created but login failed. Please sign in manually." };
+      }
+
+      if (signInRes?.ok) {
+        router.push("/dashboard");
+        router.refresh();
+        return { success: true };
+      }
+
+      return { success: false, error: "Account created. Please sign in." };
     } catch (err: any) {
       return { success: false, error: err.message || "An unexpected error occurred" };
     }
@@ -98,9 +133,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    await signOut({ redirect: false });
-    router.push("/");
-    router.refresh();
+    await signOut({ callbackUrl: "/" });
   };
 
   const resetPassword = async (email: string) => {

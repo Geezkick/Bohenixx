@@ -49,12 +49,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [pathname]);
 
   useEffect(() => {
-    // Middleware handles protected routing, but we can do custom logic if needed.
-  }, [user, isLoading]);
+    // Client-side redirect if not authenticated (safety net for proxy)
+    if (!isLoading && !user) {
+      router.replace("/sign-in?callbackUrl=" + encodeURIComponent(pathname));
+    }
+  }, [user, isLoading, router, pathname]);
 
   const handleLogout = async () => {
     await logout();
-    router.push("/");
   };
 
   if (isLoading) {
@@ -65,7 +67,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  if (!user) return null;
+  if (!user) {
+    // Show loading state while redirect happens
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#050505" }}>
+        <div style={{ width: 32, height: 32, border: "3px solid rgba(177,76,255,0.2)", borderTopColor: "#B14CFF", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.dashboardContainer}>
