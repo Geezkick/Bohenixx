@@ -57,7 +57,7 @@ export default function RealGlobe() {
         pointLat="lat"
         pointLng="lng"
         pointColor="color"
-        pointAltitude="size"
+        pointAltitude={0.01}
         pointRadius={1.0}
         pointsMerge={false}
         labelsData={markerData}

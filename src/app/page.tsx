@@ -301,13 +301,25 @@ export default function CorporateLandingPage() {
             <h2 style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Active Across Africa</h2>
             
             {/* Live Visitor Counter */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(123,45,255,0.05)', padding: '1.5rem', borderRadius: '24px', border: '1px solid rgba(123,45,255,0.15)', marginBottom: '2.5rem', width: 'fit-content' }}>
-              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#7B2DFF', boxShadow: '0 0 15px #7B2DFF' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)', padding: '1.5rem 2rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', marginBottom: '2.5rem', width: 'fit-content', backdropFilter: 'blur(10px)' }}>
+              <div style={{ position: 'relative', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: 'rgba(0, 229, 255, 0.2)', animation: 'pulseRing 2s infinite cubic-bezier(0.4, 0, 0.6, 1)' }} />
+                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 20px #00E5FF' }} />
+              </div>
               <div>
-                <div style={{ color: '#B3B3B8', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600, marginBottom: '4px' }}>Live Visitors</div>
-                <div style={{ fontSize: '36px', fontWeight: 800, color: '#fff', lineHeight: 1 }}>{visitors > 0 ? visitors.toLocaleString() : 'Active'}</div>
+                <div style={{ color: '#00E5FF', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700, marginBottom: '6px' }}>Current Live Traffic</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                  <div style={{ fontSize: '42px', fontWeight: 800, color: '#fff', lineHeight: 1, letterSpacing: '-1px' }}>{visitors > 0 ? visitors.toLocaleString() : 'Active'}</div>
+                  {visitors > 0 && <span style={{ fontSize: '14px', color: '#B3B3B8', fontWeight: 500 }}>users</span>}
+                </div>
               </div>
             </div>
+            <style dangerouslySetInnerHTML={{__html: `
+              @keyframes pulseRing {
+                0% { transform: scale(0.5); opacity: 1; }
+                100% { transform: scale(2.5); opacity: 0; }
+              }
+            `}} />
 
             <p style={{ fontSize: '18px', color: '#B3B3B8', lineHeight: 1.6, marginBottom: '1.5rem' }}>
               The Bohenix ecosystem is growing rapidly across the African continent — from coastal cities to inland communities — connecting people, businesses, and opportunities through intelligent technology that understands local context and delivers real-world impact at scale.

@@ -45,3 +45,4 @@ Please make sure your database server is running at `localhost:3306`.
   retryable: undefined
 }
  POST /api/auth/register 500 in 1431ms (next.js: 257ms, proxy.ts: 28ms, application-code: 1146ms)
+✓ Compiled in 288ms

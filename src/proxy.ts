@@ -13,7 +13,7 @@ export async function proxy(request: NextRequest) {
 
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
 
-  const publicPaths = ['/', '/products', '/developers', '/apps', '/services']
+  const publicPaths = ['/', '/products', '/developers', '/apps', '/services', '/sign-in']
   const isPublicRoute = publicPaths.some(p => pathname === p || pathname.startsWith(p + '/'))
   const isApiRoute = pathname.startsWith('/api/')
   const isStaticAsset = /\.(svg|png|jpg|jpeg|gif|webp|ico|html|xml|txt|json|mp4|webm|css|js|woff|woff2|ttf|otf)$/i.test(pathname)

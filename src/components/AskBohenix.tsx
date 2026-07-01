@@ -58,7 +58,9 @@ export default function AskBohenix() {
           >
             <div className={styles.header}>
               <div className={styles.headerInfo}>
-                <div className={styles.avatar}>B</div>
+                <div className={styles.avatar} style={{ overflow: 'hidden', padding: 0 }}>
+                  <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
                 <div>
                   <h4 style={{ margin: 0, fontSize: '1rem', color: '#fff' }}>Ask Bohenix</h4>
                   <span style={{ fontSize: '0.75rem', color: '#B3B3B8' }}>AI Assistant</span>
