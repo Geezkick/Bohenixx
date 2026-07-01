@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { db } from '@/lib/db';
 import { sendEmail } from '@/utils/mailer';
 import { getWelcomeEmailTemplate, getInternalAlertTemplate } from '@/utils/emailTemplates';
-
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -14,14 +12,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
     }
 
-    const existing = await prisma.user.findUnique({ where: { email } });
+    const existing = await db.user.findUnique({ where: { email } });
     if (existing) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
+    const user = await db.user.create({
       data: {
         name,
         email,

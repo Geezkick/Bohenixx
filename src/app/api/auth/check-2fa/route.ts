@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { db } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
@@ -10,7 +8,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ requiresTwoFactor: false });
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { email },
       select: { twoFactorEnabled: true },
     });

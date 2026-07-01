@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/utils/mailer";
 import { getContactConfirmationTemplate, getInternalAlertTemplate } from "@/utils/emailTemplates";
 import { logActivity } from "@/lib/activityLogger";
 
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   const userId = (session?.user as any)?.id;
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +23,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id || null;
 
     const { service, budget, timeline, details, email } = await req.json();

@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { db } from '@/lib/db';
 import { sendEmail } from '@/utils/mailer';
 import { getLoginAlertTemplate } from '@/utils/emailTemplates';
-
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +12,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({ where: { email } });
     if (!user || !user.password) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 });
     }
