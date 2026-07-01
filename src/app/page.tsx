@@ -416,7 +416,7 @@ export default function CorporateLandingPage() {
             <p>Our dedicated research and innovation division — where cutting-edge ideas become production-ready technology that reshapes industries across Africa and the world.</p>
           </div>
 
-          <div style={{ maxWidth: '800px', margin: '0 auto 4rem', textAlign: 'center', padding: '3rem', background: '#111114', borderRadius: '32px', border: '1px solid rgba(123,45,255,0.15)' }}>
+          <div style={{ maxWidth: '800px', margin: '0 auto 4rem', textAlign: 'center', padding: '1rem 0' }}>
             <p style={{ fontSize: '18px', color: '#B3B3B8', lineHeight: 1.8 }}>
               BX Labs is Bohenix&apos;s frontier research engine. Every product in the Bohenix ecosystem has roots in Labs research. We operate at the intersection of applied AI, systems engineering, and deep technology to deliver breakthrough innovations that are commercially viable, ethically grounded, and built for Africa&apos;s unique challenges.
             </p>
@@ -429,10 +429,10 @@ export default function CorporateLandingPage() {
               { title: 'Edge Computing & IoT', tag: 'Infrastructure', desc: 'Low-latency solutions that bring AI inference directly to the device, powering sensors in low-connectivity environments.' },
               { title: 'African NLP', tag: 'Language AI', desc: 'Multilingual AI models capable of understanding and reasoning in Kiswahili, Hausa, Amharic, and Zulu.' },
             ].map(lab => (
-              <div key={lab.title} style={{ padding: '2.5rem', background: '#111114', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div key={lab.title} style={{ padding: '1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                   <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>{lab.title}</h4>
-                  <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', padding: '4px 12px', background: 'rgba(123,45,255,0.1)', borderRadius: '99px', color: '#7B2DFF', textTransform: 'uppercase' }}>{lab.tag}</span>
+                  <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', padding: '4px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', color: '#fff', textTransform: 'uppercase' }}>{lab.tag}</span>
                 </div>
                 <p style={{ fontSize: '15px', color: '#B3B3B8', lineHeight: 1.6, margin: 0 }}>{lab.desc}</p>
               </div>
@@ -443,7 +443,7 @@ export default function CorporateLandingPage() {
 
       {/* Founder Profile */}
       <section id="company" className={styles.section}>
-        <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center', background: '#111114', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.08)', padding: '4rem' }}>
+        <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center', padding: '2rem 0' }}>
           <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
             <div style={{ position: 'relative', width: '100%', maxWidth: '350px', aspectRatio: '3/4', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(123,45,255,0.3)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
               <Image src="/brian.png" alt="Brian Nyarienya - Founder" layout="fill" objectFit="cover" />
@@ -456,7 +456,7 @@ export default function CorporateLandingPage() {
               "Most people are still modeling the future. We're already deploying it. Bohenix isn't building software — we're building the infrastructure layer Africa hasn't named yet."
             </p>
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} className={styles.primaryCta} style={{ border: 'none', cursor: 'pointer' }}>
+              <button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} className={styles.primaryCta} style={{ cursor: 'pointer' }}>
                 Contact Founder
               </button>
             </div>
@@ -467,7 +467,7 @@ export default function CorporateLandingPage() {
       {/* Careers & Partners Section */}
       <section className={styles.section}>
         <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem' }}>
-          <div style={{ flex: 1, minWidth: '300px', background: '#111114', padding: '4rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ flex: 1, minWidth: '300px', padding: '2rem 0' }}>
             <h2 style={{ fontSize: '32px', marginBottom: '1rem', fontWeight: 700 }}>Careers</h2>
             <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '16px', lineHeight: 1.6 }}>
               Join us in building the future. We offer open positions, internship opportunities, and graduate programs across engineering, AI research, and operations.
@@ -476,7 +476,7 @@ export default function CorporateLandingPage() {
               Apply to Bohenix
             </button>
           </div>
-          <div style={{ flex: 1, minWidth: '300px', background: '#111114', padding: '4rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ flex: 1, minWidth: '300px', padding: '2rem 0' }}>
             <h2 style={{ fontSize: '32px', marginBottom: '1rem', fontWeight: 700 }}>Investors & Partners</h2>
             <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '16px', lineHeight: 1.6 }}>
               We collaborate with governments, NGOs, enterprise clients, and strategic investors to scale impact across the African continent and globally.

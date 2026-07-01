@@ -45,7 +45,7 @@ export default function AskBohenix() {
   return (
     <>
       <button className={styles.fab} onClick={() => setIsOpen(true)}>
-        <MessageSquareIcon size={24} color="#fff" />
+        <MessageSquareIcon size={24} color="#050505" />
       </button>
 
       <AnimatePresence>
@@ -61,7 +61,7 @@ export default function AskBohenix() {
                 <div className={styles.avatar}>B</div>
                 <div>
                   <h4 style={{ margin: 0, fontSize: '1rem', color: '#fff' }}>Ask Bohenix</h4>
-                  <span style={{ fontSize: '0.75rem', color: '#00E5FF' }}>AI Assistant</span>
+                  <span style={{ fontSize: '0.75rem', color: '#B3B3B8' }}>AI Assistant</span>
                 </div>
               </div>
               <button className={styles.closeBtn} onClick={() => setIsOpen(false)}>
@@ -86,7 +86,7 @@ export default function AskBohenix() {
                 className={styles.input}
               />
               <button type="submit" className={styles.sendBtn}>
-                <SendIcon size={18} color="#fff" />
+                <SendIcon size={18} color="#050505" />
               </button>
             </form>
           </motion.div>

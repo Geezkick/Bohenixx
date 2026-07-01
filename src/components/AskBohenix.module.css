@@ -5,19 +5,20 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #B14CFF, #00E5FF);
-  border: none;
-  box-shadow: 0 4px 20px rgba(139, 46, 255, 0.4);
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 9999;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
 
 .fab:hover {
   transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .chatWindow {
@@ -27,14 +28,14 @@
   width: 350px;
   height: 500px;
   background: rgba(10, 5, 20, 0.95);
-  border: 1px solid rgba(139, 46, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   z-index: 9999;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
 }
 
 .header {
@@ -56,7 +57,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #B14CFF;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,10 +103,11 @@
 }
 
 .messageUser {
-  background: #B14CFF;
-  color: #fff;
+  background: #fff;
+  color: #050505;
   align-self: flex-end;
   border-bottom-right-radius: 4px;
+  font-weight: 500;
 }
 
 .inputArea {
@@ -126,17 +129,22 @@
 }
 
 .input:focus {
-  border-color: #B14CFF;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .sendBtn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #B14CFF;
+  background: #fff;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sendBtn:hover {
+  background: rgba(255, 255, 255, 0.85);
 }
