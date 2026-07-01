@@ -547,7 +547,7 @@ export default function CorporateLandingPage() {
             <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '16px', lineHeight: 1.6 }}>
               We collaborate with governments, NGOs, enterprise clients, and strategic investors to scale impact across the African continent and globally.
             </p>
-            <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.secondaryCta} style={{ display: 'inline-flex', cursor: 'pointer' }}>
+            <button onClick={(e) => openContactModal('ceo@bohenix.africa', e)} className={styles.secondaryCta} style={{ display: 'inline-flex', cursor: 'pointer' }}>
               Partner With Us
             </button>
           </div>
