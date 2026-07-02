@@ -14,6 +14,127 @@
   justify-content: center;
 }
 
+/* ─── Splash / Loading Screen ─── */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #050505;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.splashGlow1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(139, 46, 255, 0.15) 0%, transparent 60%);
+  border-radius: 50%;
+  animation: pulseGlow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.splashGlow2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.1) 0%, transparent 60%);
+  border-radius: 50%;
+  animation: pulseGlow 4s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+.splashContent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.splashLogoWrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.splashLogoRing {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 46, 255, 0.3);
+  border-top-color: #8B2EFF;
+  border-bottom-color: #00E5FF;
+  animation: spinRing 2s linear infinite;
+}
+
+@keyframes spinRing {
+  to { transform: rotate(360deg); }
+}
+
+.splashLogo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+.splashTitle {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.splashGradient {
+  background: linear-gradient(90deg, #B14CFF, #00E5FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.splashStatus {
+  font-family: var(--font-secondary);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.5rem;
+  min-height: 20px;
+}
+
+.splashTrack {
+  width: 200px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.splashFill {
+  height: 100%;
+  background: linear-gradient(90deg, #8B2EFF, #00E5FF);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
 /* ─── Full-screen video backdrop ─── */
 .videoBg {
   position: fixed;
@@ -133,7 +254,7 @@
   width: 72px;
   height: 72px;
   border-radius: 18px;
-  object-fit: cover;
+  object-fit: contain;
   position: relative;
   z-index: 1;
 }

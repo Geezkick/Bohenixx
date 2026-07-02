@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,6 +14,7 @@ import {
   EyeIcon,
   EyeOffIcon,
   ShieldCheckIcon,
+  LoaderIcon,
 } from "lucide-react";
 import styles from "./sign-in.module.css";
 
@@ -50,7 +52,8 @@ const adverts = [
 ];
 
 export default function SignInPage() {
-  const { login, signup, loginWithGoogle, resetPassword } = useAuth();
+  const { user, isLoading: authLoading, login, signup, loginWithGoogle, resetPassword } = useAuth();
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -62,7 +65,44 @@ export default function SignInPage() {
   const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
   const [totpCode, setTotpCode] = useState("");
   const [adIndex, setAdIndex] = useState(0);
+  const [splashProgress, setSplashProgress] = useState(0);
+  const [splashText, setSplashText] = useState("Initializing...");
+  const [splashDone, setSplashDone] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  /* Splash loading sequence */
+  useEffect(() => {
+    const stages = [
+      { at: 0, text: "Initializing..." },
+      { at: 20, text: "Connecting to secure network..." },
+      { at: 45, text: "Verifying session..." },
+      { at: 70, text: "Loading portal..." },
+      { at: 90, text: "Almost ready..." },
+      { at: 100, text: "Welcome to Bohenix ONE" },
+    ];
+
+    const interval = setInterval(() => {
+      setSplashProgress((prev) => {
+        const next = Math.min(100, prev + 2);
+        const stage = [...stages].reverse().find((s) => next >= s.at);
+        if (stage) setSplashText(stage.text);
+        if (next >= 100) {
+          clearInterval(interval);
+          setTimeout(() => setSplashDone(true), 600);
+        }
+        return next;
+      });
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  /* Redirect if already signed in (after splash) */
+  useEffect(() => {
+    if (splashDone && !authLoading && user) {
+      router.replace("/dashboard");
+    }
+  }, [splashDone, authLoading, user, router]);
 
   /* Auto-play video */
   useEffect(() => {
@@ -75,7 +115,7 @@ export default function SignInPage() {
         setTimeout(() => vid.play().catch(() => {}), 500);
       });
     }
-  }, []);
+  }, [splashDone]);
 
   /* Cycle adverts */
   useEffect(() => {
@@ -192,6 +232,40 @@ export default function SignInPage() {
 
   return (
     <div className={styles.page}>
+      {/* ═══ Splash / Loading Screen ═══ */}
+      {!splashDone && (
+        <div className={styles.splash}>
+          <div className={styles.splashGlow1} />
+          <div className={styles.splashGlow2} />
+          <div className={styles.splashContent}>
+            <div className={styles.splashLogoWrap}>
+              <div className={styles.splashLogoRing} />
+              <Image
+                src="/bohenixx.png"
+                alt="Bohenix"
+                width={80}
+                height={80}
+                className={styles.splashLogo}
+                priority
+              />
+            </div>
+            <h1 className={styles.splashTitle}>
+              BOHENIX <span className={styles.splashGradient}>ONE</span>
+            </h1>
+            <p className={styles.splashStatus}>{splashText}</p>
+            <div className={styles.splashTrack}>
+              <div
+                className={styles.splashFill}
+                style={{ width: `${splashProgress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ Main Sign-In Page (only after splash) ═══ */}
+      {splashDone && (
+      <>
       {/* Full-screen video background */}
       <div className={styles.videoBg}>
         <video
