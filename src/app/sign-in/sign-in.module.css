@@ -27,37 +27,6 @@
   overflow: hidden;
 }
 
-.splashGlow1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 600px;
-  height: 600px;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(139, 46, 255, 0.15) 0%, transparent 60%);
-  border-radius: 50%;
-  animation: pulseGlow 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.splashGlow2 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  height: 400px;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.1) 0%, transparent 60%);
-  border-radius: 50%;
-  animation: pulseGlow 4s ease-in-out infinite reverse;
-  pointer-events: none;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-}
-
 .splashContent {
   position: relative;
   z-index: 10;
@@ -74,20 +43,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.splashLogoRing {
-  position: absolute;
-  inset: -12px;
-  border-radius: 50%;
-  border: 1px solid rgba(139, 46, 255, 0.3);
-  border-top-color: #8B2EFF;
-  border-bottom-color: #00E5FF;
-  animation: spinRing 2s linear infinite;
-}
-
-@keyframes spinRing {
-  to { transform: rotate(360deg); }
 }
 
 .splashLogo {

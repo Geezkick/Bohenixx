@@ -235,11 +235,8 @@ export default function SignInPage() {
       {/* ═══ Splash / Loading Screen ═══ */}
       {!splashDone && (
         <div className={styles.splash}>
-          <div className={styles.splashGlow1} />
-          <div className={styles.splashGlow2} />
           <div className={styles.splashContent}>
             <div className={styles.splashLogoWrap}>
-              <div className={styles.splashLogoRing} />
               <Image
                 src="/bohenixx.png"
                 alt="Bohenix"
@@ -307,7 +304,7 @@ export default function SignInPage() {
                 ? "Enter your email to reset your password"
                 : mode === "signup"
                 ? "Join the digital ecosystem"
-                : "Access your enterprise portal"}
+                : "Access your portal"}
             </p>
           </div>
 
