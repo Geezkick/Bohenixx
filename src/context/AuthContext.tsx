@@ -77,10 +77,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           body: JSON.stringify({ email }),
         }).catch(() => {});
 
-        // Use router.push + router.refresh to properly update the session
-        // instead of window.location.assign which can race with cookie setting
-        router.push("/dashboard");
-        router.refresh();
+        // Use hard navigation to ensure the new session cookie is sent to middleware reliably
+        window.location.href = "/dashboard";
         return { success: true };
       }
 
@@ -112,8 +110,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (signInRes?.ok) {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
         return { success: true };
       }
 
