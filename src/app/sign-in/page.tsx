@@ -1,23 +1,487 @@
 "use client";
 
-import React from "react";
-import AuthScreen from "@/components/AuthScreen";
+import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeftIcon } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowLeftIcon,
+  MailIcon,
+  LockIcon,
+  UserIcon,
+  EyeIcon,
+  EyeOffIcon,
+  ShieldCheckIcon,
+} from "lucide-react";
+import styles from "./sign-in.module.css";
+
+type Mode = "login" | "signup" | "reset";
+
+const adverts = [
+  {
+    text: "Architecting a",
+    hl: "Cognitive Tech-Ecosystem",
+    mid: "to",
+    warm: "autonomously scale",
+    end: "Africa's Digital Infrastructure.",
+  },
+  {
+    text: "Engineering",
+    warm: "Hyper-Converged Solutions",
+    mid: "that fuse",
+    hl: "Predictive AI",
+    end: "with resilient enterprise security.",
+  },
+  {
+    text: "Bohenix ONE: The",
+    warm: "centralized nexus",
+    mid: "for",
+    hl: "Quantum-Resistant Networks",
+    end: "and Intelligent Automation.",
+  },
+  {
+    text: "Pioneering the",
+    warm: "next epoch",
+    mid: "of",
+    hl: "Cyber-Physical Systems",
+    end: "to drive Exponential Economic Velocity.",
+  },
+];
 
 export default function SignInPage() {
+  const { login, signup, loginWithGoogle, resetPassword } = useAuth();
+  const [mode, setMode] = useState<Mode>("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
+  const [totpCode, setTotpCode] = useState("");
+  const [adIndex, setAdIndex] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  /* Auto-play video */
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.muted = true;
+    const playPromise = vid.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        setTimeout(() => vid.play().catch(() => {}), 500);
+      });
+    }
+  }, []);
+
+  /* Cycle adverts */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAdIndex((p) => (p + 1) % adverts.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
+
+  /* Switch mode */
+  const switchMode = (m: Mode) => {
+    setMode(m);
+    setError("");
+    setSuccessMsg("");
+    setName("");
+    setPassword("");
+    setRequiresTwoFactor(false);
+    setTotpCode("");
+  };
+
+  /* Submit */
+  const handleSubmit = async () => {
+    setError("");
+    setSuccessMsg("");
+
+    if (mode === "reset") {
+      if (!email) {
+        setError("Please enter your email address");
+        return;
+      }
+      setLoading(true);
+      try {
+        const res = await resetPassword(email);
+        if (res.success) {
+          setSuccessMsg("Password reset email sent! Check your inbox.");
+        } else {
+          setError(res.error || "Failed to send reset email.");
+        }
+      } catch {
+        setError("Something went wrong. Try again.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (!email || !password) {
+      setError("Please fill in all required fields");
+      return;
+    }
+    if (mode === "signup" && !name) {
+      setError("Please enter your full name");
+      return;
+    }
+    if (mode === "signup" && password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result =
+        mode === "login"
+          ? await login(email, password, requiresTwoFactor ? totpCode : undefined)
+          : await signup(name, email, password);
+
+      if (!result.success) {
+        if (result.requiresTwoFactor) {
+          setRequiresTwoFactor(true);
+          if (result.error) setError(result.error);
+        } else {
+          setError(
+            result.error ||
+              (mode === "login" ? "Invalid credentials" : "Error creating account")
+          );
+        }
+      }
+    } catch {
+      setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* Google */
+  const handleGoogle = async () => {
+    setLoading(true);
+    setError("");
+    const res = await loginWithGoogle();
+    if (!res.success) {
+      setError(res.error || "Failed to initialize Google Sign-In");
+      setLoading(false);
+    }
+  };
+
+  /* Password strength */
+  const getStrength = () => {
+    const len = password.length;
+    if (len === 0) return { pct: 0, label: "", color: "transparent" };
+    if (len < 8) return { pct: (len / 12) * 100, label: "Weak", color: "#ef4444" };
+    if (len < 10) return { pct: (len / 12) * 100, label: "Fair", color: "#f59e0b" };
+    return { pct: Math.min(100, (len / 12) * 100), label: "Strong", color: "#22c55e" };
+  };
+  const strength = getStrength();
+
+  /* Mode config */
+  const config = {
+    login: { heading: "Sign In", submitLabel: "Authenticate", googleLabel: "Continue with Google" },
+    signup: { heading: "Create Account", submitLabel: "Create Account", googleLabel: "Sign up with Google" },
+    reset: { heading: "Reset Password", submitLabel: "Send Reset Link", googleLabel: "" },
+  };
+  const cur = config[mode];
+  const ad = adverts[adIndex];
+
   return (
-    <div style={{ minHeight: "100vh", background: "#050505", color: "#fff", display: "flex", flexDirection: "column" }}>
-      <header style={{ height: "64px", padding: "0 2rem", display: "flex", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#B3B3B8", textDecoration: "none", fontSize: "14px", fontWeight: 500 }}>
-          <ArrowLeftIcon size={16} /> Back to Home
-        </Link>
-      </header>
-      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-        <div style={{ width: "100%", maxWidth: "1200px" }}>
-          <AuthScreen />
+    <div className={styles.page}>
+      {/* Full-screen video background */}
+      <div className={styles.videoBg}>
+        <video
+          ref={videoRef}
+          src="/bohenixx.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        />
+        <div className={styles.videoOverlay} />
+      </div>
+
+      {/* Back to home */}
+      <Link href="/" className={styles.backLink}>
+        <ArrowLeftIcon size={15} /> Back to Home
+      </Link>
+
+      {/* Main card */}
+      <div className={styles.container}>
+        <div className={styles.card}>
+          {/* Branding */}
+          <div className={styles.branding}>
+            <div className={styles.logoWrap}>
+              <div className={styles.logoGlow} />
+              <Image
+                src="/bohenixx.png"
+                alt="Bohenix"
+                width={72}
+                height={72}
+                className={styles.logo}
+                priority
+              />
+            </div>
+            <h1 className={styles.brandName}>Bohenix ONE</h1>
+            <p className={styles.brandTagline}>
+              {mode === "reset"
+                ? "Enter your email to reset your password"
+                : mode === "signup"
+                ? "Join the digital ecosystem"
+                : "Access your enterprise portal"}
+            </p>
+          </div>
+
+          {/* Tabs — only show when not in reset mode */}
+          {mode !== "reset" && (
+            <div className={styles.tabs}>
+              <button
+                className={`${styles.tab} ${mode === "login" ? styles.tabActive : ""}`}
+                onClick={() => switchMode("login")}
+                type="button"
+              >
+                Sign In
+              </button>
+              <button
+                className={`${styles.tab} ${mode === "signup" ? styles.tabActive : ""}`}
+                onClick={() => switchMode("signup")}
+                type="button"
+              >
+                Create Account
+              </button>
+            </div>
+          )}
+
+          {/* Form */}
+          <div className={styles.form}>
+            {/* Name field (signup only) */}
+            {mode === "signup" && (
+              <div className={styles.field}>
+                <label className={styles.label}>Full Name</label>
+                <div className={styles.inputWrap}>
+                  <span className={styles.inputIcon}>
+                    <UserIcon size={16} />
+                  </span>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Doe"
+                    className={styles.input}
+                    autoComplete="name"
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                    id="signin-name"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Email */}
+            <div className={styles.field}>
+              <label className={styles.label}>Email</label>
+              <div className={styles.inputWrap}>
+                <span className={styles.inputIcon}>
+                  <MailIcon size={16} />
+                </span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@email.com"
+                  className={styles.input}
+                  autoComplete="email"
+                  onKeyDown={(e) => e.key === "Enter" && mode === "reset" && handleSubmit()}
+                  id="signin-email"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            {mode !== "reset" && (
+              <div className={styles.field}>
+                <label className={styles.label}>Password</label>
+                <div className={styles.inputWrap}>
+                  <span className={styles.inputIcon}>
+                    <LockIcon size={16} />
+                  </span>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className={styles.input}
+                    autoComplete={mode === "login" ? "current-password" : "new-password"}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                    id="signin-password"
+                  />
+                  <button
+                    type="button"
+                    className={styles.eyeToggle}
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Password strength (signup) */}
+            {mode === "signup" && password.length > 0 && (
+              <div className={styles.strengthWrap}>
+                <div className={styles.strengthTrack}>
+                  <div
+                    className={styles.strengthBar}
+                    style={{ width: `${strength.pct}%`, background: strength.color }}
+                  />
+                </div>
+                <span className={styles.strengthText}>{strength.label}</span>
+              </div>
+            )}
+
+            {/* 2FA code */}
+            {requiresTwoFactor && (
+              <div className={styles.field}>
+                <label className={styles.label}>Authentication Code</label>
+                <div className={styles.inputWrap}>
+                  <span className={styles.inputIcon}>
+                    <ShieldCheckIcon size={16} />
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoFocus
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value)}
+                    placeholder="6-digit code or backup code"
+                    className={styles.input}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                    id="signin-totp"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Error */}
+            {error && (
+              <motion.p
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={styles.errorMsg}
+              >
+                {error}
+              </motion.p>
+            )}
+
+            {/* Success */}
+            {successMsg && (
+              <motion.p
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={styles.successMsg}
+              >
+                {successMsg}
+              </motion.p>
+            )}
+
+            {/* Submit */}
+            <button
+              className={styles.submitBtn}
+              onClick={handleSubmit}
+              disabled={loading}
+              type="button"
+              id="signin-submit"
+            >
+              {loading ? <span className={styles.spinner} /> : cur.submitLabel}
+            </button>
+
+            {/* Google + divider */}
+            {mode !== "reset" && (
+              <>
+                <div className={styles.divider}>
+                  <div className={styles.dividerLine} />
+                  <span className={styles.dividerLabel}>or</span>
+                  <div className={styles.dividerLine} />
+                </div>
+
+                <button
+                  id="google-signin-btn"
+                  onClick={handleGoogle}
+                  disabled={loading}
+                  className={styles.googleBtn}
+                  type="button"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                  </svg>
+                  {cur.googleLabel}
+                </button>
+              </>
+            )}
+
+            {/* Forgot password link */}
+            {mode === "login" && (
+              <div className={styles.forgotLink}>
+                <button onClick={() => switchMode("reset")} type="button">
+                  Forgot your password?
+                </button>
+              </div>
+            )}
+
+            {mode === "reset" && (
+              <div className={styles.forgotLink}>
+                <button onClick={() => switchMode("login")} type="button">
+                  ← Back to Sign In
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-      </main>
+
+        {/* Bottom toggle */}
+        {mode !== "reset" && (
+          <div className={styles.bottomToggle}>
+            <span className={styles.bottomText}>
+              {mode === "login" ? "Don't have an account?" : "Already have an account?"}
+            </span>
+            <button
+              className={styles.bottomBtn}
+              onClick={() => switchMode(mode === "login" ? "signup" : "login")}
+              type="button"
+            >
+              {mode === "login" ? "Request Access" : "Sign In"}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Animated advert bar at bottom */}
+      <div className={styles.advertBar}>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={adIndex}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className={styles.advertText}
+          >
+            {ad.text}{" "}
+            <span className={styles.advertHighlight}>{ad.hl}</span>{" "}
+            {ad.mid}{" "}
+            <span className={styles.advertWarm}>{ad.warm}</span>{" "}
+            {ad.end}
+          </motion.p>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
