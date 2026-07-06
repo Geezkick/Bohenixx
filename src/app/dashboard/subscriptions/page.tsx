@@ -124,13 +124,81 @@ export default function SubscriptionsPage() {
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
-          <h1 className={styles.pageTitle}>My Requests & Services</h1>
-          <p className={styles.pageDesc}>Track your service requests and submit new project inquiries.</p>
+          <h1 className={styles.pageTitle}>Products & Services</h1>
+          <p className={styles.pageDesc}>Manage your active ecosystem products and request custom services.</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className={styles.btnPrimary}>
-          <Send size={16} /> {showForm ? "Cancel" : "New Request"}
+          <Send size={16} /> {showForm ? "Cancel" : "New Custom Request"}
         </button>
       </div>
+
+      <section style={{ marginBottom: "3rem" }}>
+        <h2 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "10px" }}>
+          <Package size={24} color="#B14CFF" /> Active Products
+        </h2>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          {/* BX POS Card */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(177,76,255,0.3)',
+            borderRadius: '20px',
+            padding: '1.5rem',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #8B2EFF, #B14CFF)' }} />
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </div>
+              <span style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                ACTIVE
+              </span>
+            </div>
+            
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX POS Terminal</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+              Your intelligent point-of-sale system. Accept payments, manage inventory, and generate digital receipts.
+            </p>
+            
+            <a href="/dashboard/pos" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'linear-gradient(135deg, #8B2EFF, #B14CFF)',
+              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch Terminal
+            </a>
+          </div>
+
+          {/* NjiaSafe Card */}
+          <div style={{
+            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/njiasafee.png" alt="NjiaSafe Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </div>
+              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                FREE ACCESS
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>NjiaSafe</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Road safety and smart mobility platform.
+            </p>
+            <a href="https://njiasafe.six.vercel.app" target="_blank" rel="noreferrer" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
+              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Open App
+            </a>
+          </div>
+        </div>
+      </section>
 
       {showForm && (
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem", marginBottom: "2rem" }}>

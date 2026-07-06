@@ -54,6 +54,7 @@ function AnimatedNumber({ value }: { value: number }) {
 
 
 const ecosystem = [
+  { name: "BX POS", desc: "A modern, intelligent point-of-sale terminal built for African businesses. Accept payments, manage inventory, generate receipts, and track sales.", icon: "/bohenixx.png", href: "/dashboard/pos" },
   { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app" },
   { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app" },
   { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app" },

@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 
 const ecosystem = [
+  { id: "bxpos", name: "BX POS", desc: "A modern, intelligent point-of-sale terminal built for African businesses. Accept payments, manage inventory, generate receipts, and track sales.", icon: "/bohenixx.png", color: "#B14CFF", href: "/dashboard/pos", price: "Pro", status: "Active" },
   { id: "njiasafe", name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", color: "#E0E0E0", href: "https://njiasafe.six.vercel.app", price: "Free", status: "Active" },
   { id: "bxomni", name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", color: "#B14CFF", href: "https://bohenixx.vercel.app", price: "Enterprise", status: "Active" },
   { id: "fixxo", name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", color: "#2979FF", href: "https://fixxo.vercel.app", price: "Free", status: "Active" },
