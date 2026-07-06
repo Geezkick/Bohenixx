@@ -6,26 +6,44 @@ import { getWelcomeEmailTemplate, getInternalAlertTemplate } from '@/utils/email
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
-
-    if (!name || !email || !password || password.length < 6) {
-      return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+    const body = await req.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
 
-    const existing = await db.user.findUnique({ where: { email } });
+    const { name, email, password } = body;
+
+    if (!name || !email || !password || password.length < 6) {
+      return NextResponse.json({ error: 'Please provide a valid name, email, and password (min 6 characters)' }, { status: 400 });
+    }
+
+    let existing;
+    try {
+      existing = await db.user.findUnique({ where: { email } });
+    } catch (dbErr: any) {
+      console.error('Database connection error during registration:', dbErr);
+      return NextResponse.json({ error: 'Service temporarily unavailable. Please try again.' }, { status: 503 });
+    }
+
     if (existing) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await db.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
+    let user;
+    try {
+      user = await db.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+        },
+      });
+    } catch (dbErr: any) {
+      console.error('Database error creating user:', dbErr);
+      return NextResponse.json({ error: 'Failed to create account. Please try again.' }, { status: 503 });
+    }
 
     sendEmail({
       to: email,
@@ -53,6 +71,7 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error('Register Error:', error);
-    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+    return NextResponse.json({ error: 'Something went wrong. Please try again.' }, { status: 500 });
   }
 }
+

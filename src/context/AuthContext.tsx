@@ -39,22 +39,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string, totpCode?: string) => {
     try {
-      if (!totpCode) {
-        const checkRes = await fetch("/api/auth/check-2fa", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-        const checkData = await checkRes.json().catch(() => ({}));
-        if (checkData?.requiresTwoFactor) {
-          return { success: false, requiresTwoFactor: true };
-        }
-      }
-
       const res = await signIn("credentials", {
         email,
         password,
-        totpCode,
+        totpCode: totpCode || "",
         redirect: false,
         callbackUrl: "/dashboard",
       });

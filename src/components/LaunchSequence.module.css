@@ -1,10 +1,13 @@
+/* ─── Bohenix Loading Splash ─── */
+/* Brand colors only: #050505 black, #fff white, #8B2EFF/#7B2DFF purple */
+
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #000;
+  background: #050505;
   z-index: 99999;
   display: flex;
   justify-content: center;
@@ -18,80 +21,71 @@
   visibility: hidden;
 }
 
-/* Ambient purple glow orbs */
-.glowOrb1 {
+/* Single subtle purple glow — matches landing page backgroundFX */
+.glowOrb {
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 46, 255, 0.15) 0%, transparent 70%);
-  top: 30%;
+  background: radial-gradient(circle, rgba(123, 45, 255, 0.08) 0%, transparent 70%);
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   animation: breathe 3s ease-in-out infinite;
 }
 
-.glowOrb2 {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 46, 255, 0.06) 0%, transparent 70%);
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: breathe 4s ease-in-out infinite reverse;
-}
-
 @keyframes breathe {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
 }
 
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   position: relative;
   z-index: 2;
+  width: 100%;
+  height: 100%;
 }
 
-/* App Icon — rounded square like a real app icon */
-.appIconWrapper {
+/* Logo — centered, clean, circular */
+.logoWrapper {
   position: relative;
-  margin-bottom: 32px;
+  margin-bottom: 0;
 }
 
-.appIconGlow {
+.logoGlow {
   position: absolute;
   inset: -20px;
-  border-radius: 32px;
-  background: radial-gradient(circle, rgba(139, 46, 255, 0.35) 0%, transparent 70%);
-  filter: blur(20px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(123, 45, 255, 0.2) 0%, transparent 70%);
+  filter: blur(16px);
   animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
 @keyframes pulseGlow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
 }
 
-.appIcon {
+.logoCircle {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #1a1a2e, #0d0d1a);
-  border: 1px solid rgba(139, 46, 255, 0.3);
+  background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+  border: 1px solid rgba(123, 45, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
   box-shadow:
-    0 0 0 1px rgba(139, 46, 255, 0.15),
+    0 0 0 1px rgba(123, 45, 255, 0.08),
     0 8px 32px rgba(0, 0, 0, 0.6),
-    0 0 60px rgba(139, 46, 255, 0.1);
+    0 0 40px rgba(123, 45, 255, 0.06);
 }
 
 .logoImage {
@@ -99,42 +93,20 @@
   object-fit: cover;
 }
 
-.title {
-  font-size: 1.8rem;
-  letter-spacing: 3px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #fff;
-}
-
-.gradient {
-  background: linear-gradient(135deg, #8B2EFF, #B14CFF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.statusText {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.45);
+/* Powered by — bottom of screen */
+.poweredBy {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.3);
   letter-spacing: 1px;
-  margin-bottom: 28px;
-  min-height: 1.2em;
-  transition: opacity 0.3s ease;
+  font-family: var(--font-secondary, 'Inter', sans-serif);
 }
 
-.progressTrack {
-  width: 200px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  background: linear-gradient(90deg, #8B2EFF, #B14CFF);
-  border-radius: 4px;
-  transition: width 0.08s linear;
-  box-shadow: 0 0 12px rgba(139, 46, 255, 0.5);
+.brandAccent {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
 }

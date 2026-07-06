@@ -141,14 +141,9 @@ export default function CorporateLandingPage() {
 
   const openContactModal = (target: string, e?: React.MouseEvent) => {
     if (e) e.preventDefault();
-    if (!user) {
-      showNotification({ title: "Sign In Required", message: "Please sign in to send inquiries.", type: "warning" });
-      loginWithGoogle();
-      return;
-    }
     setContactTarget(target);
-    if (!inquiryEmail) setInquiryEmail(user.email);
-    if (!inquiryName) setInquiryName(user.name);
+    if (user && !inquiryEmail) setInquiryEmail(user.email);
+    if (user && !inquiryName) setInquiryName(user.name);
     setIsContactModalOpen(true);
   };
 

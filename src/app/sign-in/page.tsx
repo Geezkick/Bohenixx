@@ -65,36 +65,18 @@ export default function SignInPage() {
   const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
   const [totpCode, setTotpCode] = useState("");
   const [adIndex, setAdIndex] = useState(0);
-  const [splashProgress, setSplashProgress] = useState(0);
-  const [splashText, setSplashText] = useState("Initializing...");
   const [splashDone, setSplashDone] = useState(false);
+  const [splashFadeOut, setSplashFadeOut] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  /* Splash loading sequence */
+  /* Simple timed splash — logo only */
   useEffect(() => {
-    const stages = [
-      { at: 0, text: "Initializing..." },
-      { at: 20, text: "Connecting to secure network..." },
-      { at: 45, text: "Verifying session..." },
-      { at: 70, text: "Loading portal..." },
-      { at: 90, text: "Almost ready..." },
-      { at: 100, text: "Welcome to Bohenix ONE" },
-    ];
+    const timer = setTimeout(() => {
+      setSplashFadeOut(true);
+      setTimeout(() => setSplashDone(true), 600);
+    }, 2000);
 
-    const interval = setInterval(() => {
-      setSplashProgress((prev) => {
-        const next = Math.min(100, prev + 2);
-        const stage = [...stages].reverse().find((s) => next >= s.at);
-        if (stage) setSplashText(stage.text);
-        if (next >= 100) {
-          clearInterval(interval);
-          setTimeout(() => setSplashDone(true), 600);
-        }
-        return next;
-      });
-    }, 30);
-
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
   }, []);
 
   /* Redirect if already signed in (after splash) */
@@ -234,28 +216,25 @@ export default function SignInPage() {
     <div className={styles.page}>
       {/* ═══ Splash / Loading Screen ═══ */}
       {!splashDone && (
-        <div className={styles.splash}>
+        <div className={`${styles.splash} ${splashFadeOut ? styles.splashFadeOut : ''}`}>
+          <div className={styles.splashGlow} />
           <div className={styles.splashContent}>
             <div className={styles.splashLogoWrap}>
-              <Image
-                src="/bohenixx.png"
-                alt="Bohenix"
-                width={80}
-                height={80}
-                className={styles.splashLogo}
-                priority
-              />
+              <div className={styles.splashLogoGlow} />
+              <div className={styles.splashLogoCircle}>
+                <Image
+                  src="/bohenixx.png"
+                  alt="Bohenix"
+                  width={80}
+                  height={80}
+                  className={styles.splashLogo}
+                  priority
+                />
+              </div>
             </div>
-            <h1 className={styles.splashTitle}>
-              BOHENIX <span className={styles.splashGradient}>ONE</span>
-            </h1>
-            <p className={styles.splashStatus}>{splashText}</p>
-            <div className={styles.splashTrack}>
-              <div
-                className={styles.splashFill}
-                style={{ width: `${splashProgress}%` }}
-              />
-            </div>
+          </div>
+          <div className={styles.splashPowered}>
+            Powered by <span className={styles.splashPoweredAccent}>Bohenix</span>
           </div>
         </div>
       )}

@@ -3,12 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./LaunchSequence.module.css";
-import HapticEngine from "@/lib/HapticEngine";
 
 export default function LaunchSequence() {
   const [show, setShow] = useState(true);
-  const [progress, setProgress] = useState(0);
-  const [statusText, setStatusText] = useState("Getting started...");
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     const hasSeen = sessionStorage.getItem("bx_launch_seen");
@@ -17,48 +15,30 @@ export default function LaunchSequence() {
       return;
     }
 
-    const stages = [
-      { at: 0, text: "Getting started..." },
-      { at: 20, text: "Initializing core systems..." },
-      { at: 45, text: "Loading ecosystem modules..." },
-      { at: 70, text: "Syncing applications..." },
-      { at: 90, text: "Almost ready..." },
-      { at: 100, text: "Welcome to Bohenix ONE" },
-    ];
+    // Simple timed splash — logo only, no progress bar
+    const timer = setTimeout(() => {
+      setFadeOut(true);
+      setTimeout(() => {
+        setShow(false);
+        sessionStorage.setItem("bx_launch_seen", "true");
+      }, 600);
+    }, 2000);
 
-    let interval = setInterval(() => {
-      setProgress((prev) => {
-        const next = Math.min(100, prev + 2);
-        const stage = [...stages].reverse().find(s => next >= s.at);
-        if (stage) setStatusText(stage.text);
-        if (next >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            HapticEngine.heavy(); // Cinematic thump
-            setShow(false);
-            sessionStorage.setItem("bx_launch_seen", "true");
-          }, 800);
-        }
-        return next;
-      });
-    }, 40);
-
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!show) return null;
 
   return (
-    <div className={`${styles.overlay} ${progress >= 100 ? styles.fadeOut : ''}`}>
-      {/* Ambient glow effects */}
-      <div className={styles.glowOrb1} />
-      <div className={styles.glowOrb2} />
+    <div className={`${styles.overlay} ${fadeOut ? styles.fadeOut : ''}`}>
+      {/* Subtle brand glow */}
+      <div className={styles.glowOrb} />
 
       <div className={styles.container}>
-        {/* App Icon */}
-        <div className={styles.appIconWrapper}>
-          <div className={styles.appIconGlow} />
-          <div className={styles.appIcon}>
+        {/* Logo only */}
+        <div className={styles.logoWrapper}>
+          <div className={styles.logoGlow} />
+          <div className={styles.logoCircle}>
             <Image
               src="/bohenixx.png"
               alt="Bohenix"
@@ -70,15 +50,9 @@ export default function LaunchSequence() {
           </div>
         </div>
 
-        {/* Brand */}
-        <h1 className={styles.title}>BOHENIX <span className={styles.gradient}>ONE</span></h1>
-
-        {/* Status */}
-        <p className={styles.statusText}>{statusText}</p>
-
-        {/* Progress */}
-        <div className={styles.progressTrack}>
-          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+        {/* Powered by text at bottom */}
+        <div className={styles.poweredBy}>
+          Powered by <span className={styles.brandAccent}>Bohenix</span>
         </div>
       </div>
     </div>
