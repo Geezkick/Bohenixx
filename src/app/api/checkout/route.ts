@@ -13,6 +13,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ url: '/command-center?mock_checkout=true' });
     }
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const returnUrl = body.returnUrl || '/dashboard';
+    
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -28,8 +31,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/command-center?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/${type === 'store' ? 'store' : 'services/request'}?canceled=true`,
+      success_url: `${baseUrl}${returnUrl}?success=true`,
+      cancel_url: `${baseUrl}${returnUrl}?canceled=true`,
     });
 
     return NextResponse.json({ url: session.url });

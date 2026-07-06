@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect, Suspense } from "react";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./pos.module.css";
 import {
   Search, ShoppingCart, Plus, Minus, Trash2, CreditCard, Package,
   Monitor, Wrench, Smartphone, Zap, BarChart3, Receipt, Clock,
-  CheckCircle2, Printer, X, Tag, Shield, Users, Wifi
+  CheckCircle2, Printer, X, Tag, Shield, Users, Wifi, Loader2, ExternalLink
 } from "lucide-react";
 import { useNotification } from "@/context/NotificationContext";
 import { useAuth } from "@/context/AuthContext";
@@ -15,7 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 type Category = "All" | "Food & Drink" | "Retail" | "Electronics" | "Services";
 interface Product { id: string; name: string; price: number; category: Category; icon: React.ReactNode; stock: number; }
 interface CartItem extends Product { quantity: number; }
-interface Transaction { id: string; items: CartItem[]; subtotal: number; tax: number; discount: number; total: number; date: Date; method: string; }
+interface Transaction { id: string; items: CartItem[]; subtotal: number; tax: number; discount: number; total: number; date: Date; method: string; status: "completed" | "pending"; checkoutUrl?: string; }
 
 // ─── Demo Inventory ───
 const PRODUCTS: Product[] = [
@@ -47,13 +48,16 @@ const PLANS = [
   { name: "Enterprise", price: 79, period: "/month", features: ["Everything in Business", "Multi-location", "API access", "Priority support", "Unlimited users", "Custom branding"], popular: false },
 ];
 
-export default function POSPage() {
+function POSContent() {
   const { user } = useAuth();
   const { showNotification } = useNotification();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Subscription state — default to active for demo
+  // Subscription state
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("");
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   // Terminal state
   const [search, setSearch] = useState("");
@@ -64,6 +68,26 @@ export default function POSPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showReceipt, setShowReceipt] = useState<Transaction | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [isCharging, setIsCharging] = useState(false);
+
+  // Hydrate subscription state
+  useEffect(() => {
+    const savedPlan = localStorage.getItem("bx_pos_plan");
+    if (savedPlan) {
+      setSelectedPlan(savedPlan);
+      setIsSubscribed(true);
+    }
+    
+    if (searchParams.get("success") === "true") {
+      setIsSubscribed(true);
+      if (!savedPlan) {
+        localStorage.setItem("bx_pos_plan", "Business");
+        setSelectedPlan("Business");
+      }
+      showNotification({ title: "Welcome to BX POS", message: "Your subscription is active. Start selling!", type: "success" });
+      router.replace("/dashboard/pos"); // Clean URL
+    }
+  }, [searchParams, router, showNotification]);
 
   const filtered = useMemo(() => PRODUCTS.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
@@ -107,23 +131,77 @@ export default function POSPage() {
     }
   };
 
-  const handleCharge = () => {
+  const handleCharge = async () => {
     if (!cart.length) return;
-    const txn: Transaction = {
-      id: `TXN-${Date.now().toString(36).toUpperCase()}`,
-      items: [...cart], subtotal, tax, discount: discountAmt, total,
-      date: new Date(), method: "Card"
-    };
-    setTransactions(prev => [txn, ...prev]);
-    setShowReceipt(txn);
-    showNotification({ title: "Payment Successful", message: `$${total.toFixed(2)} charged successfully`, type: "success" });
-    clearCart();
+    setIsCharging(true);
+    
+    try {
+      // Create a real checkout session for the customer
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemName: `POS Order (${cart.length} items)`,
+          priceAmount: total,
+          type: 'pos_transaction',
+          returnUrl: '/dashboard/pos'
+        })
+      });
+      const data = await res.json();
+      
+      const txn: Transaction = {
+        id: `TXN-${Date.now().toString(36).toUpperCase()}`,
+        items: [...cart], subtotal, tax, discount: discountAmt, total,
+        date: new Date(), method: "Stripe Checkout", status: "pending",
+        checkoutUrl: data.url
+      };
+      
+      setTransactions(prev => [txn, ...prev]);
+      setShowReceipt(txn);
+      clearCart();
+    } catch (err) {
+      showNotification({ title: "Payment Error", message: "Failed to generate payment link.", type: "error" });
+    } finally {
+      setIsCharging(false);
+    }
   };
 
-  const handleSubscribe = (plan: string) => {
-    setSelectedPlan(plan);
-    setIsSubscribed(true);
-    showNotification({ title: "Plan Activated", message: `${plan} plan is now active. Welcome to BX POS!`, type: "success" });
+  const handleSubscribe = async (plan: typeof PLANS[0]) => {
+    if (plan.price === 0) {
+      localStorage.setItem("bx_pos_plan", plan.name);
+      setSelectedPlan(plan.name);
+      setIsSubscribed(true);
+      showNotification({ title: "Free Plan Activated", message: "Welcome to BX POS Terminal!", type: "success" });
+      return;
+    }
+    
+    setIsCheckingOut(true);
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemName: `BX POS ${plan.name} Subscription`,
+          priceAmount: plan.price,
+          type: 'pos_subscription',
+          returnUrl: '/dashboard/pos'
+        })
+      });
+      const data = await res.json();
+      if (data.url && !data.url.includes("mock_checkout")) {
+        window.location.href = data.url;
+      } else {
+        // Fallback for mock mode if stripe is not configured
+        localStorage.setItem("bx_pos_plan", plan.name);
+        setSelectedPlan(plan.name);
+        setIsSubscribed(true);
+        showNotification({ title: "Dev Mode: Plan Activated", message: "Stripe key missing. Simulating checkout.", type: "success" });
+      }
+    } catch (error) {
+      showNotification({ title: "Checkout Error", message: "Failed to start checkout process.", type: "error" });
+    } finally {
+      setIsCheckingOut(false);
+    }
   };
 
   // ─── Subscription Gate ───
@@ -155,9 +233,10 @@ export default function POSPage() {
               </ul>
               <button
                 className={`${styles.planBtn} ${plan.popular ? styles.planBtnPrimary : styles.planBtnSecondary}`}
-                onClick={() => handleSubscribe(plan.name)}
+                onClick={() => handleSubscribe(plan)}
+                disabled={isCheckingOut}
               >
-                {plan.price === 0 ? "Start Free" : "Subscribe Now"}
+                {isCheckingOut ? <Loader2 size={18} className="spin" /> : (plan.price === 0 ? "Start Free" : "Subscribe Now")}
               </button>
             </div>
           ))}
@@ -165,7 +244,7 @@ export default function POSPage() {
 
         <div className={styles.featuresGrid}>
           {[
-            { icon: <CreditCard size={24} />, title: "Accept Any Payment", desc: "Cards, M-Pesa, cash, and NFC contactless." },
+            { icon: <CreditCard size={24} />, title: "Accept Any Payment", desc: "Generate real Stripe checkout links instantly." },
             { icon: <BarChart3 size={24} />, title: "Real-Time Analytics", desc: "Track sales, revenue, and top products live." },
             { icon: <Shield size={24} />, title: "Secure & Compliant", desc: "PCI-DSS compliant with encrypted transactions." },
             { icon: <Users size={24} />, title: "Multi-User Access", desc: "Add cashiers with role-based permissions." },
@@ -221,7 +300,7 @@ export default function POSPage() {
   // ─── Active POS Terminal ───
   return (
     <div className={styles.terminal}>
-      {/* Receipt Modal */}
+      {/* Receipt / Payment Modal */}
       {showReceipt && (
         <div className={styles.receiptOverlay} onClick={() => setShowReceipt(null)}>
           <div className={styles.receipt} onClick={e => e.stopPropagation()}>
@@ -230,6 +309,16 @@ export default function POSPage() {
               <h3>Bohenix POS</h3>
               <p>{user?.name || "Business"} · {selectedPlan} Plan</p>
             </div>
+            
+            {showReceipt.checkoutUrl && (
+              <div style={{ textAlign: 'center', margin: '1rem 0', padding: '1rem', background: 'rgba(177, 76, 255, 0.1)', borderRadius: '12px', border: '1px solid rgba(177, 76, 255, 0.3)' }}>
+                <p style={{ fontSize: '0.85rem', color: '#B14CFF', fontWeight: 600, marginBottom: '0.5rem' }}>Customer Payment Link Ready</p>
+                <a href={showReceipt.checkoutUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#B14CFF', color: '#fff', padding: '0.5rem 1rem', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>
+                  Open Checkout <ExternalLink size={14} />
+                </a>
+              </div>
+            )}
+            
             <hr className={styles.receiptDivider} />
             <div className={styles.receiptMeta}><span>Transaction</span><span>{showReceipt.id}</span></div>
             <div className={styles.receiptMeta}><span>Date</span><span>{showReceipt.date.toLocaleDateString()}</span></div>
@@ -348,11 +437,19 @@ export default function POSPage() {
           {appliedDiscount > 0 && <div className={`${styles.summaryRow} ${styles.discountActive}`}><span>Discount ({appliedDiscount}%)</span><span>-${discountAmt.toFixed(2)}</span></div>}
           <div className={styles.summaryRow}><span>Tax (16%)</span><span>${tax.toFixed(2)}</span></div>
           <div className={styles.totalRow}><span>Total</span><span>${total.toFixed(2)}</span></div>
-          <button className={styles.chargeBtn} disabled={!cart.length} onClick={handleCharge}>
-            <CreditCard size={18} /> Charge ${total.toFixed(2)}
+          <button className={styles.chargeBtn} disabled={!cart.length || isCharging} onClick={handleCharge}>
+            {isCharging ? <Loader2 size={18} className="spin" /> : <><CreditCard size={18} /> Charge ${total.toFixed(2)}</>}
           </button>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function POSPage() {
+  return (
+    <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", padding: "4rem" }}><Loader2 className="spin" size={32} color="#B14CFF" /></div>}>
+      <POSContent />
+    </Suspense>
   );
 }
