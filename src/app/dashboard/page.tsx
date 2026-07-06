@@ -103,6 +103,7 @@ export default function DashboardOverview() {
       <div style={{ marginTop: "3rem" }}>
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Ecosystem Apps</h2>
         <SwipeableCards apps={[
+          { name: "BX POS", icon: "bohenixx.png", tagline: "Terminal & Payments", color: "#B14CFF", url: "/dashboard/pos" },
           { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Smart Mobility", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
           { name: "Mboka", icon: "mboka.png", tagline: "Job Marketplace", color: "#FF6D00", url: "https://mboka.vercel.app" },
           { name: "Fixxo", icon: "fixxo.png", tagline: "Smart Repairs", color: "#2979FF", url: "https://fixxo.vercel.app" },
