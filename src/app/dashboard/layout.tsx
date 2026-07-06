@@ -33,6 +33,9 @@ const navItems = [
 
 const productItems = [
   { name: "BX POS", href: "/dashboard/pos", icon: <Image src="/bohenixx.png" alt="BX POS" width={18} height={18} /> },
+  { name: "BX Social Proof", href: "/dashboard/testimonials", icon: <Image src="/bohenixx.png" alt="BX Social Proof" width={18} height={18} /> },
+  { name: "BX Invoices", href: "/dashboard/invoices", icon: <Image src="/bohenixx.png" alt="BX Invoices" width={18} height={18} /> },
+  { name: "BX Scheduler", href: "/dashboard/appointments", icon: <Image src="/bohenixx.png" alt="BX Scheduler" width={18} height={18} /> },
 ];
 
 const siteLinks = [
