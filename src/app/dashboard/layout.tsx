@@ -24,12 +24,15 @@ import Image from "next/image";
 
 const navItems = [
   { name: "Overview", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
-  { name: "BX POS", href: "/dashboard/pos", icon: <CreditCard size={18} /> },
   { name: "Products & Services", href: "/dashboard/subscriptions", icon: <Package size={18} /> },
   { name: "BX Labs", href: "/dashboard/labs", icon: <FlaskConical size={18} /> },
   { name: "Events", href: "/dashboard/events", icon: <Calendar size={18} /> },
   { name: "Developer Portal", href: "/dashboard/developer", icon: <Code2 size={18} /> },
   { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
+];
+
+const productItems = [
+  { name: "BX POS", href: "/dashboard/pos", icon: <Image src="/bohenixx.png" alt="BX POS" width={18} height={18} /> },
 ];
 
 const siteLinks = [
@@ -102,6 +105,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav className={styles.navLinks}>
           <span className={styles.navLabel}>Dashboard</span>
           {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
+                {item.icon}
+                {item.name}
+              </Link>
+            );
+          })}
+
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Products</span>
+          {productItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
