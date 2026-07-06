@@ -5,6 +5,7 @@ import styles from "./dashboard.module.css";
 import { ArrowRight, Activity, Zap, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import SwipeableCards from "@/components/SwipeableCards";
 
 type OverviewData = {
   apiKeyCount: number;
@@ -97,6 +98,17 @@ export default function DashboardOverview() {
             View Events
           </Link>
         </div>
+      </div>
+
+      <div style={{ marginTop: "3rem" }}>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Ecosystem Apps</h2>
+        <SwipeableCards apps={[
+          { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Smart Mobility", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
+          { name: "Mboka", icon: "mboka.png", tagline: "Job Marketplace", color: "#FF6D00", url: "https://mboka.vercel.app" },
+          { name: "Fixxo", icon: "fixxo.png", tagline: "Smart Repairs", color: "#2979FF", url: "https://fixxo.vercel.app" },
+          { name: "Vuna", icon: "vuna.png", tagline: "AgriTech Shorts", color: "#76FF03", url: "https://vunashorts.vercel.app" },
+          { name: "Safura", icon: "safura.png", tagline: "AI Food Scanner", color: "#00E5FF", url: "https://safura-ai.vercel.app" }
+        ]} />
       </div>
 
       <div style={{ marginTop: "3rem" }}>

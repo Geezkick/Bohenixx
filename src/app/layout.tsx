@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import SessionWrapper from "@/components/SessionWrapper";
+import CommandPalette from "@/components/CommandPalette";
+import PullToRefresh from "@/components/PullToRefresh";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -74,6 +76,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SessionWrapper>
           <NotificationProvider>
             <AuthProvider>
+              <PullToRefresh />
+              <CommandPalette />
               {children}
             </AuthProvider>
           </NotificationProvider>

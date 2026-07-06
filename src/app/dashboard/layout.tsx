@@ -24,7 +24,8 @@ import Image from "next/image";
 
 const navItems = [
   { name: "Overview", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
-  { name: "Products & Services", href: "/dashboard/subscriptions", icon: <CreditCard size={18} /> },
+  { name: "BX POS", href: "/dashboard/pos", icon: <CreditCard size={18} /> },
+  { name: "Products & Services", href: "/dashboard/subscriptions", icon: <Package size={18} /> },
   { name: "BX Labs", href: "/dashboard/labs", icon: <FlaskConical size={18} /> },
   { name: "Events", href: "/dashboard/events", icon: <Calendar size={18} /> },
   { name: "Developer Portal", href: "/dashboard/developer", icon: <Code2 size={18} /> },

@@ -35,7 +35,9 @@ export async function sendEmail(options: SendEmailOptions) {
     },
     tls: {
       rejectUnauthorized: false
-    }
+    },
+    connectionTimeout: 10000, // 10 seconds timeout instead of hanging forever
+    greetingTimeout: 10000,
   });
 
   try {
