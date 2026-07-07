@@ -104,9 +104,7 @@ export default function DashboardOverview() {
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Ecosystem Apps</h2>
         <SwipeableCards apps={[
           { name: "BX POS", icon: "bohenixx.png", tagline: "Terminal & Payments", color: "#B14CFF", url: "/dashboard/pos" },
-          { name: "BX Social Proof", icon: "bohenixx.png", tagline: "Wall of Love", color: "#B14CFF", url: "/dashboard/testimonials" },
-          { name: "BX Invoices", icon: "bohenixx.png", tagline: "Smart Billing", color: "#B14CFF", url: "/dashboard/invoices" },
-          { name: "BX Scheduler", icon: "bohenixx.png", tagline: "Time Management", color: "#B14CFF", url: "/dashboard/appointments" }
+          { name: "BX Business Suite", icon: "bohenixx.png", tagline: "Invoices, Scheduling & Proof", color: "#B14CFF", url: "/dashboard/subscriptions" }
         ]} />
       </div>
 

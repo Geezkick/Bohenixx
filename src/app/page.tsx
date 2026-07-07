@@ -55,9 +55,7 @@ function AnimatedNumber({ value }: { value: number }) {
 
 const ecosystem = [
   { name: "BX POS", desc: "A modern, intelligent point-of-sale terminal built for African businesses. Accept payments, manage inventory, generate receipts, and track sales.", icon: "/bohenixx.png", href: "/dashboard/pos", status: "active" },
-  { name: "BX Social Proof", desc: "Collect video and text testimonials from your customers and display them anywhere with a beautiful, embeddable 'Wall of Love'.", icon: "/bohenixx.png", href: "/dashboard/testimonials", status: "active" },
-  { name: "BX Invoices", desc: "Automate your billing. Create beautiful invoices, set up automatic payment reminders, and get paid faster.", icon: "/bohenixx.png", href: "/dashboard/invoices", status: "active" },
-  { name: "BX Scheduler", desc: "The smartest way to manage your time. Let clients book appointments instantly with a customized booking portal.", icon: "/bohenixx.png", href: "/dashboard/appointments", status: "active" },
+  { name: "BX Business Suite", desc: "A comprehensive Micro-SaaS suite. Automate your billing, collect powerful video testimonials, and manage client appointments intelligently from a single unified portal.", icon: "/bohenixx.png", href: "/dashboard/subscriptions", status: "active" },
   { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app", status: "development" },
   { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app", status: "development" },
   { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app", status: "development" },
@@ -475,6 +473,23 @@ export default function CorporateLandingPage() {
                   <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', padding: '4px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', color: '#fff', textTransform: 'uppercase' }}>{lab.tag}</span>
                 </div>
                 <p style={{ fontSize: '15px', color: '#B3B3B8', lineHeight: 1.6, margin: 0 }}>{lab.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#fff', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>Products in Incubation</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
+            {ecosystem.filter(p => p.status === 'development').map(product => (
+              <div key={product.name} style={{ padding: '1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                     <Image src={product.icon} alt={product.name} width={24} height={24} />
+                     <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>{product.name}</h4>
+                  </div>
+                  <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', padding: '4px 12px', background: 'rgba(255,152,0,0.1)', borderRadius: '99px', color: '#FF9800', textTransform: 'uppercase' }}>IN DEVELOPMENT</span>
+                </div>
+                <p style={{ fontSize: '15px', color: '#B3B3B8', lineHeight: 1.6, margin: 0 }}>{product.desc}</p>
+                <p style={{ fontSize: '13px', color: '#7B2DFF', fontWeight: 600, margin: '1rem 0 0 0' }}>🚀 Launching soon</p>
               </div>
             ))}
           </div>
