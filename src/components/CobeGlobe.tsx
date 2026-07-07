@@ -35,25 +35,7 @@ function isWebGLAvailable(): boolean {
   if (typeof window === "undefined") return false;
   try {
     const canvas = document.createElement("canvas");
-    const gl =
-      canvas.getContext("webgl2") ||
-      canvas.getContext("webgl") ||
-      canvas.getContext("experimental-webgl");
-    if (!gl) return false;
-    // Also check if it's actually usable (not a lost context)
-    if (gl instanceof WebGLRenderingContext || gl instanceof WebGL2RenderingContext) {
-      // Check for context loss indicator
-      const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-      if (debugInfo) {
-        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        // SwiftShader and similar software renderers are often unstable
-        if (renderer && typeof renderer === "string" && renderer.includes("SwiftShader")) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
+    return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
   } catch {
     return false;
   }
