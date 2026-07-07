@@ -160,9 +160,9 @@ export default function SubscriptionsPage() {
                 AI POWERED
               </span>
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Medical POS</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Multi-Industry POS</h3>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              AI-integrated pharmacy & clinic POS. Drug interaction warnings, predictive inventory, and M-Pesa / Stripe billing.
+              Customizable multi-industry AI POS. Dynamic inventory forecasting, context-aware insights, and seamless M-Pesa / Stripe billing.
             </p>
             <a href="/dashboard/pos" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
