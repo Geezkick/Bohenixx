@@ -197,6 +197,84 @@ export default function SubscriptionsPage() {
               Open App
             </a>
           </div>
+
+          {/* BX Social Proof Card */}
+          <div style={{
+            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </div>
+              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                ACTIVE
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Social Proof</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Collect and display testimonials with a beautiful, embeddable Wall of Love.
+            </p>
+            <a href="/dashboard/testimonials" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
+              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch App
+            </a>
+          </div>
+
+          {/* BX Invoices Card */}
+          <div style={{
+            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </div>
+              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                ACTIVE
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Invoices</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Automate your billing. Create beautiful invoices and get paid faster.
+            </p>
+            <a href="/dashboard/invoices" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
+              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch App
+            </a>
+          </div>
+
+          {/* BX Scheduler Card */}
+          <div style={{
+            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              </div>
+              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                ACTIVE
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Scheduler</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Let clients book appointments instantly with a customized portal.
+            </p>
+            <a href="/dashboard/appointments" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
+              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch App
+            </a>
+          </div>
         </div>
       </section>
 

@@ -389,7 +389,7 @@ export default function CorporateLandingPage() {
 
                 <div style={{ textAlign: 'right' }}>
                   {user?.email === 'nyarienyabrian05@gmail.com' ? (
-                    <a href={product.href} target="_blank" className={styles.showcaseLink}>
+                    <a href={product.href} {...(product.href.startsWith("http") ? { target: "_blank" } : {})} className={styles.showcaseLink}>
                       Access Platform <ArrowRightIcon size={16} />
                     </a>
                   ) : (

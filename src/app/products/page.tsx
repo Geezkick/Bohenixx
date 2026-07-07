@@ -85,7 +85,7 @@ export default function ProductsPage() {
                   
                   <Link 
                     href={user ? product.href : "/dashboard"} 
-                    target={user ? "_blank" : "_self"}
+                    {...(user && product.href.startsWith("http") ? { target: "_blank" } : {})}
                     style={{ 
                       display: 'inline-flex',
                       alignItems: 'center',

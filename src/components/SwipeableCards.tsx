@@ -36,11 +36,12 @@ export default function SwipeableCards({ apps }: { apps: AppItem[] }) {
   return (
     <div className={styles.wrapper}>
       <div ref={scrollRef} className={styles.track}>
-        {apps.map((app) => (
+        {apps.map((app) => {
+          const isExternal = app.url.startsWith("http");
+          return (
           <Link
             href={app.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
             key={app.name}
             className={styles.card}
           >
@@ -80,7 +81,8 @@ export default function SwipeableCards({ apps }: { apps: AppItem[] }) {
               Open
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
 
       {/* Page indicators */}

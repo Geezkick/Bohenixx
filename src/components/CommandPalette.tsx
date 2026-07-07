@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./CommandPalette.module.css";
@@ -15,7 +16,10 @@ const MOCK_LINKS = [
   { name: "Events", href: "/dashboard/events", icon: <FileTextIcon size={18} color="#B14CFF" />, category: "Dashboard" },
   { name: "Developer Portal", href: "/dashboard/developer", icon: <SettingsIcon size={18} color="#00E5FF" />, category: "Dashboard" },
   { name: "Account Settings", href: "/dashboard/settings", icon: <SettingsIcon size={18} color="#22c55e" />, category: "Dashboard" },
-  { name: "BX POS Terminal", href: "/dashboard/pos", icon: <ShoppingBagIcon size={18} color="#B14CFF" />, category: "Apps" },
+  { name: "BX POS Terminal", href: "/dashboard/pos", icon: <Image src="/bohenixx.png" alt="Logo" width={18} height={18} />, category: "Apps" },
+  { name: "BX Social Proof", href: "/dashboard/testimonials", icon: <Image src="/bohenixx.png" alt="Logo" width={18} height={18} />, category: "Apps" },
+  { name: "BX Invoices", href: "/dashboard/invoices", icon: <Image src="/bohenixx.png" alt="Logo" width={18} height={18} />, category: "Apps" },
+  { name: "BX Scheduler", href: "/dashboard/appointments", icon: <Image src="/bohenixx.png" alt="Logo" width={18} height={18} />, category: "Apps" },
   { name: "NjiaSafe Dashboard", href: "https://njiasafe.six.vercel.app", icon: <ShieldIcon size={18} color="#00C853" />, category: "Apps" },
   { name: "Mboka Marketplace", href: "https://mboka.vercel.app", icon: <ShoppingBagIcon size={18} color="#FF6D00" />, category: "Apps" },
   { name: "Fixxo Repairs", href: "https://fixxo.vercel.app", icon: <SettingsIcon size={18} color="#2979FF" />, category: "Apps" },
