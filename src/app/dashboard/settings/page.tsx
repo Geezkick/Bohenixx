@@ -11,6 +11,7 @@ import {
   XCircle,
   Copy,
   Loader2,
+  Settings,
 } from "lucide-react";
 
 type Toast = { id: number; message: string; kind: "success" | "error" };
@@ -23,6 +24,24 @@ export default function SettingsPage() {
     const id = Date.now() + Math.random();
     setToasts((t) => [...t, { id, message, kind }]);
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3500);
+  };
+
+  // POS Settings
+  const [posMode, setPosMode] = useState<string>("Medical");
+  const [savingPosMode, setSavingPosMode] = useState(false);
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem("bx_pos_mode");
+    if (savedMode) setPosMode(savedMode);
+  }, []);
+
+  const handleSavePosMode = () => {
+    setSavingPosMode(true);
+    localStorage.setItem("bx_pos_mode", posMode);
+    setTimeout(() => {
+      setSavingPosMode(false);
+      pushToast("POS Configuration updated", "success");
+    }, 400);
   };
 
   // Profile
@@ -422,6 +441,47 @@ export default function SettingsPage() {
             </>
           )}
         </div>
+
+        {/* POS Configuration */}
+        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
+            <Settings size={24} color="#f59e0b" />
+            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>POS Configuration</h2>
+          </div>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem", maxWidth: "500px" }}>
+            Customize the Point of Sale terminal for your specific business industry. This changes the AI insights, terminology, and default inventory.
+          </p>
+          <div style={{ marginBottom: "1.5rem", maxWidth: "420px" }}>
+            <label style={{ display: "block", fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.5rem" }}>Business Mode</label>
+            <select
+              value={posMode === "Medical" || posMode === "Retail" || posMode === "Restaurant" || posMode === "Service" ? posMode : "Other"}
+              onChange={(e) => {
+                if (e.target.value !== "Other") setPosMode(e.target.value);
+                else setPosMode("");
+              }}
+              style={{ width: "100%", background: "#000", padding: "0.85rem 1rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", outline: "none", WebkitAppearance: "none", appearance: "none", marginBottom: (posMode !== "Medical" && posMode !== "Retail" && posMode !== "Restaurant" && posMode !== "Service") ? "0.5rem" : "0" }}
+            >
+              <option value="Medical">Medical / Pharmacy</option>
+              <option value="Retail">Retail Store</option>
+              <option value="Restaurant">Restaurant / Cafe</option>
+              <option value="Service">Consulting / Services</option>
+              <option value="Other">Other (Custom Industry)</option>
+            </select>
+            {(posMode !== "Medical" && posMode !== "Retail" && posMode !== "Restaurant" && posMode !== "Service") && (
+              <input
+                type="text"
+                placeholder="Enter your industry (e.g. Real Estate)"
+                value={posMode}
+                onChange={(e) => setPosMode(e.target.value)}
+                style={{ width: "100%", background: "#000", padding: "0.85rem 1rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", outline: "none" }}
+              />
+            )}
+          </div>
+          <button onClick={handleSavePosMode} disabled={savingPosMode} className={styles.btnPrimary} style={{ opacity: savingPosMode ? 0.6 : 1, background: "linear-gradient(135deg, #f59e0b, #d97706)" }}>
+            {savingPosMode ? "Saving..." : "Save Configuration"}
+          </button>
+        </div>
+
       </div>
     </>
   );
