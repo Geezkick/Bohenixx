@@ -54,17 +54,17 @@ function AnimatedNumber({ value }: { value: number }) {
 
 
 const ecosystem = [
-  { name: "BX POS", desc: "A modern, intelligent point-of-sale terminal built for African businesses. Accept payments, manage inventory, generate receipts, and track sales.", icon: "/bohenixx.png", href: "/dashboard/pos" },
-  { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app" },
-  { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app" },
-  { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app" },
-  { name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Intelligent geo-matching and verified profiles.", icon: "/mboka.png", href: "https://mboka.vercel.app" },
-  { name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Connect, engage, trade.", icon: "/vuna.png", href: "https://vunashorts.vercel.app" },
-  { name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", href: "https://kwelify.vercel.app" },
-  { name: "Safura", desc: "Autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and origin data without any manual input.", icon: "/safura.png", href: "https://safura-ai.vercel.app" },
-  { name: "BX Social Proof", desc: "Collect video and text testimonials from your customers and display them anywhere with a beautiful, embeddable 'Wall of Love'.", icon: "/bohenixx.png", href: "/dashboard/testimonials" },
-  { name: "BX Invoices", desc: "Automate your billing. Create beautiful invoices, set up automatic payment reminders, and get paid faster.", icon: "/bohenixx.png", href: "/dashboard/invoices" },
-  { name: "BX Scheduler", desc: "The smartest way to manage your time. Let clients book appointments instantly with a customized booking portal.", icon: "/bohenixx.png", href: "/dashboard/appointments" },
+  { name: "BX POS", desc: "A modern, intelligent point-of-sale terminal built for African businesses. Accept payments, manage inventory, generate receipts, and track sales.", icon: "/bohenixx.png", href: "/dashboard/pos", status: "active" },
+  { name: "BX Social Proof", desc: "Collect video and text testimonials from your customers and display them anywhere with a beautiful, embeddable 'Wall of Love'.", icon: "/bohenixx.png", href: "/dashboard/testimonials", status: "active" },
+  { name: "BX Invoices", desc: "Automate your billing. Create beautiful invoices, set up automatic payment reminders, and get paid faster.", icon: "/bohenixx.png", href: "/dashboard/invoices", status: "active" },
+  { name: "BX Scheduler", desc: "The smartest way to manage your time. Let clients book appointments instantly with a customized booking portal.", icon: "/bohenixx.png", href: "/dashboard/appointments", status: "active" },
+  { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app", status: "development" },
+  { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app", status: "development" },
+  { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app", status: "development" },
+  { name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Intelligent geo-matching and verified profiles.", icon: "/mboka.png", href: "https://mboka.vercel.app", status: "development" },
+  { name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Connect, engage, trade.", icon: "/vuna.png", href: "https://vunashorts.vercel.app", status: "development" },
+  { name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", href: "https://kwelify.vercel.app", status: "development" },
+  { name: "Safura", desc: "Autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and origin data without any manual input.", icon: "/safura.png", href: "https://safura-ai.vercel.app", status: "development" },
 ];
 
 const services = [
@@ -364,7 +364,7 @@ export default function CorporateLandingPage() {
           </motion.div>
 
           <div className={styles.showcaseList}>
-            {ecosystem.map((product, idx) => (
+            {ecosystem.filter(p => p.status === 'active').map((product, idx) => (
               <motion.div 
                 key={idx} 
                 initial="hidden" 
@@ -380,23 +380,17 @@ export default function CorporateLandingPage() {
                 <div className={styles.showcaseContent}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
                     <h3 className={styles.showcaseTitle} style={{ margin: 0 }}>{product.name}</h3>
-                    <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', padding: '4px 10px', background: 'rgba(255,152,0,0.1)', borderRadius: '99px', color: '#FF9800', textTransform: 'uppercase' }}>
-                      IN DEVELOPMENT
+                    <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', padding: '4px 10px', background: 'rgba(0, 229, 255, 0.1)', borderRadius: '99px', color: '#00E5FF', textTransform: 'uppercase' }}>
+                      NEW & ACTIVE
                     </span>
                   </div>
                   <p className={styles.showcaseDesc}>{product.desc}</p>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                  {user?.email === 'nyarienyabrian05@gmail.com' ? (
-                    <a href={product.href} {...(product.href.startsWith("http") ? { target: "_blank" } : {})} className={styles.showcaseLink}>
-                      Access Platform <ArrowRightIcon size={16} />
-                    </a>
-                  ) : (
-                    <p style={{ fontSize: '13px', color: '#B3B3B8', fontWeight: 500, margin: 0 }}>
-                      🚀 Launching soon
-                    </p>
-                  )}
+                  <a href={product.href} {...(product.href.startsWith("http") ? { target: "_blank" } : {})} className={styles.showcaseLink}>
+                    Access Platform <ArrowRightIcon size={16} />
+                  </a>
                 </div>
               </motion.div>
             ))}

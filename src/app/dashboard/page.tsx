@@ -104,11 +104,6 @@ export default function DashboardOverview() {
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Ecosystem Apps</h2>
         <SwipeableCards apps={[
           { name: "BX POS", icon: "bohenixx.png", tagline: "Terminal & Payments", color: "#B14CFF", url: "/dashboard/pos" },
-          { name: "NjiaSafe", icon: "njiasafee.png", tagline: "Smart Mobility", color: "#00C853", url: "https://njiasafe.six.vercel.app" },
-          { name: "Mboka", icon: "mboka.png", tagline: "Job Marketplace", color: "#FF6D00", url: "https://mboka.vercel.app" },
-          { name: "Fixxo", icon: "fixxo.png", tagline: "Smart Repairs", color: "#2979FF", url: "https://fixxo.vercel.app" },
-          { name: "Vuna", icon: "vuna.png", tagline: "AgriTech Shorts", color: "#76FF03", url: "https://vunashorts.vercel.app" },
-          { name: "Safura", icon: "safura.png", tagline: "AI Food Scanner", color: "#00E5FF", url: "https://safura-ai.vercel.app" },
           { name: "BX Social Proof", icon: "bohenixx.png", tagline: "Wall of Love", color: "#B14CFF", url: "/dashboard/testimonials" },
           { name: "BX Invoices", icon: "bohenixx.png", tagline: "Smart Billing", color: "#B14CFF", url: "/dashboard/invoices" },
           { name: "BX Scheduler", icon: "bohenixx.png", tagline: "Time Management", color: "#B14CFF", url: "/dashboard/appointments" }
