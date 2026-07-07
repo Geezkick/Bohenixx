@@ -581,10 +581,10 @@ export default function CorporateLandingPage() {
           <div className={styles.footerCol}>
             <h4>Ecosystem</h4>
             <ul>
-              <li><Link href="#products">NjiaSafe</Link></li>
-              <li><Link href="#products">BX Omni</Link></li>
-              <li><Link href="#products">Safura</Link></li>
-              <li><Link href="#products">Fixxo</Link></li>
+              <li><Link href="/dashboard/pos">BX POS</Link></li>
+              <li><Link href="/dashboard/subscriptions">BX Business Suite</Link></li>
+              <li><Link href="#products">All Products</Link></li>
+              <li><Link href="#labs">BX Labs</Link></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

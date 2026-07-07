@@ -105,6 +105,54 @@ export default function ProductsPage() {
               </div>
             ))}
           </div>
+
+          {/* Coming Soon Section */}
+          {ecosystem.filter(p => p.status === 'In Development').length > 0 && (
+            <>
+              <div style={{ marginTop: '5rem', marginBottom: '2rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '3rem' }}>
+                <h2 style={{ fontSize: '2rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>Coming Soon</h2>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '1rem', maxWidth: '500px' }}>
+                  Products currently in development at BX Labs.
+                </p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', opacity: 0.7 }}>
+                {ecosystem.filter(p => p.status === 'In Development').map((product) => (
+                  <div
+                    key={product.id}
+                    style={{
+                      background: 'rgba(255,255,255,0.02)',
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      borderRadius: '24px',
+                      padding: '2rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '1rem',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      {product.icon ? (
+                        <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                          <Image src={product.icon} alt={product.name} width={60} height={60} style={{ objectFit: 'cover' }} />
+                        </div>
+                      ) : (
+                        <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'linear-gradient(135deg, #B14CFF, #00E5FF)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.5rem', color: '#fff' }}>
+                          {product.name.charAt(0)}
+                        </div>
+                      )}
+                      <span style={{ background: 'rgba(255, 152, 0, 0.1)', color: '#FF9800', padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                        In Development
+                      </span>
+                    </div>
+                    <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', margin: 0 }}>{product.name}</h3>
+                    <p style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.5, margin: 0, flex: 1, fontSize: '0.95rem' }}>{product.desc}</p>
+                    <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                      <span style={{ fontSize: '0.9rem', color: '#7B2DFF', fontWeight: 600 }}>🚀 Launching soon</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </main>
     </>
