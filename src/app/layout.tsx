@@ -46,6 +46,35 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('error', function(e) {
+                if (e.message && (
+                  e.message.includes('WebGL') ||
+                  e.message.includes('THREE') ||
+                  e.message.includes('webgl') ||
+                  e.message.includes('GL_')
+                )) {
+                  console.warn('[Bohenix] WebGL error suppressed:', e.message);
+                  e.preventDefault();
+                  return true;
+                }
+              });
+              window.addEventListener('unhandledrejection', function(e) {
+                if (e.reason && e.reason.message && (
+                  e.reason.message.includes('WebGL') ||
+                  e.reason.message.includes('THREE') ||
+                  e.reason.message.includes('webgl')
+                )) {
+                  console.warn('[Bohenix] WebGL promise error suppressed:', e.reason.message);
+                  e.preventDefault();
+                  return true;
+                }
+              });
+            `,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({

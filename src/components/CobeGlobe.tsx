@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import dynamic from "next/dynamic";
 import ErrorBoundary from "./ErrorBoundary";
-
-// Dynamically import react-globe.gl to avoid SSR issues with WebGL
-const Globe = dynamic(() => import("react-globe.gl"), {
-  ssr: false,
-  loading: () => <GlobeFallback message="Loading Earth..." />,
-});
 
 function GlobeFallback({ message }: { message: string }) {
   return (
@@ -46,31 +39,40 @@ function isWebGLAvailable(): boolean {
       canvas.getContext("webgl2") ||
       canvas.getContext("webgl") ||
       canvas.getContext("experimental-webgl");
-    return gl instanceof WebGLRenderingContext || gl instanceof WebGL2RenderingContext;
+    if (!gl) return false;
+    // Also check if it's actually usable (not a lost context)
+    if (gl instanceof WebGLRenderingContext || gl instanceof WebGL2RenderingContext) {
+      // Check for context loss indicator
+      const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+      if (debugInfo) {
+        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        // SwiftShader and similar software renderers are often unstable
+        if (renderer && typeof renderer === "string" && renderer.includes("SwiftShader")) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   } catch {
     return false;
   }
 }
 
-function GlobeInner() {
+function GlobeInner({ GlobeComponent }: { GlobeComponent: React.ComponentType<any> }) {
   const [windowWidth, setWindowWidth] = useState(600);
-  const [mounted, setMounted] = useState(false);
-  const [webglSupported, setWebglSupported] = useState(true);
   const globeEl = useRef<any>(null);
 
   useEffect(() => {
-    setMounted(true);
-    setWebglSupported(isWebGLAvailable());
     setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
-    
-    // Auto-rotate the globe slowly
+
     if (globeEl.current) {
       globeEl.current.controls().autoRotate = true;
       globeEl.current.controls().autoRotateSpeed = 1;
     }
-    
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -85,17 +87,9 @@ function GlobeInner() {
     { lat: 5.6037, lng: -0.1870, size: 0.06, color: '#B14CFF', name: 'Accra' },
   ];
 
-  if (!mounted) {
-    return <GlobeFallback message="Loading Earth..." />;
-  }
-
-  if (!webglSupported) {
-    return <GlobeFallback message="3D Globe requires WebGL" />;
-  }
-
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', cursor: 'grab' }}>
-      <Globe
+      <GlobeComponent
         ref={globeEl}
         width={Math.min(windowWidth - 40, 600)}
         height={Math.min(windowWidth - 40, 600)}
@@ -121,7 +115,6 @@ function GlobeInner() {
           if (globeEl.current) {
             globeEl.current.controls().autoRotate = true;
             globeEl.current.controls().autoRotateSpeed = 1.5;
-            // Point camera towards Africa
             globeEl.current.pointOfView({ lat: 0, lng: 20, altitude: 2.2 }, 2000);
           }
         }}
@@ -131,9 +124,40 @@ function GlobeInner() {
 }
 
 export default function RealGlobe() {
+  const [state, setState] = useState<"checking" | "no-webgl" | "loading" | "ready" | "error">("checking");
+  const [GlobeComp, setGlobeComp] = useState<React.ComponentType<any> | null>(null);
+
+  useEffect(() => {
+    // Step 1: Check WebGL availability BEFORE importing Three.js
+    if (!isWebGLAvailable()) {
+      setState("no-webgl");
+      return;
+    }
+
+    setState("loading");
+
+    // Step 2: Only import react-globe.gl if WebGL is confirmed available
+    import("react-globe.gl")
+      .then((mod) => {
+        setGlobeComp(() => mod.default);
+        setState("ready");
+      })
+      .catch(() => {
+        setState("error");
+      });
+  }, []);
+
+  if (state === "checking" || state === "loading") {
+    return <GlobeFallback message="Loading Earth..." />;
+  }
+
+  if (state === "no-webgl" || state === "error" || !GlobeComp) {
+    return <GlobeFallback message="3D Globe unavailable" />;
+  }
+
   return (
     <ErrorBoundary fallback={<GlobeFallback message="3D Globe unavailable" />}>
-      <GlobeInner />
+      <GlobeInner GlobeComponent={GlobeComp} />
     </ErrorBoundary>
   );
 }
