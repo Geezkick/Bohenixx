@@ -54,8 +54,8 @@ function AnimatedNumber({ value }: { value: number }) {
 
 
 const ecosystem = [
-  { name: "BX POS", desc: "A modern, intelligent point-of-sale terminal built for African businesses. Accept payments, manage inventory, generate receipts, and track sales.", icon: "/bohenixx.png", href: "/dashboard/pos", status: "active" },
-  { name: "BX Business Suite", desc: "A comprehensive Micro-SaaS suite. Automate your billing, collect powerful video testimonials, and manage client appointments intelligently from a single unified portal.", icon: "/bohenixx.png", href: "/dashboard/subscriptions", status: "active" },
+  { name: "BX POS", desc: "An advanced AI-integrated point-of-sale and inventory system optimized for healthcare, pharmacies, and clinics. Features real-time AI drug interaction warnings, predictive stock forecasting, and seamless medical billing.", icon: "/bohenixx.png", href: "/dashboard/pos", status: "active" },
+  { name: "BX Business Suite", desc: "A comprehensive AI-driven healthcare management suite. Automate patient medical billing, schedule intelligent AI-triaged appointments, and manage clinic reputation from a unified portal.", icon: "/bohenixx.png", href: "/dashboard/subscriptions", status: "active" },
   { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app", status: "development" },
   { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app", status: "development" },
   { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app", status: "development" },

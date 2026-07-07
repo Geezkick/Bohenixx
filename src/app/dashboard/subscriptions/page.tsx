@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "../dashboard.module.css";
-import { Package, Send, CheckCircle2, XCircle, Clock, Loader2 } from "lucide-react";
+import { 
+  Package, Send, CheckCircle2, XCircle, Clock, Loader2, 
+  BrainCircuit, Activity, FileText, CalendarCheck, MessageSquareHeart,
+  TrendingUp, ShieldCheck, AlertCircle, Zap
+} from "lucide-react";
 
 type ServiceRequestItem = {
   id: string;
@@ -22,16 +26,25 @@ const statusStyles: Record<string, { bg: string; color: string; label: string }>
 };
 
 const SERVICES = [
-  "Safura AI Food Scanner Integration",
-  "NjiaSafe Fleet Analytics",
-  "BX Omni Custom Deployment",
-  "Cybersecurity Audit & SOC Monitoring",
-  "Custom Software Development",
+  "BX Medical Billing Integration",
+  "BX Patient Triaging AI Setup",
+  "BX Patient Experience Deployment",
+  "Custom EMR / EHR Integration",
+  "Cybersecurity Audit & HIPAA Compliance",
   "Other",
 ];
 
 const BUDGETS = ["< $1,000", "$1,000 - $5,000", "$5,000 - $20,000", "$20,000+"];
 const TIMELINES = ["ASAP", "Within 1 month", "1-3 months", "Flexible"];
+
+// Simulated live AI operations
+const AI_OPERATIONS = [
+  { id: 1, status: "active", icon: <ShieldCheck size={16} />, color: "#22c55e", message: "AI is auditing 12 pending insurance claims for ICD-10 compliance.", time: "2 min ago" },
+  { id: 2, status: "active", icon: <TrendingUp size={16} />, color: "#00E5FF", message: "Predictive model recalibrating patient appointment queue for tomorrow based on historical no-show data.", time: "5 min ago" },
+  { id: 3, status: "completed", icon: <CheckCircle2 size={16} />, color: "#22c55e", message: "Automated copay reconciliation completed for 47 transactions. 3 discrepancies flagged.", time: "12 min ago" },
+  { id: 4, status: "active", icon: <AlertCircle size={16} />, color: "#f59e0b", message: "Flu season alert: Patient intake volume predicted to increase 30% this week. Staffing adjustments recommended.", time: "18 min ago" },
+  { id: 5, status: "completed", icon: <Zap size={16} />, color: "#B14CFF", message: "Patient experience sentiment analysis complete. Overall satisfaction: 94.2% (+2.1% from last month).", time: "25 min ago" },
+];
 
 export default function SubscriptionsPage() {
   const [requests, setRequests] = useState<ServiceRequestItem[]>([]);
@@ -100,20 +113,13 @@ export default function SubscriptionsPage() {
       {toast && (
         <div
           style={{
-            position: "fixed",
-            top: 24,
-            right: 24,
-            zIndex: 1000,
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            padding: "0.9rem 1.25rem",
-            borderRadius: "12px",
+            position: "fixed", top: 24, right: 24, zIndex: 1000,
+            display: "flex", alignItems: "center", gap: "10px",
+            padding: "0.9rem 1.25rem", borderRadius: "12px",
             background: toast.kind === "success" ? "rgba(34,197,94,0.15)" : "rgba(255,51,102,0.15)",
             border: `1px solid ${toast.kind === "success" ? "rgba(34,197,94,0.3)" : "rgba(255,51,102,0.3)"}`,
             color: toast.kind === "success" ? "#22c55e" : "#FF3366",
-            fontWeight: 600,
-            fontSize: "0.9rem",
+            fontWeight: 600, fontSize: "0.9rem",
             boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
           }}
         >
@@ -124,45 +130,40 @@ export default function SubscriptionsPage() {
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
         <div>
-          <h1 className={styles.pageTitle}>Products & Services</h1>
-          <p className={styles.pageDesc}>Manage your active ecosystem products and request custom services.</p>
+          <h1 className={styles.pageTitle}>Clinic Command Center</h1>
+          <p className={styles.pageDesc}>Manage your AI-powered healthcare operations, products, and service requests.</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className={styles.btnPrimary}>
-          <Send size={16} /> {showForm ? "Cancel" : "New Custom Request"}
+          <Send size={16} /> {showForm ? "Cancel" : "New Service Request"}
         </button>
       </div>
 
+      {/* ─── Healthcare App Cards ─── */}
       <section style={{ marginBottom: "3rem" }}>
         <h2 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "10px" }}>
-          <Package size={24} color="#B14CFF" /> Active Products
+          <Package size={24} color="#B14CFF" /> Active Healthcare Modules
         </h2>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
           {/* BX POS Card */}
           <div style={{
             background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
-            border: '1px solid rgba(177,76,255,0.3)',
-            borderRadius: '20px',
-            padding: '1.5rem',
-            position: 'relative',
-            overflow: 'hidden'
+            border: '1px solid rgba(177,76,255,0.3)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden'
           }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #8B2EFF, #B14CFF)' }} />
-            
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
               </div>
               <span style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
-                ACTIVE
+                AI POWERED
               </span>
             </div>
-            
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX POS Terminal</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Medical POS</h3>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              Your intelligent point-of-sale system. Accept payments, manage inventory, and generate digital receipts.
+              AI-integrated pharmacy & clinic POS. Drug interaction warnings, predictive inventory, and M-Pesa / Stripe billing.
             </p>
-            
             <a href="/dashboard/pos" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
               width: '100%', padding: '0.75rem', background: 'linear-gradient(135deg, #8B2EFF, #B14CFF)',
@@ -172,115 +173,139 @@ export default function SubscriptionsPage() {
             </a>
           </div>
 
-          {/* NjiaSafe Card */}
+          {/* BX Medical Billing */}
           <div style={{
-            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
-            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(0,229,255,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
           }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #00B4D8, #00E5FF)' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="/njiasafee.png" alt="NjiaSafe Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(0,229,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00E5FF' }}>
+                <FileText size={24} />
               </div>
-              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
-                FREE ACCESS
+              <span style={{ background: 'rgba(0, 229, 255, 0.1)', color: '#00E5FF', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                AI AUTOMATED
               </span>
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>NjiaSafe</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Medical Billing</h3>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
-              Road safety and smart mobility platform.
-            </p>
-            <a href="https://njiasafe.six.vercel.app" target="_blank" rel="noreferrer" style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
-              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
-            }}>
-              Open App
-            </a>
-          </div>
-
-          {/* BX Social Proof Card */}
-          <div style={{
-            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
-            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
-              </div>
-              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
-                ACTIVE
-              </span>
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Social Proof</h3>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
-              Collect and display testimonials with a beautiful, embeddable Wall of Love.
-            </p>
-            <a href="/dashboard/testimonials" style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
-              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
-            }}>
-              Launch App
-            </a>
-          </div>
-
-          {/* BX Invoices Card */}
-          <div style={{
-            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
-            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
-              </div>
-              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
-                ACTIVE
-              </span>
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Invoices</h3>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
-              Automate your billing. Create beautiful invoices and get paid faster.
+              AI-automated medical invoices and insurance claim processing. Generate ICD-10 compliant bills instantly.
             </p>
             <a href="/dashboard/invoices" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
-              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+              width: '100%', padding: '0.75rem', background: 'rgba(0,229,255,0.1)', border: '1px solid rgba(0,229,255,0.2)',
+              color: '#00E5FF', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
             }}>
-              Launch App
+              Launch Billing
             </a>
           </div>
 
-          {/* BX Scheduler Card */}
+          {/* BX Patient Triaging & Scheduling */}
           <div style={{
-            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
-            borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column'
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(245,158,11,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
           }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #e67e22, #f59e0b)' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="/bohenixx.png" alt="Bohenix Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245,158,11,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b' }}>
+                <CalendarCheck size={24} />
               </div>
-              <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
-                ACTIVE
+              <span style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                AI TRIAGING
               </span>
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Scheduler</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Patient Scheduling</h3>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
-              Let clients book appointments instantly with a customized portal.
+              AI analyzes patient symptoms to prioritize urgent appointments. Smart queue management and automated reminders.
             </p>
             <a href="/dashboard/appointments" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
-              color: '#fff', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+              width: '100%', padding: '0.75rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)',
+              color: '#f59e0b', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
             }}>
-              Launch App
+              Launch Scheduler
+            </a>
+          </div>
+
+          {/* BX Patient Experience */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(34,197,94,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #16a34a, #22c55e)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(34,197,94,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c55e' }}>
+                <MessageSquareHeart size={24} />
+              </div>
+              <span style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                SENTIMENT AI
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Patient Experience</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Collect patient outcome surveys and clinical feedback. AI-powered sentiment analysis for care quality insights.
+            </p>
+            <a href="/dashboard/testimonials" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)',
+              color: '#22c55e', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch Experience Hub
             </a>
           </div>
         </div>
       </section>
 
+      {/* ─── Live AI Operations Feed ─── */}
+      <section style={{ marginBottom: "3rem" }}>
+        <h2 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "10px" }}>
+          <BrainCircuit size={24} color="#B14CFF" /> Live AI Operations
+        </h2>
+        <div style={{ 
+          background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)',
+          overflow: 'hidden'
+        }}>
+          {AI_OPERATIONS.map((op, idx) => (
+            <div key={op.id} style={{
+              display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '1.25rem 1.5rem',
+              borderBottom: idx < AI_OPERATIONS.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+              transition: 'background 0.15s',
+            }}>
+              <div style={{
+                width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
+                background: `${op.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: op.color, marginTop: '2px'
+              }}>
+                {op.icon}
+              </div>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.5, marginBottom: '4px' }}>
+                  {op.message}
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)' }}>{op.time}</span>
+                  <span style={{
+                    fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px',
+                    padding: '2px 6px', borderRadius: '4px',
+                    background: op.status === 'active' ? 'rgba(0,229,255,0.1)' : 'rgba(34,197,94,0.1)',
+                    color: op.status === 'active' ? '#00E5FF' : '#22c55e',
+                  }}>
+                    {op.status === 'active' ? '● Processing' : '✓ Done'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── Service Request Form ─── */}
       {showForm && (
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem", marginBottom: "2rem" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1.5rem" }}>Request a Service</h3>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1.5rem" }}>Request a Healthcare Integration</h3>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem", marginBottom: "1rem" }}>
             <div>
@@ -321,7 +346,7 @@ export default function SubscriptionsPage() {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="you@company.com"
+              placeholder="you@hospital.com"
               style={{ width: "100%", background: "#000", padding: "0.85rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
             />
           </div>
@@ -332,7 +357,7 @@ export default function SubscriptionsPage() {
               value={form.details}
               onChange={(e) => setForm({ ...form, details: e.target.value })}
               rows={4}
-              placeholder="Describe what you need..."
+              placeholder="Describe your healthcare integration requirements..."
               style={{ width: "100%", background: "#000", padding: "0.85rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", resize: "vertical", fontFamily: "inherit" }}
             />
           </div>
@@ -343,9 +368,10 @@ export default function SubscriptionsPage() {
         </div>
       )}
 
+      {/* ─── Request History ─── */}
       <section>
         <h2 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "10px" }}>
-          <Package size={24} color="#B14CFF" /> Your Requests
+          <Activity size={24} color="#B14CFF" /> Your Integration Requests
         </h2>
 
         {loading ? (
@@ -354,7 +380,7 @@ export default function SubscriptionsPage() {
           </div>
         ) : requests.length === 0 ? (
           <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.05)", padding: "3rem", textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
-            No service requests yet. Click "New Request" above to submit your first project inquiry.
+            No service requests yet. Click &ldquo;New Service Request&rdquo; above to submit your first integration inquiry.
           </div>
         ) : (
           <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.05)", overflow: "hidden" }}>
@@ -373,16 +399,10 @@ export default function SubscriptionsPage() {
                   </div>
                   <span
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      padding: "6px 14px",
-                      borderRadius: "999px",
-                      fontSize: "0.78rem",
-                      fontWeight: 700,
-                      background: statusInfo.bg,
-                      color: statusInfo.color,
-                      whiteSpace: "nowrap",
+                      display: "inline-flex", alignItems: "center", gap: "6px",
+                      padding: "6px 14px", borderRadius: "999px",
+                      fontSize: "0.78rem", fontWeight: 700,
+                      background: statusInfo.bg, color: statusInfo.color, whiteSpace: "nowrap",
                     }}
                   >
                     <Clock size={12} /> {statusInfo.label}
