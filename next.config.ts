@@ -1,15 +1,14 @@
-const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
   images: {
     remotePatterns: [
-      { protocol: "https" as const, hostname: "lh3.googleusercontent.com" },
-      { protocol: "https" as const, hostname: "avatars.githubusercontent.com" },
-      { protocol: "https" as const, hostname: "*.googleusercontent.com" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      { protocol: "https", hostname: "*.googleusercontent.com" },
     ],
   },
 };

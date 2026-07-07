@@ -62,6 +62,9 @@ const ecosystem = [
   { name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Connect, engage, trade.", icon: "/vuna.png", href: "https://vunashorts.vercel.app" },
   { name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", href: "https://kwelify.vercel.app" },
   { name: "Safura", desc: "Autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and origin data without any manual input.", icon: "/safura.png", href: "https://safura-ai.vercel.app" },
+  { name: "BX Social Proof", desc: "Collect video and text testimonials from your customers and display them anywhere with a beautiful, embeddable 'Wall of Love'.", icon: "/bohenixx.png", href: "/dashboard/testimonials" },
+  { name: "BX Invoices", desc: "Automate your billing. Create beautiful invoices, set up automatic payment reminders, and get paid faster.", icon: "/bohenixx.png", href: "/dashboard/invoices" },
+  { name: "BX Scheduler", desc: "The smartest way to manage your time. Let clients book appointments instantly with a customized booking portal.", icon: "/bohenixx.png", href: "/dashboard/appointments" },
 ];
 
 const services = [
@@ -510,7 +513,7 @@ export default function CorporateLandingPage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center' }}>
           <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
             <div style={{ position: 'relative', width: '100%', maxWidth: '350px', aspectRatio: '3/4', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(123,45,255,0.3)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
-              <Image src="/brian.png" alt="Brian Nyarienya - Founder" layout="fill" objectFit="cover" />
+              <Image src="/brian.png" alt="Brian Nyarienya - Founder" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 350px" />
             </div>
           </div>
           <div style={{ flex: 1.5, minWidth: '300px' }}>

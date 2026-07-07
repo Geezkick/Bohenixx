@@ -1,0 +1,85 @@
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/brian/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /home/brian/bohenixx/package-lock.json
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env.local, .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 17.8s
+  Skipping validation of types
+  Finished TypeScript config validation in 23ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/55) ...
+  Generating static pages using 11 workers (13/55) 
+  Generating static pages using 11 workers (27/55) 
+  Generating static pages using 11 workers (41/55) 
+✓ Generating static pages using 11 workers (55/55) in 1763ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/2fa/disable
+├ ƒ /api/2fa/setup
+├ ƒ /api/2fa/status
+├ ƒ /api/2fa/verify
+├ ƒ /api/account/password
+├ ƒ /api/account/profile
+├ ƒ /api/activity
+├ ƒ /api/analytics/count
+├ ƒ /api/analytics/visit
+├ ƒ /api/auth/[...nextauth]
+├ ƒ /api/auth/check-2fa
+├ ƒ /api/auth/login
+├ ƒ /api/auth/login-notify
+├ ƒ /api/auth/me
+├ ƒ /api/auth/register
+├ ƒ /api/career
+├ ƒ /api/checkout
+├ ƒ /api/contact
+├ ƒ /api/dashboard/overview
+├ ƒ /api/developer/keys
+├ ƒ /api/developer/webhooks
+├ ƒ /api/developer/webhooks/test
+├ ƒ /api/events/rsvp
+├ ƒ /api/labs/waitlist
+├ ƒ /api/services/request
+├ ƒ /api/support
+├ ƒ /api/testimonials
+├ ○ /apple-icon.png
+├ ƒ /apps/[appId]
+├ ○ /dashboard
+├ ○ /dashboard/appointments
+├ ○ /dashboard/developer
+├ ○ /dashboard/events
+├ ○ /dashboard/invoices
+├ ○ /dashboard/labs
+├ ○ /dashboard/pos
+├ ○ /dashboard/settings
+├ ○ /dashboard/subscriptions
+├ ○ /dashboard/testimonials
+├ ○ /developers
+├ ○ /icon.png
+├ ○ /privacy
+├ ○ /products
+├ ○ /robots.txt
+├ ○ /services/artificial-intelligence
+├ ○ /services/cloud-infrastructure
+├ ○ /services/cybersecurity
+├ ○ /services/data-analytics
+├ ○ /services/enterprise-software
+├ ○ /services/request
+├ ○ /sign-in
+├ ○ /sitemap.xml
+└ ○ /terms
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -11,8 +11,9 @@ const appData: Record<string, any> = {
   vuna: { name: "Vuna", icon: "vuna.png", color: "#76FF03", desc: "AgriTech Intelligence & Supply Chain." },
 };
 
-export default function AppDashboard({ params }: { params: { appId: string } }) {
-  const data = appData[params.appId.toLowerCase()];
+export default async function AppDashboard({ params }: { params: Promise<{ appId: string }> }) {
+  const { appId } = await params;
+  const data = appData[appId.toLowerCase()];
 
   if (!data) {
     return (

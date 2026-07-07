@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { db } from '@/lib/db';
 
 export async function GET() {
   try {
-    const testimonials = await prisma.testimonial.findMany({
+    const testimonials = await db.testimonial.findMany({
       where: { approved: true },
       orderBy: { createdAt: 'desc' },
       take: 20
@@ -26,7 +24,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Name and message are required" }, { status: 400 });
     }
 
-    const testimonial = await prisma.testimonial.create({
+    const testimonial = await db.testimonial.create({
       data: {
         name,
         company,
