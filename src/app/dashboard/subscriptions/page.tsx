@@ -5,7 +5,7 @@ import styles from "../dashboard.module.css";
 import { 
   Package, Send, CheckCircle2, XCircle, Clock, Loader2, 
   BrainCircuit, Activity, FileText, CalendarCheck, MessageSquareHeart,
-  TrendingUp, ShieldCheck, AlertCircle, Zap
+  TrendingUp, ShieldCheck, AlertCircle, Zap, Video, Mic, Truck, HeartPulse, Megaphone, Users
 } from "lucide-react";
 
 type ServiceRequestItem = {
@@ -254,6 +254,174 @@ export default function SubscriptionsPage() {
               color: '#22c55e', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
             }}>
               Launch Experience Hub
+            </a>
+          </div>
+
+          {/* BX Telemedicine Portal */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(0,229,255,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #00B4D8, #00E5FF)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(0,229,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00E5FF' }}>
+                <Video size={24} />
+              </div>
+              <span style={{ background: 'rgba(0, 229, 255, 0.1)', color: '#00E5FF', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                VIRTUAL CARE
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Telemedicine</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Secure WebRTC video consultations with real-time AI transcription and vital estimation.
+            </p>
+            <a href="/dashboard/telemedicine" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(0,229,255,0.1)', border: '1px solid rgba(0,229,255,0.2)',
+              color: '#00E5FF', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch Portal
+            </a>
+          </div>
+
+          {/* BX Ambient Scribe */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(34,197,94,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #16a34a, #22c55e)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(34,197,94,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c55e' }}>
+                <Mic size={24} />
+              </div>
+              <span style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                AI LISTENING
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Ambient Scribe</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Ambiently listens to patient consultations and automatically drafts structured SOAP medical notes.
+            </p>
+            <a href="/dashboard/scribe" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)',
+              color: '#22c55e', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch Scribe
+            </a>
+          </div>
+
+          {/* BX Supply Chain */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(177,76,255,0.3)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #8B2EFF, #B14CFF)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(177,76,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#B14CFF' }}>
+                <Truck size={24} />
+              </div>
+              <span style={{ background: 'rgba(177, 76, 255, 0.1)', color: '#B14CFF', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                LOGISTICS
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Supply Chain</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Predictive medical inventory logistics, automated vendor PO generation, and external e-Rx routing.
+            </p>
+            <a href="/dashboard/supply-chain" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(177,76,255,0.1)', border: '1px solid rgba(177,76,255,0.3)',
+              color: '#B14CFF', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch Logistics
+            </a>
+          </div>
+
+          {/* BX Vitals */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(255,51,102,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #ff0055, #FF3366)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,51,102,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FF3366' }}>
+                <HeartPulse size={24} />
+              </div>
+              <span style={{ background: 'rgba(255, 51, 102, 0.1)', color: '#FF3366', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                REMOTE IOT
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Vitals</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Remote patient monitoring integrated with consumer wearables. Real-time AI alerts for vital anomalies.
+            </p>
+            <a href="/dashboard/vitals" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(255,51,102,0.1)', border: '1px solid rgba(255,51,102,0.2)',
+              color: '#FF3366', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch Vitals
+            </a>
+          </div>
+
+          {/* BX Care CRM */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(245,158,11,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #e67e22, #f59e0b)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245,158,11,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b' }}>
+                <Megaphone size={24} />
+              </div>
+              <span style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                OUTREACH
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Care CRM</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              AI-driven patient marketing. Send targeted preventative care campaigns based on epidemiological trends.
+            </p>
+            <a href="/dashboard/crm" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)',
+              color: '#f59e0b', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch CRM
+            </a>
+          </div>
+
+          {/* BX Staffing Engine */}
+          <div style={{
+            background: 'linear-gradient(145deg, rgba(17,17,20,0.8) 0%, rgba(5,5,5,0.9) 100%)',
+            border: '1px solid rgba(0,229,255,0.2)', borderRadius: '20px', padding: '1.5rem',
+            position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #00B4D8, #00E5FF)' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(0,229,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00E5FF' }}>
+                <Users size={24} />
+              </div>
+              <span style={{ background: 'rgba(0, 229, 255, 0.1)', color: '#00E5FF', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700 }}>
+                RESOURCE AI
+              </span>
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>BX Staffing Engine</h3>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              Smart rota management. AI optimizes doctor and nurse shifts based on predictive clinic traffic surges.
+            </p>
+            <a href="/dashboard/staffing" style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%', padding: '0.75rem', background: 'rgba(0,229,255,0.1)', border: '1px solid rgba(0,229,255,0.2)',
+              color: '#00E5FF', borderRadius: '10px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+            }}>
+              Launch Staffing
             </a>
           </div>
         </div>
