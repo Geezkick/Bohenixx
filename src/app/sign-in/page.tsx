@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -51,9 +51,11 @@ const adverts = [
   },
 ];
 
-export default function SignInPage() {
+function SignInContent() {
   const { user, isLoading: authLoading, login, signup, loginWithGoogle, resetPassword } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -82,9 +84,9 @@ export default function SignInPage() {
   /* Redirect if already signed in (after splash) */
   useEffect(() => {
     if (splashDone && !authLoading && user) {
-      router.replace("/dashboard");
+      router.replace(callbackUrl);
     }
-  }, [splashDone, authLoading, user, router]);
+  }, [splashDone, authLoading, user, router, callbackUrl]);
 
   /* Auto-play video */
   useEffect(() => {
@@ -161,8 +163,8 @@ export default function SignInPage() {
     try {
       const result =
         mode === "login"
-          ? await login(email, password, requiresTwoFactor ? totpCode : undefined)
-          : await signup(name, email, password);
+          ? await login(email, password, requiresTwoFactor ? totpCode : undefined, callbackUrl)
+          : await signup(name, email, password, callbackUrl);
 
       if (!result.success) {
         if (result.requiresTwoFactor) {
@@ -186,7 +188,7 @@ export default function SignInPage() {
   const handleGoogle = async () => {
     setLoading(true);
     setError("");
-    const res = await loginWithGoogle();
+    const res = await loginWithGoogle(callbackUrl);
     if (!res.success) {
       setError(res.error || "Failed to initialize Google Sign-In");
       setLoading(false);
@@ -535,5 +537,13 @@ export default function SignInPage() {
       </>
       )}
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className={styles.page} style={{ background: '#05020a' }} />}>
+      <SignInContent />
+    </Suspense>
   );
 }

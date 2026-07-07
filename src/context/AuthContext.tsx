@@ -14,8 +14,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string, totpCode?: string) => Promise<{ success: boolean; error?: string; requiresTwoFactor?: boolean }>;
-  signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string; requiresTwoFactor?: boolean }>;
+  login: (email: string, password: string, totpCode?: string, redirectTo?: string) => Promise<{ success: boolean; error?: string; requiresTwoFactor?: boolean }>;
+  signup: (name: string, email: string, password: string, redirectTo?: string) => Promise<{ success: boolean; error?: string; requiresTwoFactor?: boolean }>;
   loginWithGoogle: (redirectTo?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
@@ -37,14 +37,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     : null;
 
-  const login = async (email: string, password: string, totpCode?: string) => {
+  const login = async (email: string, password: string, totpCode?: string, redirectTo?: string) => {
     try {
       const res = await signIn("credentials", {
         email,
         password,
         totpCode: totpCode || "",
         redirect: false,
-        callbackUrl: "/dashboard",
+        callbackUrl: redirectTo || "/dashboard",
       });
 
       if (res?.error) {
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }).catch(() => {});
 
         // Use hard navigation to ensure the new session cookie is sent to middleware reliably
-        window.location.href = "/dashboard";
+        window.location.href = redirectTo || "/dashboard";
         return { success: true };
       }
 
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signup = async (name: string, email: string, password: string) => {
+  const signup = async (name: string, email: string, password: string, redirectTo?: string) => {
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
         password,
         redirect: false,
-        callbackUrl: "/dashboard",
+        callbackUrl: redirectTo || "/dashboard",
       });
 
       if (signInRes?.error) {
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (signInRes?.ok) {
-        window.location.href = "/dashboard";
+        window.location.href = redirectTo || "/dashboard";
         return { success: true };
       }
 
