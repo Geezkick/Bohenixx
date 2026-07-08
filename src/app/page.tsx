@@ -119,7 +119,7 @@ export default function CorporateLandingPage() {
           if (data.success) {
             setVisitors(data.visitors || 0);
             setStats({
-              products: ecosystem.length,
+              products: ecosystem.length + 1, // +1 for Flow AI
               users: data.users || 0,
               countries: data.countries || 0
             });
@@ -211,7 +211,18 @@ export default function CorporateLandingPage() {
             <span className={styles.brandName}>Bohenix</span>
           </Link>
           <div className={styles.navLinks}>
-            <Link href="#products" className={styles.navLink}>Products</Link>
+            <div className={styles.navDropdown}>
+              <Link href="/flow-ai" className={styles.navLink}>Flow AI</Link>
+              <div className={styles.navDropdownMenu}>
+                <Link href="/flow-ai#overview" className={styles.dropLink}>Overview</Link>
+                <Link href="/flow-ai#agents" className={styles.dropLink}>AI Agents</Link>
+                <Link href="/flow-ai#features" className={styles.dropLink}>Features</Link>
+                <Link href="/flow-ai#solutions" className={styles.dropLink}>Solutions</Link>
+                <Link href="/flow-ai#pricing" className={styles.dropLink}>Pricing</Link>
+                <Link href="/flow-ai#security" className={styles.dropLink}>Security</Link>
+                <Link href="/flow-ai#developers" className={styles.dropLink}>API & Docs</Link>
+              </div>
+            </div>
             <Link href="#solutions" className={styles.navLink}>Solutions</Link>
             <Link href="/dashboard/developer" className={styles.navLink}>Developers</Link>
             <Link href="#labs" className={styles.navLink}>Research</Link>
@@ -265,15 +276,15 @@ export default function CorporateLandingPage() {
               Digital Future.
             </motion.h1>
             <motion.p variants={fadeUp} className={styles.subtitle}>
-              Bohenix develops AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.
+              From enterprise SaaS and mobility to our new flagship <strong style={{ color: '#fff' }}>Bohenix Flow AI</strong>. We build intelligent software systems to put your business on autopilot and power the global digital economy.
             </motion.p>
             <motion.div variants={fadeUp} className={styles.ctaGroup}>
-              <Link href="#products" className={styles.primaryCta}>
-                Explore Products <ArrowRightIcon size={18} />
+              <Link href="/flow-ai" className={styles.primaryCta}>
+                Discover Flow AI <ArrowRightIcon size={18} />
               </Link>
-              <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.secondaryCta} style={{ border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>
-                Contact Us
-              </button>
+              <Link href="#products" className={styles.secondaryCta} style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
+                Explore All Products
+              </Link>
             </motion.div>
           </motion.div>
           
@@ -353,45 +364,77 @@ export default function CorporateLandingPage() {
         </div>
       </section>
 
-      {/* Products Showcase */}
+      {/* Ecosystem Showcase */}
       <section id="products" className={styles.section}>
         <div className={styles.contentContainer}>
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className={styles.sectionHeader}>
             <h2>Ecosystem Products</h2>
-            <p>We build specialized platforms that solve complex industry challenges. Discover the tools powering the next generation of business.</p>
+            <p>From autonomous AI agents to industry-specific platforms, discover the tools powering the next generation of business.</p>
           </motion.div>
 
           <div className={styles.showcaseList}>
-            {ecosystem.filter(p => p.status === 'active').map((product, idx) => (
-              <motion.div 
-                key={idx} 
-                initial="hidden" 
-                whileInView="show" 
-                viewport={{ once: true, margin: "-100px" }} 
-                variants={fadeUp} 
-                className={styles.showcaseCard}
-              >
-                <div className={styles.showcaseIcon}>
-                  <Image src={product.icon} alt={product.name} width={36} height={36} />
+            {/* Flagship Product */}
+            <motion.div 
+              initial="hidden" 
+              whileInView="show" 
+              viewport={{ once: true, margin: "-100px" }} 
+              variants={fadeUp} 
+              className={styles.showcaseCard}
+              style={{ gridTemplateColumns: '1fr', textAlign: 'center', padding: '4rem 2rem', background: 'linear-gradient(180deg, rgba(123,45,255,0.1) 0%, rgba(17,17,20,1) 100%)', border: '1px solid rgba(123,45,255,0.3)' }}
+            >
+              <div className={styles.showcaseContent} style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <span style={{ display: 'inline-block', fontSize: '11px', fontWeight: 800, letterSpacing: '2px', padding: '6px 16px', background: '#7B2DFF', borderRadius: '99px', color: '#fff', textTransform: 'uppercase', marginBottom: '1.5rem' }}>FLAGSHIP PLATFORM</span>
+                <h3 className={styles.showcaseTitle} style={{ fontSize: '36px', marginBottom: '1rem', fontWeight: 800 }}>Bohenix Flow AI</h3>
+                <p className={styles.showcaseDesc} style={{ fontSize: '18px', marginBottom: '2.5rem', color: '#E0E0E0' }}>
+                  An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents. Hire AI employees to manage projects, generate invoices, follow up with customers, and analyze performance.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                  <Link href="/flow-ai" className={styles.primaryCta} style={{ display: 'inline-flex' }}>
+                    Explore Flow AI <ArrowRightIcon size={16} />
+                  </Link>
+                  <Link href="/sign-in" className={styles.secondaryCta} style={{ display: 'inline-flex', border: '1px solid rgba(255,255,255,0.15)' }}>
+                    Start Free Trial
+                  </Link>
                 </div>
-                
-                <div className={styles.showcaseContent}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                    <h3 className={styles.showcaseTitle} style={{ margin: 0 }}>{product.name}</h3>
+              </div>
+            </motion.div>
+
+            {/* Other active products */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+              {ecosystem.filter(p => p.status === 'active').map((product, idx) => (
+                <motion.div 
+                  key={idx} 
+                  initial="hidden" 
+                  whileInView="show" 
+                  viewport={{ once: true, margin: "-100px" }} 
+                  variants={fadeUp} 
+                  className={styles.showcaseCard}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '2rem', gap: '1.5rem' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '100%' }}>
+                    <div className={styles.showcaseIcon} style={{ width: '48px', height: '48px' }}>
+                      <Image src={product.icon} alt={product.name} width={28} height={28} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <h3 className={styles.showcaseTitle} style={{ margin: 0 }}>{product.name}</h3>
+                    </div>
                     <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', padding: '4px 10px', background: 'rgba(0, 229, 255, 0.1)', borderRadius: '99px', color: '#00E5FF', textTransform: 'uppercase' }}>
-                      NEW & ACTIVE
+                      ACTIVE
                     </span>
                   </div>
-                  <p className={styles.showcaseDesc}>{product.desc}</p>
-                </div>
+                  
+                  <div className={styles.showcaseContent} style={{ flex: 1 }}>
+                    <p className={styles.showcaseDesc}>{product.desc}</p>
+                  </div>
 
-                <div style={{ textAlign: 'right' }}>
-                  <a href={product.href} {...(product.href.startsWith("http") ? { target: "_blank" } : {})} className={styles.showcaseLink}>
-                    Access Platform <ArrowRightIcon size={16} />
-                  </a>
-                </div>
-              </motion.div>
-            ))}
+                  <div style={{ width: '100%' }}>
+                    <a href={product.href} {...(product.href.startsWith("http") ? { target: "_blank" } : {})} className={styles.showcaseLink} style={{ width: '100%', justifyContent: 'center' }}>
+                      Access Platform <ArrowRightIcon size={16} />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -456,16 +499,16 @@ export default function CorporateLandingPage() {
 
           <div style={{ maxWidth: '800px', margin: '0 auto 4rem', textAlign: 'center', padding: '1rem 0' }}>
             <p style={{ fontSize: '18px', color: '#B3B3B8', lineHeight: 1.8 }}>
-              BX Labs is Bohenix&apos;s frontier research engine. Every product in the Bohenix ecosystem has roots in Labs research. We operate at the intersection of applied AI, systems engineering, and deep technology to deliver breakthrough innovations that are commercially viable, ethically grounded, and built for Africa&apos;s unique challenges.
+              BX Labs is Bohenix&apos;s frontier research engine. The foundations of Bohenix Flow AI were built here. We operate at the intersection of applied AI, autonomous agents, and deep technology to deliver breakthrough innovations that are commercially viable, ethically grounded, and built for global scale.
             </p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
             {[
-              { title: 'Autonomous AI Systems', tag: 'Core Research', desc: 'Self-learning AI agents capable of operating, adapting, and self-optimizing across complex business environments.' },
-              { title: 'Computer Vision & Spatial AI', tag: 'Applied Research', desc: 'Real-time visual recognition systems powering food scanning, smart city surveillance, and industrial quality control.' },
-              { title: 'Edge Computing & IoT', tag: 'Infrastructure', desc: 'Low-latency solutions that bring AI inference directly to the device, powering sensors in low-connectivity environments.' },
-              { title: 'African NLP', tag: 'Language AI', desc: 'Multilingual AI models capable of understanding and reasoning in Kiswahili, Hausa, Amharic, and Zulu.' },
+              { title: 'Multi-Agent Orchestration', tag: 'Core Research', desc: 'Advanced frameworks allowing diverse AI agents to collaborate, negotiate, and execute complex workflows seamlessly.' },
+              { title: 'Generative Workflow Synthesis', tag: 'Applied Research', desc: 'AI models that dynamically generate and optimize business processes based on real-time organizational data.' },
+              { title: 'Edge Inference & IoT', tag: 'Infrastructure', desc: 'Low-latency solutions bringing AI processing directly to the device, powering operations in restricted environments.' },
+              { title: 'Context-Aware NLP', tag: 'Language AI', desc: 'Deep reasoning language models capable of understanding nuanced business intent and regulatory constraints.' },
             ].map(lab => (
               <div key={lab.title} style={{ padding: '1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
@@ -579,12 +622,12 @@ export default function CorporateLandingPage() {
             <p>Building Africa's Intelligent Digital Future through enterprise engineering, smart ecosystems, and artificial intelligence.</p>
           </div>
           <div className={styles.footerCol}>
-            <h4>Ecosystem</h4>
+            <h4>Flow AI</h4>
             <ul>
-              <li><Link href="/dashboard/pos">BX POS</Link></li>
-              <li><Link href="/dashboard/subscriptions">BX Business Suite</Link></li>
-              <li><Link href="#products">All Products</Link></li>
-              <li><Link href="#labs">BX Labs</Link></li>
+              <li><Link href="/flow-ai">Overview</Link></li>
+              <li><Link href="/flow-ai#agents">AI Agents</Link></li>
+              <li><Link href="/flow-ai#pricing">Pricing</Link></li>
+              <li><Link href="/flow-ai#developers">API & Docs</Link></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

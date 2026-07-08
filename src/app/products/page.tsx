@@ -40,6 +40,60 @@ export default function ProductsPage() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            {/* Flagship Flow AI Card */}
+            <div 
+                style={{
+                  background: 'linear-gradient(180deg, rgba(123,45,255,0.1) 0%, rgba(255,255,255,0.03) 100%)',
+                  border: '1px solid rgba(123,45,255,0.3)',
+                  borderRadius: '24px',
+                  padding: '2rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                  transition: 'transform 0.2s ease, border-color 0.2s ease',
+                  cursor: 'pointer'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+                    <Image src="/bohenixx.png" alt="Bohenix Flow AI" width={60} height={60} style={{ objectFit: 'cover' }} />
+                  </div>
+                  
+                  <span style={{ background: '#7B2DFF', color: '#fff', padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    FLAGSHIP
+                  </span>
+                </div>
+                
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', margin: 0 }}>Bohenix Flow AI</h3>
+                <p style={{ color: '#E0E0E0', lineHeight: 1.5, margin: 0, flex: 1, fontSize: '0.95rem' }}>An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents. Your business on autopilot.</p>
+                
+                <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>
+                    Free Trial
+                  </span>
+                  
+                  <Link 
+                    href="/flow-ai" 
+                    style={{ 
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      background: '#fff', 
+                      color: '#000', 
+                      border: 'none', 
+                      padding: '0.6rem 1.25rem', 
+                      borderRadius: '99px', 
+                      fontWeight: 600, 
+                      fontSize: '0.9rem', 
+                      cursor: 'pointer',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    Open App <ArrowRightIcon size={16} />
+                  </Link>
+                </div>
+              </div>
+
             {ecosystem.filter(p => p.status === 'Active').map((product) => (
               <div 
                 key={product.id}
