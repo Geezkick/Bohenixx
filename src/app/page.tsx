@@ -342,7 +342,9 @@ export default function CorporateLandingPage() {
       <section id="presence" className={styles.section}>
         <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem' }}>
           <div style={{ flex: 1, minWidth: '300px' }}>
-            <h2 style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Active Globally</h2>
+            <h2 style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
+              Active <span className={styles.textPurple}>Globally</span>
+            </h2>
             
             {/* Total Visitor Counter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', background: 'rgba(255,255,255,0.03)', padding: '1.5rem 2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '2.5rem', width: 'fit-content' }}>
