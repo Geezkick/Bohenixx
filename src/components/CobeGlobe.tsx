@@ -34,9 +34,9 @@ export default function CobeGlobe() {
         diffuse: 1.2,
         mapSamples: 16000,
         mapBrightness: 6,
-        baseColor: [0.1, 0.1, 0.1],
+        baseColor: [1, 1, 1],
         markerColor: [0.48, 0.17, 1],
-        glowColor: [0.05, 0.05, 0.05],
+        glowColor: [0.2, 0.2, 0.2],
         markers: [
           { location: [-1.2921, 36.8219], size: 0.05 },
           { location: [6.5244, 3.3792], size: 0.05 },
