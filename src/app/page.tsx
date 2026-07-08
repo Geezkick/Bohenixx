@@ -342,8 +342,8 @@ export default function CorporateLandingPage() {
       <section id="presence" className={styles.section}>
         <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem' }}>
           <div style={{ flex: 1, minWidth: '300px' }}>
-            <h2 style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
-              Active <span className={styles.textPurple}>Globally</span>
+            <h2 className={styles.title} style={{ fontSize: '48px', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em', background: 'linear-gradient(180deg, #FFFFFF 0%, #7B2DFF 150%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Active Globally
             </h2>
             
             {/* Total Visitor Counter */}
@@ -571,7 +571,7 @@ export default function CorporateLandingPage() {
             </div>
           </div>
           <div style={{ flex: 1.5, minWidth: '300px' }}>
-            <h2 style={{ fontSize: '48px', marginBottom: '0.5rem', color: '#FFFFFF', fontWeight: 700, letterSpacing: '-0.02em' }}>Brian Nyarienya</h2>
+            <h2 style={{ fontSize: '48px', marginBottom: '0.5rem', fontWeight: 700, letterSpacing: '-0.02em', background: 'linear-gradient(180deg, #FFFFFF 0%, #7B2DFF 150%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Brian Nyarienya</h2>
             <h3 style={{ fontSize: '20px', color: '#7B2DFF', marginBottom: '2rem', fontWeight: 500 }}>Founder & Visionary, Bohenix Technologies</h3>
             <p style={{ fontSize: '24px', lineHeight: 1.6, color: '#fff', fontStyle: 'italic', marginBottom: '2rem' }}>
               "Most people are still modeling the future. We're already deploying it. Bohenix isn't building software — we're building the infrastructure layer Africa hasn't named yet."
@@ -593,7 +593,7 @@ export default function CorporateLandingPage() {
       <section className={styles.section}>
         <div className={styles.contentContainer} style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem' }}>
           <div style={{ flex: 1, minWidth: '300px', padding: '2rem 0' }}>
-            <h2 style={{ fontSize: '32px', marginBottom: '1rem', fontWeight: 700 }}>Careers</h2>
+            <h2 style={{ fontSize: '32px', marginBottom: '1rem', fontWeight: 700, background: 'linear-gradient(180deg, #FFFFFF 0%, #7B2DFF 150%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Careers</h2>
             <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '16px', lineHeight: 1.6 }}>
               Join us in building the future. We offer open positions, internship opportunities, and graduate programs across engineering, AI research, and operations.
             </p>
@@ -602,7 +602,7 @@ export default function CorporateLandingPage() {
             </button>
           </div>
           <div style={{ flex: 1, minWidth: '300px', padding: '2rem 0' }}>
-            <h2 style={{ fontSize: '32px', marginBottom: '1rem', fontWeight: 700 }}>Investors & Partners</h2>
+            <h2 style={{ fontSize: '32px', marginBottom: '1rem', fontWeight: 700, background: 'linear-gradient(180deg, #FFFFFF 0%, #7B2DFF 150%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Investors & Partners</h2>
             <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '16px', lineHeight: 1.6 }}>
               We collaborate with governments, NGOs, enterprise clients, and strategic investors to scale impact across the African continent and globally.
             </p>
