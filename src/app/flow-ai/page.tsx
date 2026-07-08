@@ -142,18 +142,58 @@ export default function FlowAIPage() {
     setIsProcessing(false);
   };
 
-  const handlePayment = (e: React.FormEvent) => {
+  const [mpesaPhone, setMpesaPhone] = useState("");
+
+  const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
-    // Simulate payment processing
-    setTimeout(() => {
+    
+    try {
+      if (paymentMethod === 'mpesa') {
+        const res = await fetch('/api/mpesa/stk-push', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: mpesaPhone,
+            amount: selectedPlan === 'Starter' ? 49 * 130 : selectedPlan === 'Professional' ? 199 * 130 : 0, // Mock KES conversion
+            description: `Flow AI ${selectedPlan} Plan`
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setPaymentStatus("success");
+          setTimeout(() => setIsCheckoutOpen(false), 5000);
+        } else {
+          alert("Payment failed: " + data.message);
+        }
+      } else {
+        // Stripe Visa Payment
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            itemName: `Flow AI ${selectedPlan} Plan`,
+            priceAmount: selectedPlan === 'Starter' ? 49 : selectedPlan === 'Professional' ? 199 : 0,
+            type: 'subscription',
+            returnUrl: '/flow-ai'
+          })
+        });
+        const data = await res.json();
+        if (data.url && !data.url.includes('mock_checkout=true')) {
+          window.location.href = data.url;
+        } else {
+          // Simulation fallback if no stripe key
+          setPaymentStatus("success");
+          setTimeout(() => setIsCheckoutOpen(false), 3000);
+        }
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
       setIsProcessing(false);
-      setPaymentStatus("success");
-      setTimeout(() => {
-        setIsCheckoutOpen(false);
-      }, 3000);
-    }, 2000);
+    }
   };
+
 
   return (
     <div className={s.container}>
@@ -517,7 +557,7 @@ export default function FlowAIPage() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
                         <div>
                           <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '14px', color: '#B3B3B8' }}>M-Pesa Phone Number</label>
-                          <input required type="tel" placeholder="2547XXXXXXXX" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
+                          <input required type="tel" value={mpesaPhone} onChange={(e) => setMpesaPhone(e.target.value)} placeholder="2547XXXXXXXX" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
                         </div>
                       </div>
                     ) : (

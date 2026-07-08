@@ -367,3 +367,20 @@ model SeoAudit {
 
   @@index([userId])
 }
+
+// --- Payments Infrastructure ---
+
+model Payment {
+  id                String   @id @default(cuid())
+  provider          String   // "stripe" or "mpesa"
+  referenceId       String   @unique // Stripe Session ID or M-Pesa CheckoutRequestID
+  status            String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  amount            Float
+  currency          String   @default("USD") // "KES" for M-Pesa
+  customerEmail     String?
+  customerPhone     String?
+  metadata          String?  @db.Text // JSON string for extra data like plan name
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+

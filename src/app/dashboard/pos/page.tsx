@@ -668,7 +668,7 @@ function POSContent() {
         <div className={styles.cartBody}>
           <input 
             className={styles.discountInput} 
-            placeholder={config.clientPlaceholder}
+            placeholder={config.clientLabel}
             value={clientName} 
             onChange={e => setClientName(e.target.value)}
             style={{ width: '100%', marginBottom: '1rem' }}

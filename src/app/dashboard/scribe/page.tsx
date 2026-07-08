@@ -56,7 +56,7 @@ export default function ScribePage() {
             <button 
               onClick={toggleListen}
               style={{
-                width: '120px', height: '120px', borderRadius: '50%', border: 'none', cursor: 'pointer',
+                width: '120px', height: '120px', borderRadius: '50%', cursor: 'pointer',
                 background: listening ? 'rgba(255,51,102,0.1)' : 'rgba(34,197,94,0.1)',
                 border: `2px solid ${listening ? '#FF3366' : '#22c55e'}`,
                 color: listening ? '#FF3366' : '#22c55e',

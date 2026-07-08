@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { db } from '@/lib/db';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock');
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { itemName, priceAmount, type } = body;
+    const { itemName, priceAmount, type, email } = body;
 
     if (!process.env.STRIPE_SECRET_KEY) {
       // Mock mode if no stripe key provided
@@ -18,6 +19,7 @@ export async function POST(req: Request) {
     
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      customer_email: email,
       line_items: [
         {
           price_data: {
@@ -34,6 +36,21 @@ export async function POST(req: Request) {
       success_url: `${baseUrl}${returnUrl}?success=true`,
       cancel_url: `${baseUrl}${returnUrl}?canceled=true`,
     });
+
+    // Create a pending transaction record
+    if (session.id) {
+      await db.payment.create({
+        data: {
+          provider: 'stripe',
+          referenceId: session.id,
+          status: 'PENDING',
+          amount: priceAmount,
+          currency: 'USD',
+          customerEmail: email,
+          metadata: JSON.stringify({ itemName, type }),
+        }
+      });
+    }
 
     return NextResponse.json({ url: session.url });
   } catch (err: any) {

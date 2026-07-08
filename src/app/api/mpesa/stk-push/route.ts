@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
 // M-Pesa Daraja API integration
 // Requires MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET, MPESA_SHORTCODE, MPESA_PASSKEY in env
@@ -39,10 +40,22 @@ export async function POST(req: Request) {
 
     if (!token) {
       // Simulation mode when M-Pesa keys aren't configured
+      const mockId = `SIM-${Date.now()}`;
+      await db.payment.create({
+        data: {
+          provider: 'mpesa',
+          referenceId: mockId,
+          status: 'PENDING',
+          amount: Number(amount),
+          currency: 'KES',
+          customerPhone: formatPhone(phone),
+          metadata: JSON.stringify({ description, simulation: true }),
+        }
+      });
       return NextResponse.json({
         success: true,
         message: `STK Push simulation sent to ${phone} for KES ${amount}. Configure MPESA_CONSUMER_KEY to enable live payments.`,
-        checkoutRequestId: `SIM-${Date.now()}`,
+        checkoutRequestId: mockId,
         simulation: true,
       });
     }
@@ -81,6 +94,18 @@ export async function POST(req: Request) {
     const stkData = await stkRes.json();
 
     if (stkData.ResponseCode === '0') {
+      await db.payment.create({
+        data: {
+          provider: 'mpesa',
+          referenceId: stkData.CheckoutRequestID,
+          status: 'PENDING',
+          amount: Number(amount),
+          currency: 'KES',
+          customerPhone: formatPhone(phone),
+          metadata: JSON.stringify({ description }),
+        }
+      });
+
       return NextResponse.json({
         success: true,
         message: `STK Push sent to ${phone}. Please check the device and enter M-Pesa PIN.`,

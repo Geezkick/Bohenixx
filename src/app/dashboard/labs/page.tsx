@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import styles from "../dashboard.module.css";
 import { FlaskConical, Lock, CheckCircle2, Activity, Cpu, Network, Database, ChevronRight, FileText, Download } from "lucide-react";
 

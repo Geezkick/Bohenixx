@@ -385,7 +385,6 @@ export default function CorporateLandingPage() {
               style={{ gridTemplateColumns: '1fr', textAlign: 'center', padding: '4rem 2rem', background: 'linear-gradient(180deg, rgba(123,45,255,0.1) 0%, rgba(17,17,20,1) 100%)', border: '1px solid rgba(123,45,255,0.3)' }}
             >
               <div className={styles.showcaseContent} style={{ maxWidth: '800px', margin: '0 auto' }}>
-                <span style={{ display: 'inline-block', fontSize: '11px', fontWeight: 800, letterSpacing: '2px', padding: '6px 16px', background: '#7B2DFF', borderRadius: '99px', color: '#fff', textTransform: 'uppercase', marginBottom: '1.5rem' }}>FLAGSHIP PLATFORM</span>
                 <h3 className={styles.showcaseTitle} style={{ fontSize: '36px', marginBottom: '1rem', fontWeight: 800 }}>Bohenix Flow AI</h3>
                 <p className={styles.showcaseDesc} style={{ fontSize: '18px', marginBottom: '2.5rem', color: '#E0E0E0' }}>
                   An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents. Hire AI employees to manage projects, generate invoices, follow up with customers, and analyze performance.
@@ -535,7 +534,7 @@ export default function CorporateLandingPage() {
                     {typeof product.icon === 'string' ? (
                       <Image src={product.icon} alt={product.name} width={24} height={24} />
                     ) : (
-                      React.cloneElement(product.icon as React.ReactElement, { size: 24 })
+                      React.cloneElement(product.icon as React.ReactElement<any>, { size: 24 })
                     )}
                      <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>{product.name}</h4>
                   </div>
