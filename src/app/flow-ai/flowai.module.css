@@ -431,3 +431,11 @@
   .integrationNode { width: 100px; padding: 1rem; }
   .finalCta { padding: 80px 1.5rem; }
 }
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

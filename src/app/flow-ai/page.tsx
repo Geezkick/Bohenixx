@@ -2,75 +2,88 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRightIcon, Shield, Lock, Eye, Server, Key, FileCheck, Activity } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  ArrowRightIcon, Shield, Lock, Eye, Server, Key, FileCheck, Activity,
+  Users, DollarSign, Calculator, Headphones, Cog, Megaphone, Scale, ClipboardList, Calendar, TrendingUp,
+  MessageSquare, BrainCircuit, ListChecks, Zap, BarChart, Bell, LayoutDashboard, FileText, Blocks, UsersRound, ShieldCheck, Wrench, LineChart,
+  Truck, HeartPulse, Landmark, GraduationCap, ShoppingCart, Factory, HardHat, Hotel, Building2, Globe, Briefcase, Laptop,
+  Cloud, MessageCircle, Mail, Paperclip, GitBranch, Video, CreditCard, Bot, Settings
+} from "lucide-react";
 import s from "./flowai.module.css";
 
 const fade = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.7 } } };
 
 const agents = [
-  { icon: "👤", name: "HR Agent", desc: "Automate hiring, onboarding, payroll, and employee management workflows." },
-  { icon: "💰", name: "Sales Agent", desc: "Manage leads, follow-ups, proposals, and close deals autonomously." },
-  { icon: "📊", name: "Finance Agent", desc: "Generate invoices, track expenses, reconcile accounts, and forecast revenue." },
-  { icon: "🎧", name: "Support Agent", desc: "Resolve tickets, answer FAQs, escalate issues, and measure CSAT." },
-  { icon: "⚙️", name: "Operations Agent", desc: "Optimize supply chains, logistics, inventory, and internal processes." },
-  { icon: "📢", name: "Marketing Agent", desc: "Create campaigns, analyze performance, segment audiences, and optimize spend." },
-  { icon: "⚖️", name: "Legal Assistant", desc: "Draft contracts, review compliance, track deadlines, and manage risk." },
-  { icon: "📋", name: "Project Manager", desc: "Plan sprints, assign tasks, track progress, and report milestones." },
-  { icon: "🗓️", name: "Executive Assistant", desc: "Schedule meetings, manage calendars, prepare briefings, and coordinate teams." },
-  { icon: "📈", name: "Analytics Agent", desc: "Build dashboards, generate insights, detect anomalies, and predict trends." },
+  { icon: <Users size={24} color="#7B2DFF" />, name: "HR Agent", desc: "Automate hiring, onboarding, payroll, and employee management workflows." },
+  { icon: <DollarSign size={24} color="#7B2DFF" />, name: "Sales Agent", desc: "Manage leads, follow-ups, proposals, and close deals autonomously." },
+  { icon: <Calculator size={24} color="#7B2DFF" />, name: "Finance Agent", desc: "Generate invoices, track expenses, reconcile accounts, and forecast revenue." },
+  { icon: <Headphones size={24} color="#7B2DFF" />, name: "Support Agent", desc: "Resolve tickets, answer FAQs, escalate issues, and measure CSAT." },
+  { icon: <Cog size={24} color="#7B2DFF" />, name: "Operations Agent", desc: "Optimize supply chains, logistics, inventory, and internal processes." },
+  { icon: <Megaphone size={24} color="#7B2DFF" />, name: "Marketing Agent", desc: "Create campaigns, analyze performance, segment audiences, and optimize spend." },
+  { icon: <Scale size={24} color="#7B2DFF" />, name: "Legal Assistant", desc: "Draft contracts, review compliance, track deadlines, and manage risk." },
+  { icon: <ClipboardList size={24} color="#7B2DFF" />, name: "Project Manager", desc: "Plan sprints, assign tasks, track progress, and report milestones." },
+  { icon: <Calendar size={24} color="#7B2DFF" />, name: "Executive Assistant", desc: "Schedule meetings, manage calendars, prepare briefings, and coordinate teams." },
+  { icon: <TrendingUp size={24} color="#7B2DFF" />, name: "Analytics Agent", desc: "Build dashboards, generate insights, detect anomalies, and predict trends." },
 ];
 
 const workflow = [
-  { icon: "💬", title: "User Request", desc: "Describe what you need in plain language." },
-  { icon: "🧠", title: "AI Understands Intent", desc: "NLP engine parses context and requirements." },
-  { icon: "📝", title: "Creates a Plan", desc: "Breaks tasks into executable sub-steps." },
-  { icon: "⚡", title: "Executes Automatically", desc: "Agents carry out each step across systems." },
-  { icon: "👁️", title: "Monitors Progress", desc: "Real-time tracking with smart alerts." },
-  { icon: "🔄", title: "Learns from Outcomes", desc: "Continuously improves based on results." },
-  { icon: "💡", title: "Generates Insights", desc: "Delivers actionable recommendations." },
+  { icon: <MessageSquare size={20} color="#00E5FF" />, title: "User Request", desc: "Describe what you need in plain language." },
+  { icon: <BrainCircuit size={20} color="#00E5FF" />, title: "AI Understands Intent", desc: "NLP engine parses context and requirements." },
+  { icon: <ListChecks size={20} color="#00E5FF" />, title: "Creates a Plan", desc: "Breaks tasks into executable sub-steps." },
+  { icon: <Zap size={20} color="#00E5FF" />, title: "Executes Automatically", desc: "Agents carry out each step across systems." },
+  { icon: <Eye size={20} color="#00E5FF" />, title: "Monitors Progress", desc: "Real-time tracking with smart alerts." },
+  { icon: <Activity size={20} color="#00E5FF" />, title: "Learns from Outcomes", desc: "Continuously improves based on results." },
+  { icon: <LineChart size={20} color="#00E5FF" />, title: "Generates Insights", desc: "Delivers actionable recommendations." },
 ];
 
 const features = [
-  { icon: "🤖", title: "Autonomous AI Agents", desc: "Agents that think, plan, and execute independently." },
-  { icon: "🔗", title: "Multi-Agent Collaboration", desc: "Agents work together across departments." },
-  { icon: "💬", title: "Natural Language Commands", desc: "Just describe what you need in plain English." },
-  { icon: "⚙️", title: "Workflow Automation", desc: "Automate any repetitive business process." },
-  { icon: "📊", title: "Business Intelligence", desc: "AI-driven insights from your data." },
-  { icon: "🔔", title: "Smart Notifications", desc: "Context-aware alerts when it matters." },
-  { icon: "📈", title: "Real-Time Dashboards", desc: "Live metrics across your operations." },
-  { icon: "📄", title: "Secure Document Processing", desc: "AI-powered document analysis and generation." },
-  { icon: "🔌", title: "API Integrations", desc: "Connect with any tool via REST API." },
-  { icon: "👥", title: "Team Collaboration", desc: "Shared workspaces and agent assignments." },
-  { icon: "📝", title: "Audit Logs", desc: "Complete transparency on every action." },
-  { icon: "🔒", title: "Enterprise Security", desc: "SOC 2, encryption, and compliance built-in." },
-  { icon: "🛠️", title: "Custom AI Agents", desc: "Build agents tailored to your workflows." },
-  { icon: "🔮", title: "Predictive Analytics", desc: "Forecast trends before they happen." },
+  { icon: <Bot size={24} color="#7B2DFF" />, title: "Autonomous AI Agents", desc: "Agents that think, plan, and execute independently." },
+  { icon: <UsersRound size={24} color="#7B2DFF" />, title: "Multi-Agent Collaboration", desc: "Agents work together across departments." },
+  { icon: <MessageCircle size={24} color="#7B2DFF" />, title: "Natural Language Commands", desc: "Just describe what you need in plain English." },
+  { icon: <Settings size={24} color="#7B2DFF" />, title: "Workflow Automation", desc: "Automate any repetitive business process." },
+  { icon: <BarChart size={24} color="#7B2DFF" />, title: "Business Intelligence", desc: "AI-driven insights from your data." },
+  { icon: <Bell size={24} color="#7B2DFF" />, title: "Smart Notifications", desc: "Context-aware alerts when it matters." },
+  { icon: <LayoutDashboard size={24} color="#7B2DFF" />, title: "Real-Time Dashboards", desc: "Live metrics across your operations." },
+  { icon: <FileText size={24} color="#7B2DFF" />, title: "Secure Document Processing", desc: "AI-powered document analysis and generation." },
+  { icon: <Blocks size={24} color="#7B2DFF" />, title: "API Integrations", desc: "Connect with any tool via REST API." },
+  { icon: <Users size={24} color="#7B2DFF" />, title: "Team Collaboration", desc: "Shared workspaces and agent assignments." },
+  { icon: <ClipboardList size={24} color="#7B2DFF" />, title: "Audit Logs", desc: "Complete transparency on every action." },
+  { icon: <ShieldCheck size={24} color="#7B2DFF" />, title: "Enterprise Security", desc: "SOC 2, encryption, and compliance built-in." },
+  { icon: <Wrench size={24} color="#7B2DFF" />, title: "Custom AI Agents", desc: "Build agents tailored to your workflows." },
+  { icon: <TrendingUp size={24} color="#7B2DFF" />, title: "Predictive Analytics", desc: "Forecast trends before they happen." },
 ];
 
 const industries = [
-  { icon: "🚛", name: "Logistics", desc: "Optimize routes, track shipments, and manage fleet operations." },
-  { icon: "🏥", name: "Healthcare", desc: "Automate patient scheduling, billing, and compliance." },
-  { icon: "🏦", name: "Finance", desc: "Streamline accounting, risk analysis, and reporting." },
-  { icon: "🎓", name: "Education", desc: "Manage enrollment, grading, and student engagement." },
-  { icon: "🛒", name: "Retail", desc: "Automate inventory, POS, and customer loyalty." },
-  { icon: "🏭", name: "Manufacturing", desc: "Optimize production lines and quality control." },
-  { icon: "🏗️", name: "Construction", desc: "Track projects, budgets, and safety compliance." },
-  { icon: "🏨", name: "Hospitality", desc: "Manage bookings, staff, and guest experiences." },
-  { icon: "🏛️", name: "Government", desc: "Digitize services, permits, and citizen engagement." },
-  { icon: "🌍", name: "NGOs", desc: "Track programs, donors, and impact metrics." },
-  { icon: "💼", name: "Professional Services", desc: "Automate billing, scheduling, and client management." },
-  { icon: "💻", name: "Technology", desc: "Accelerate development, DevOps, and support." },
+  { icon: <Truck size={24} color="#00E5FF" />, name: "Logistics", desc: "Optimize routes, track shipments, and manage fleet operations." },
+  { icon: <HeartPulse size={24} color="#00E5FF" />, name: "Healthcare", desc: "Automate patient scheduling, billing, and compliance." },
+  { icon: <Landmark size={24} color="#00E5FF" />, name: "Finance", desc: "Streamline accounting, risk analysis, and reporting." },
+  { icon: <GraduationCap size={24} color="#00E5FF" />, name: "Education", desc: "Manage enrollment, grading, and student engagement." },
+  { icon: <ShoppingCart size={24} color="#00E5FF" />, name: "Retail", desc: "Automate inventory, POS, and customer loyalty." },
+  { icon: <Factory size={24} color="#00E5FF" />, name: "Manufacturing", desc: "Optimize production lines and quality control." },
+  { icon: <HardHat size={24} color="#00E5FF" />, name: "Construction", desc: "Track projects, budgets, and safety compliance." },
+  { icon: <Hotel size={24} color="#00E5FF" />, name: "Hospitality", desc: "Manage bookings, staff, and guest experiences." },
+  { icon: <Building2 size={24} color="#00E5FF" />, name: "Government", desc: "Digitize services, permits, and citizen engagement." },
+  { icon: <Globe size={24} color="#00E5FF" />, name: "NGOs", desc: "Track programs, donors, and impact metrics." },
+  { icon: <Briefcase size={24} color="#00E5FF" />, name: "Professional Services", desc: "Automate billing, scheduling, and client management." },
+  { icon: <Laptop size={24} color="#00E5FF" />, name: "Technology", desc: "Accelerate development, DevOps, and support." },
 ];
 
 const integrations = [
-  { icon: "☁️", name: "Bohenix Cloud" }, { icon: "🛡️", name: "NjiaSafe" },
-  { icon: "👷", name: "Mboka" }, { icon: "🔧", name: "Fixxo" },
-  { icon: "💬", name: "Slack" }, { icon: "👥", name: "MS Teams" },
-  { icon: "📧", name: "Google Workspace" }, { icon: "📎", name: "Microsoft 365" },
-  { icon: "🐙", name: "GitHub" }, { icon: "📹", name: "Zoom" },
-  { icon: "💳", name: "Stripe" }, { icon: "⚡", name: "Zapier" },
-  { icon: "🔌", name: "REST API" }, { icon: "🪝", name: "Webhooks" },
+  { icon: <Cloud size={32} color="#7B2DFF" />, name: "Bohenix Cloud" }, 
+  { icon: <Shield size={32} color="#7B2DFF" />, name: "NjiaSafe" },
+  { icon: <HardHat size={32} color="#7B2DFF" />, name: "Mboka" }, 
+  { icon: <Wrench size={32} color="#7B2DFF" />, name: "Fixxo" },
+  { icon: <MessageCircle size={32} color="#7B2DFF" />, name: "Slack" }, 
+  { icon: <Users size={32} color="#7B2DFF" />, name: "MS Teams" },
+  { icon: <Mail size={32} color="#7B2DFF" />, name: "Google Workspace" }, 
+  { icon: <Paperclip size={32} color="#7B2DFF" />, name: "Microsoft 365" },
+  { icon: <GitBranch size={32} color="#7B2DFF" />, name: "GitHub" }, 
+  { icon: <Video size={32} color="#7B2DFF" />, name: "Zoom" },
+  { icon: <CreditCard size={32} color="#7B2DFF" />, name: "Stripe" }, 
+  { icon: <Zap size={32} color="#7B2DFF" />, name: "Zapier" },
+  { icon: <Blocks size={32} color="#7B2DFF" />, name: "REST API" }, 
+  { icon: <Cloud size={32} color="#7B2DFF" />, name: "Webhooks" },
 ];
 
 const dashMetrics = [
@@ -116,6 +129,32 @@ const devCards = [
 
 export default function FlowAIPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("mpesa");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<"idle"|"success">("idle");
+
+  const openCheckout = (plan: string) => {
+    setSelectedPlan(plan);
+    setIsCheckoutOpen(true);
+    setPaymentStatus("idle");
+    setIsProcessing(false);
+  };
+
+  const handlePayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false);
+      setPaymentStatus("success");
+      setTimeout(() => {
+        setIsCheckoutOpen(false);
+      }, 3000);
+    }, 2000);
+  };
+
   return (
     <div className={s.container}>
       <div className={s.bgFx}/>
@@ -134,7 +173,7 @@ export default function FlowAIPage() {
             <Link href="#security" className={s.navLink}>Security</Link>
             <Link href="#developers" className={s.navLink}>API</Link>
           </div>
-          <Link href="/sign-in" className={s.navBtn}>Start Free</Link>
+          <button onClick={() => openCheckout("Free Trial")} className={s.navBtn} style={{ cursor: "pointer" }}>Start Free</button>
         </div>
       </nav>
 
@@ -145,8 +184,8 @@ export default function FlowAIPage() {
           <motion.h1 variants={fade} className={s.heroTitle}>Meet Your <span className={s.heroGradient}>AI Workforce</span></motion.h1>
           <motion.p variants={fade} className={s.heroSub}>Delegate entire business operations to intelligent AI agents that think, plan, execute, and continuously improve workflows—so your team can focus on strategy instead of repetitive tasks.</motion.p>
           <motion.div variants={fade} className={s.heroCtas}>
-            <Link href="/sign-in" className={s.ctaPrimary}>Start Free <ArrowRightIcon size={18}/></Link>
-            <Link href="#contact" className={s.ctaSecondary}>Book a Demo</Link>
+            <button onClick={() => openCheckout("Free Trial")} className={s.ctaPrimary} style={{ cursor: "pointer" }}>Start Free <ArrowRightIcon size={18}/></button>
+            <Link href="#pricing" className={s.ctaSecondary}>View Pricing</Link>
           </motion.div>
         </motion.div>
       </section>
@@ -163,7 +202,7 @@ export default function FlowAIPage() {
             {agents.map((a,i)=>(
               <motion.div key={i} className={s.agentCard} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
                 <div className={s.agentCardHeader}>
-                  <div className={s.agentIcon}>{a.icon}</div>
+                  <div className={s.agentIcon} style={{ background: 'rgba(123,45,255,0.1)', border: '1px solid rgba(123,45,255,0.2)' }}>{a.icon}</div>
                   <div className={s.agentName}>{a.name}</div>
                 </div>
                 <div className={s.agentStatus}><span className={s.agentStatusDot}/> Online</div>
@@ -187,7 +226,7 @@ export default function FlowAIPage() {
             <div className={s.workflowLine}/>
             {workflow.map((w,i)=>(
               <motion.div key={i} className={s.workflowStep} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-                <div className={s.workflowDot}>{w.icon}</div>
+                <div className={s.workflowDot} style={{ background: '#111114', border: '1px solid rgba(0,229,255,0.3)' }}>{w.icon}</div>
                 <div className={s.workflowContent}><h4>{w.title}</h4><p>{w.desc}</p></div>
               </motion.div>
             ))}
@@ -206,7 +245,7 @@ export default function FlowAIPage() {
           <div className={s.featuresGrid}>
             {features.map((f,i)=>(
               <motion.div key={i} className={s.featureCard} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-                <div className={s.featureIcon}>{f.icon}</div>
+                <div className={s.featureIcon} style={{ background: 'rgba(123,45,255,0.1)', border: '1px solid rgba(123,45,255,0.2)' }}>{f.icon}</div>
                 <h4>{f.title}</h4><p>{f.desc}</p>
               </motion.div>
             ))}
@@ -225,7 +264,7 @@ export default function FlowAIPage() {
           <div className={s.industryGrid}>
             {industries.map((ind,i)=>(
               <motion.div key={i} className={s.industryCard} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-                <div className={s.industryIcon}>{ind.icon}</div>
+                <div className={s.industryIcon} style={{ background: 'rgba(0,229,255,0.1)', border: '1px solid rgba(0,229,255,0.2)' }}>{ind.icon}</div>
                 <h4>{ind.name}</h4><p>{ind.desc}</p>
               </motion.div>
             ))}
@@ -278,7 +317,7 @@ export default function FlowAIPage() {
           <div className={s.integrationsHub}>
             {integrations.map((int,i)=>(
               <motion.div key={i} className={s.integrationNode} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-                <div className={s.integrationIcon}>{int.icon}</div>
+                <div className={s.integrationIcon} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{int.icon}</div>
                 <span>{int.name}</span>
               </motion.div>
             ))}
@@ -303,7 +342,7 @@ export default function FlowAIPage() {
                 <li>3 AI Agents</li><li>1,000 tasks/month</li><li>Basic integrations</li>
                 <li>Email support</li><li>Standard dashboards</li>
               </ul>
-              <Link href="/sign-in" className={`${s.priceBtn} ${s.priceBtnOutline}`}>Start Free Trial</Link>
+              <button onClick={() => openCheckout("Starter")} className={`${s.priceBtn} ${s.priceBtnOutline}`} style={{ cursor: "pointer" }}>Start Free Trial</button>
             </motion.div>
             <motion.div className={`${s.priceCard} ${s.priceCardPop}`} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
               <div className={s.priceBadge}>Most Popular</div>
@@ -314,7 +353,7 @@ export default function FlowAIPage() {
                 <li>10 AI Agents</li><li>Unlimited tasks</li><li>All integrations</li>
                 <li>Priority support</li><li>Custom dashboards</li><li>API access</li><li>Audit logs</li>
               </ul>
-              <Link href="/sign-in" className={`${s.priceBtn} ${s.priceBtnPrimary}`}>Start Free Trial</Link>
+              <button onClick={() => openCheckout("Professional")} className={`${s.priceBtn} ${s.priceBtnPrimary}`} style={{ cursor: "pointer" }}>Start Free Trial</button>
             </motion.div>
             <motion.div className={s.priceCard} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
               <h3>Enterprise</h3>
@@ -324,7 +363,7 @@ export default function FlowAIPage() {
                 <li>Unlimited agents</li><li>Private deployment</li><li>Custom integrations</li>
                 <li>Dedicated CSM</li><li>SLA guarantee</li><li>Advanced security</li><li>SSO & SAML</li>
               </ul>
-              <Link href="#contact" className={`${s.priceBtn} ${s.priceBtnOutline}`}>Contact Sales</Link>
+              <button onClick={() => openCheckout("Enterprise")} className={`${s.priceBtn} ${s.priceBtnOutline}`} style={{ cursor: "pointer" }}>Contact Sales</button>
             </motion.div>
           </div>
         </div>
@@ -368,35 +407,14 @@ export default function FlowAIPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className={s.section} style={{background:'rgba(255,255,255,0.01)'}}>
-        <div className={s.contentWrap}>
-          <motion.div initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-            <div className={s.sectionLabel}>Testimonials</div>
-            <h2 className={s.sectionTitle}>Trusted by Leaders</h2>
-          </motion.div>
-          <div className={s.testimonialsGrid}>
-            {testimonials.map((t,i)=>(
-              <motion.div key={i} className={s.testimonialCard} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-                <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
-                <div className={s.testimonialAuthor}>
-                  <div className={s.testimonialAvatar}>{t.name[0]}</div>
-                  <div><strong>{t.name}</strong><span>{t.role}</span></div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section id="contact" className={s.finalCta}>
         <motion.div initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
           <h2 className={s.finalCtaTitle}>Transform Your Business with <span className={s.heroGradient}>Autonomous AI</span></h2>
           <p className={s.finalCtaDesc}>Join forward-thinking organizations using Bohenix Flow AI to automate operations, empower teams, and accelerate growth.</p>
           <div className={s.heroCtas}>
-            <Link href="/sign-in" className={s.ctaPrimary}>Start Free <ArrowRightIcon size={18}/></Link>
-            <Link href="#contact" className={s.ctaSecondary}>Schedule Demo</Link>
+            <button onClick={() => openCheckout("Enterprise")} className={s.ctaPrimary} style={{ cursor: "pointer" }}>Start Free <ArrowRightIcon size={18}/></button>
+            <Link href="#pricing" className={s.ctaSecondary}>Schedule Demo</Link>
           </div>
         </motion.div>
       </section>
@@ -433,7 +451,7 @@ export default function FlowAIPage() {
             <h4>Company</h4>
             <ul>
               <li><Link href="/">Home</Link></li>
-              <li><Link href="#contact">Contact Sales</Link></li>
+              <li><button onClick={() => openCheckout("Enterprise")} style={{ background: 'none', border: 'none', color: '#B3B3B8', cursor: 'pointer', padding: 0, fontSize: '15px' }}>Contact Sales</button></li>
               <li><Link href="#security">Security</Link></li>
               <li><Link href="/#company">About</Link></li>
             </ul>
@@ -452,6 +470,105 @@ export default function FlowAIPage() {
           <div>Nairobi, Kenya</div>
         </div>
       </footer>
+
+      {/* Checkout Modal */}
+      <AnimatePresence>
+        {isCheckoutOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(5,5,5,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(20px)' }}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              style={{ background: '#111114', padding: '3rem', borderRadius: '24px', width: '100%', maxWidth: '450px', border: '1px solid rgba(255,255,255,0.08)', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+            >
+              <button onClick={() => setIsCheckoutOpen(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: '#B3B3B8', fontSize: '1.5rem', cursor: 'pointer' }}>✕</button>
+              
+              <h3 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em' }}>Complete Checkout</h3>
+              <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '15px' }}>You are subscribing to the <strong style={{ color: '#7B2DFF' }}>{selectedPlan}</strong> Plan.</p>
+              
+              {paymentStatus === "success" ? (
+                <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                  <div style={{ width: '64px', height: '64px', background: '#52B44B', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+                    <ShieldCheck size={32} color="#fff" />
+                  </div>
+                  <h4 style={{ color: '#fff', fontSize: '20px', marginBottom: '0.5rem' }}>Payment Successful!</h4>
+                  <p style={{ color: '#B3B3B8' }}>Your Flow AI workspace is being provisioned.</p>
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                    <button onClick={() => setPaymentMethod('mpesa')} style={{ flex: 1, padding: '1rem', borderRadius: '12px', border: paymentMethod === 'mpesa' ? '1px solid #52B44B' : '1px solid rgba(255,255,255,0.1)', background: paymentMethod === 'mpesa' ? 'rgba(82,180,75,0.1)' : 'rgba(255,255,255,0.03)', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'pointer', transition: 'all 0.2s' }}>
+                      <div style={{ width: '20px', height: '20px', background: '#52B44B', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '10px', fontWeight: 800 }}>M</div>
+                      M-Pesa
+                    </button>
+                    <button onClick={() => setPaymentMethod('visa')} style={{ flex: 1, padding: '1rem', borderRadius: '12px', border: paymentMethod === 'visa' ? '1px solid #2962FF' : '1px solid rgba(255,255,255,0.1)', background: paymentMethod === 'visa' ? 'rgba(41,98,255,0.1)' : 'rgba(255,255,255,0.03)', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'pointer', transition: 'all 0.2s' }}>
+                      <div style={{ width: '20px', height: '20px', background: '#2962FF', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '12px', fontWeight: 800, fontStyle: 'italic' }}>V</div>
+                      Visa
+                    </button>
+                  </div>
+
+                  <form onSubmit={handlePayment}>
+                    {paymentMethod === 'mpesa' ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '14px', color: '#B3B3B8' }}>M-Pesa Phone Number</label>
+                          <input required type="tel" placeholder="2547XXXXXXXX" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '14px', color: '#B3B3B8' }}>Card Number</label>
+                          <input required type="text" placeholder="**** **** **** ****" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
+                        </div>
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                          <div style={{ flex: 1 }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '14px', color: '#B3B3B8' }}>Expiry</label>
+                            <input required type="text" placeholder="MM/YY" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '14px', color: '#B3B3B8' }}>CVC</label>
+                            <input required type="text" placeholder="123" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <button 
+                      type="submit" 
+                      disabled={isProcessing}
+                      style={{ 
+                        width: '100%', 
+                        background: paymentMethod === 'mpesa' ? '#52B44B' : '#2962FF', 
+                        color: '#fff', 
+                        padding: '1rem', 
+                        borderRadius: '12px', 
+                        border: 'none', 
+                        fontSize: '16px', 
+                        fontWeight: 600, 
+                        cursor: isProcessing ? 'not-allowed' : 'pointer',
+                        opacity: isProcessing ? 0.7 : 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      {isProcessing ? <Activity size={18} className={s.spin} /> : null}
+                      {isProcessing ? "Processing..." : `Pay via ${paymentMethod === 'mpesa' ? 'M-Pesa' : 'Visa'}`}
+                    </button>
+                  </form>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

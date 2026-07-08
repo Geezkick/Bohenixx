@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, Sprout, ScanLine } from 'lucide-react';
+import React from 'react';
 
 const ecosystem = [
   { id: "bxpos", name: "BX POS", desc: "A highly advanced, multi-industry AI point-of-sale terminal. Fully customizable for retail, restaurants, medical, or any custom business type. Features dynamic AI insights, intelligent inventory forecasting, and seamless multi-payment billing.", icon: "/bohenixx.png", color: "#B14CFF", href: "/dashboard/pos", price: "Enterprise", status: "Active" },
@@ -12,9 +13,9 @@ const ecosystem = [
   { id: "bxomni", name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", color: "#B14CFF", href: "https://bohenixx.vercel.app", price: "Enterprise", status: "In Development" },
   { id: "fixxo", name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", color: "#2979FF", href: "https://fixxo.vercel.app", price: "Free", status: "In Development" },
   { id: "mboka", name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Mboka uses intelligent geo-matching, verified worker profiles, and community-driven reviews so the right worker meets the right employer — fast, local, and trusted.", icon: "/mboka.png", color: "#FF6D00", href: "https://mboka.vercel.app", price: "Free", status: "In Development" },
-  { id: "vuna", name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Vuna creates a living marketplace where farmers, buyers, and communities engage, connect, and trade — with intelligent content allocation ensuring every harvest story finds its audience.", icon: "/vuna.png", color: "#76FF03", href: "https://vunashorts.vercel.app", price: "Free", status: "In Development" },
+  { id: "vuna", name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Vuna creates a living marketplace where farmers, buyers, and communities engage, connect, and trade — with intelligent content allocation ensuring every harvest story finds its audience.", icon: <Sprout size={48} color="#76FF03" />, color: "#76FF03", href: "https://vunashorts.vercel.app", price: "Free", status: "In Development" },
   { id: "kwelify", name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", color: "#E0E0E0", href: "https://kwelify.vercel.app", price: "Pro", status: "In Development" },
-  { id: "safura", name: "Safura", desc: "An autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and country of origin without any manual input. Safura empowers you to plan balanced meals, avoid potential allergies, request diet plans inspired by any cuisine worldwide, and maintain a healthy lifestyle with data-driven precision.", icon: "/safura.png", color: "#00E5FF", href: "https://safura-ai.vercel.app", price: "Free", status: "In Development" },
+  { id: "safura", name: "Safura", desc: "An autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and country of origin without any manual input. Safura empowers you to plan balanced meals, avoid potential allergies, request diet plans inspired by any cuisine worldwide, and maintain a healthy lifestyle with data-driven precision.", icon: <ScanLine size={48} color="#00E5FF" />, color: "#00E5FF", href: "https://safura-ai.vercel.app", price: "Free", status: "In Development" },
 ];
 
 export default function ProductsPage() {
@@ -113,8 +114,12 @@ export default function ProductsPage() {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   {product.icon ? (
-                    <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
-                      <Image src={product.icon} alt={product.name} width={60} height={60} style={{ objectFit: 'cover' }} />
+                    <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {typeof product.icon === 'string' ? (
+                        <Image src={product.icon} alt={product.name} width={60} height={60} style={{ objectFit: 'cover' }} />
+                      ) : (
+                        product.icon
+                      )}
                     </div>
                   ) : (
                     <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'linear-gradient(135deg, #B14CFF, #00E5FF)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.5rem', color: '#fff' }}>
@@ -185,8 +190,12 @@ export default function ProductsPage() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       {product.icon ? (
-                        <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
-                          <Image src={product.icon} alt={product.name} width={60} height={60} style={{ objectFit: 'cover' }} />
+                        <div style={{ width: '60px', height: '60px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {typeof product.icon === 'string' ? (
+                            <Image src={product.icon} alt={product.name} width={60} height={60} style={{ objectFit: 'cover' }} />
+                          ) : (
+                            product.icon
+                          )}
                         </div>
                       ) : (
                         <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'linear-gradient(135deg, #B14CFF, #00E5FF)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.5rem', color: '#fff' }}>
@@ -200,7 +209,7 @@ export default function ProductsPage() {
                     <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', margin: 0 }}>{product.name}</h3>
                     <p style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.5, margin: 0, flex: 1, fontSize: '0.95rem' }}>{product.desc}</p>
                     <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span style={{ fontSize: '0.9rem', color: '#7B2DFF', fontWeight: 600 }}>🚀 Launching soon</span>
+                      <span style={{ fontSize: '0.9rem', color: '#7B2DFF', fontWeight: 600 }}>Launching soon</span>
                     </div>
                   </div>
                 ))}

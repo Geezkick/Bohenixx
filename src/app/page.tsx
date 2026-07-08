@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, animate } from "framer-motion";
-import { ArrowRightIcon, Shield, Database, Cloud, Code, BrainCircuit } from "lucide-react";
+import { ArrowRightIcon, Shield, Database, Cloud, Code, BrainCircuit, Sprout, ScanLine } from "lucide-react";
 import styles from "./landing.module.css";
 
 import dynamic from "next/dynamic";
@@ -60,9 +60,9 @@ const ecosystem = [
   { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app", status: "development" },
   { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app", status: "development" },
   { name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Intelligent geo-matching and verified profiles.", icon: "/mboka.png", href: "https://mboka.vercel.app", status: "development" },
-  { name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Connect, engage, trade.", icon: "/vuna.png", href: "https://vunashorts.vercel.app", status: "development" },
+  { name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Connect, engage, trade.", icon: <Sprout size={28} color="#00E676" />, href: "https://vunashorts.vercel.app", status: "development" },
   { name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", href: "https://kwelify.vercel.app", status: "development" },
-  { name: "Safura", desc: "Autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and origin data without any manual input.", icon: "/safura.png", href: "https://safura-ai.vercel.app", status: "development" },
+  { name: "Safura", desc: "Autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and origin data without any manual input.", icon: <ScanLine size={28} color="#FF3D00" />, href: "https://safura-ai.vercel.app", status: "development" },
 ];
 
 const services = [
@@ -415,7 +415,11 @@ export default function CorporateLandingPage() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '100%' }}>
                     <div className={styles.showcaseIcon} style={{ width: '48px', height: '48px' }}>
-                      <Image src={product.icon} alt={product.name} width={28} height={28} />
+                      {typeof product.icon === 'string' ? (
+                        <Image src={product.icon} alt={product.name} width={28} height={28} />
+                      ) : (
+                        product.icon
+                      )}
                     </div>
                     <div style={{ flex: 1 }}>
                       <h3 className={styles.showcaseTitle} style={{ margin: 0 }}>{product.name}</h3>
@@ -528,13 +532,16 @@ export default function CorporateLandingPage() {
               <div key={product.name} style={{ padding: '1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                     <Image src={product.icon} alt={product.name} width={24} height={24} />
+                    {typeof product.icon === 'string' ? (
+                      <Image src={product.icon} alt={product.name} width={24} height={24} />
+                    ) : (
+                      React.cloneElement(product.icon as React.ReactElement, { size: 24 })
+                    )}
                      <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>{product.name}</h4>
                   </div>
                   <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', padding: '4px 12px', background: 'rgba(255,152,0,0.1)', borderRadius: '99px', color: '#FF9800', textTransform: 'uppercase' }}>IN DEVELOPMENT</span>
                 </div>
                 <p style={{ fontSize: '15px', color: '#B3B3B8', lineHeight: 1.6, margin: 0 }}>{product.desc}</p>
-                <p style={{ fontSize: '13px', color: '#7B2DFF', fontWeight: 600, margin: '1rem 0 0 0' }}>🚀 Launching soon</p>
               </div>
             ))}
           </div>
