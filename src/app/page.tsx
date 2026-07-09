@@ -163,6 +163,7 @@ export default function CorporateLandingPage() {
         payload = { email: inquiryEmail, name: inquiryName || 'Applicant', position: 'General Application', portfolioUrl: inquiryPortfolio, coverLetter: inquiryMsg };
       } else if (contactTarget === 'services@bohenix.africa') {
         // Services request payload formatting
+        payload.targetEmail = 'hello@bohenix.africa';
         payload.subject = `New Service Request: ${inquiryServiceType || 'Custom Project'}`;
         payload.message = `
 Service Required: ${inquiryServiceType}
