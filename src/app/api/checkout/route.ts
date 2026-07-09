@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const userId = (sessionAuth?.user as any)?.id;
     
     const body = await req.json();
-    const { itemName, priceAmount, type, email } = body;
+    const { itemName, priceAmount, type, email, currency = 'USD' } = body;
 
     if (!process.env.STRIPE_SECRET_KEY) {
       // Mock mode if no stripe key provided
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       line_items: [
         {
           price_data: {
-            currency: 'usd',
+            currency: currency.toLowerCase(),
             product_data: {
               name: itemName,
             },
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
           referenceId: session.id,
           status: 'PENDING',
           amount: priceAmount,
-          currency: 'USD',
+          currency: currency.toUpperCase(),
           customerEmail: email,
           metadata: JSON.stringify({ itemName, type }),
         }

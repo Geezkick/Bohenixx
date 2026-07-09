@@ -134,6 +134,12 @@ export default function FlowAIPage() {
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<"idle"|"success">("idle");
+  const [currency, setCurrency] = useState<"USD"|"KES">("USD");
+
+  const PRICING = {
+    Starter: { usd: 19, kes: 2450 },
+    Professional: { usd: 49, kes: 6350 },
+  };
 
   const openCheckout = (plan: string) => {
     setSelectedPlan(plan);
@@ -155,7 +161,7 @@ export default function FlowAIPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             phone: mpesaPhone,
-            amount: selectedPlan === 'Starter' ? 49 * 130 : selectedPlan === 'Professional' ? 199 * 130 : 0, // Mock KES conversion
+            amount: selectedPlan === 'Starter' ? PRICING.Starter.kes : selectedPlan === 'Professional' ? PRICING.Professional.kes : 0,
             description: `Flow AI ${selectedPlan} Plan`
           })
         });
@@ -176,7 +182,8 @@ export default function FlowAIPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             itemName: `Flow AI ${selectedPlan} Plan`,
-            priceAmount: selectedPlan === 'Starter' ? 49 : selectedPlan === 'Professional' ? 199 : 0,
+            priceAmount: selectedPlan === 'Starter' ? PRICING.Starter[currency.toLowerCase() as 'usd'|'kes'] : selectedPlan === 'Professional' ? PRICING.Professional[currency.toLowerCase() as 'usd'|'kes'] : 0,
+            currency: currency,
             type: 'subscription',
             returnUrl: '/dashboard/flow-ai'
           })
@@ -377,12 +384,32 @@ export default function FlowAIPage() {
           <motion.div initial="hidden" whileInView="show" viewport={{once:true}} variants={fade} style={{textAlign:'center'}}>
             <div className={s.sectionLabel} style={{justifyContent:'center'}}>Pricing</div>
             <h2 className={s.sectionTitle} style={{margin:'0 auto 1.5rem'}}>Simple, Transparent Pricing</h2>
-            <p className={s.sectionDesc} style={{margin:'0 auto'}}>Start free. Scale as you grow.</p>
+            <p className={s.sectionDesc} style={{margin:'0 auto 2rem'}}>Start free. Scale as you grow.</p>
+            
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+              <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <button 
+                  onClick={() => setCurrency("USD")}
+                  style={{ padding: '0.5rem 1.5rem', borderRadius: '8px', background: currency === 'USD' ? '#7B2DFF' : 'transparent', color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                >
+                  USD
+                </button>
+                <button 
+                  onClick={() => setCurrency("KES")}
+                  style={{ padding: '0.5rem 1.5rem', borderRadius: '8px', background: currency === 'KES' ? '#7B2DFF' : 'transparent', color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                >
+                  KES
+                </button>
+              </div>
+            </div>
           </motion.div>
           <div className={s.pricingGrid}>
             <motion.div className={s.priceCard} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
               <h3>Starter</h3>
-              <div className={s.priceTag}>$49<span>/mo</span></div>
+              <div className={s.priceTag}>
+                {currency === 'USD' ? `$${PRICING.Starter.usd}` : `KES ${PRICING.Starter.kes.toLocaleString()}`}
+                <span>/mo</span>
+              </div>
               <div className={s.priceSub}>For startups and small businesses getting started with AI automation.</div>
               <ul className={s.priceFeatures}>
                 <li>3 AI Agents</li><li>1,000 tasks/month</li><li>Basic integrations</li>
@@ -393,7 +420,10 @@ export default function FlowAIPage() {
             <motion.div className={`${s.priceCard} ${s.priceCardPop}`} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
               <div className={s.priceBadge}>Most Popular</div>
               <h3>Professional</h3>
-              <div className={s.priceTag}>$199<span>/mo</span></div>
+              <div className={s.priceTag}>
+                {currency === 'USD' ? `$${PRICING.Professional.usd}` : `KES ${PRICING.Professional.kes.toLocaleString()}`}
+                <span>/mo</span>
+              </div>
               <div className={s.priceSub}>For growing companies needing advanced AI automation and analytics.</div>
               <ul className={s.priceFeatures}>
                 <li>10 AI Agents</li><li>Unlimited tasks</li><li>All integrations</li>
