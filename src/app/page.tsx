@@ -260,16 +260,19 @@ export default function CorporateLandingPage() {
         <div className={styles.heroGrid}>
           <motion.div initial="hidden" animate="show" variants={stagger}>
             <motion.h1 variants={fadeUp} className={styles.title}>
-              Building Africa's <br />
-              <span className={styles.textPurple}>Intelligent</span> <br />
-              Digital Future.
+              The Future of <br />
+              <span className={styles.textPurple}>Work</span> <br />
+              Has Arrived.
             </motion.h1>
             <motion.p variants={fadeUp} className={styles.subtitle}>
-              From enterprise SaaS and mobility to our new flagship <strong style={{ color: '#fff' }}>Bohenix Flow AI</strong>. We build intelligent software systems to put your business on autopilot and power the global digital economy.
+              Hire AI Employees That Never Sleep. Create an entire digital workforce that manages operations, sales, finance, customer support, HR and projects—all working together like a real company.
             </motion.p>
             <motion.div variants={fadeUp} className={styles.ctaGroup}>
               <Link href="/flow-ai" className={styles.primaryCta}>
-                Discover Flow AI <ArrowRightIcon size={18} />
+                Hire AI Workforce <ArrowRightIcon size={18} />
+              </Link>
+              <Link href="/flow-ai#demo" className={styles.secondaryCta}>
+                Watch Demo
               </Link>
             </motion.div>
           </motion.div>

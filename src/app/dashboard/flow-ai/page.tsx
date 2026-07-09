@@ -252,10 +252,10 @@ export default function FlowAIDashboard() {
           <h1 className={styles.pageTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <BrainCircuit size={32} color="#7B2DFF" /> Flow AI Command
           </h1>
-          <p className={styles.pageDesc} style={{ marginBottom: 0 }}>Deploy and manage your autonomous AI workforce.</p>
+          <p className={styles.pageDesc} style={{ marginBottom: 0 }}>Manage your autonomous AI workforce.</p>
         </div>
         <button onClick={() => { setEditingAgent(null); setAgentForm({ name: "", type: "Sales", description: "", systemPrompt: "" }); setShowAgentModal(true); }} className={styles.btnPrimary}>
-          <Plus size={16} /> Deploy New Agent
+          <Plus size={16} /> Hire AI Employee
         </button>
       </div>
 
@@ -270,7 +270,7 @@ export default function FlowAIDashboard() {
           {stats && (
             <div className={styles.statsBar}>
               <div className={styles.statCard}>
-                <div className={styles.statCardLabel}>Active Agents</div>
+                <div className={styles.statCardLabel}>Active Employees</div>
                 <div className={styles.statCardValue}>{stats.activeAgents} <span style={{fontSize: '1rem', color: 'rgba(255,255,255,0.4)'}}>/ {stats.totalAgents}</span></div>
               </div>
               <div className={styles.statCard}>
@@ -301,7 +301,7 @@ export default function FlowAIDashboard() {
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 {agents.length === 0 ? (
                   <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "rgba(255,255,255,0.5)" }}>
-                    No agents deployed yet.
+                    No employees hired yet.
                   </div>
                 ) : (
                   agents.map(agent => (
@@ -462,8 +462,8 @@ export default function FlowAIDashboard() {
               ) : (
                 <div style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "4rem 0", background: "rgba(255,255,255,0.02)", border: "1px dashed rgba(255,255,255,0.1)", borderRadius: "20px" }}>
                   <Bot size={48} style={{ opacity: 0.3, margin: "0 auto 1rem" }} />
-                  <h3>No Agent Selected</h3>
-                  <p style={{ marginTop: "0.5rem" }}>Select an agent from the left to start collaborating.</p>
+                  <h3>No Employee Selected</h3>
+                  <p style={{ marginTop: "0.5rem" }}>Select an employee from the left to start collaborating.</p>
                 </div>
               )}
             </div>
@@ -476,15 +476,15 @@ export default function FlowAIDashboard() {
         <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(5,5,5,0.8)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(20px)" }}>
           <div style={{ background: "#111114", padding: "2.5rem", borderRadius: "24px", width: "100%", maxWidth: "500px", border: "1px solid rgba(255,255,255,0.08)", maxHeight: "90vh", overflowY: "auto" }}>
             <h3 style={{ fontSize: "24px", fontWeight: 700, marginBottom: "2rem", color: "#fff" }}>
-              {editingAgent ? "Edit Agent" : "Deploy AI Agent"}
+              {editingAgent ? "Edit Employee Details" : "Hire AI Employee"}
             </h3>
             <form onSubmit={handleSaveAgent}>
               <div style={{ marginBottom: "1.25rem" }}>
-                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Agent Name</label>
-                <input required type="text" value={agentForm.name} onChange={e => setAgentForm({...agentForm, name: e.target.value})} placeholder="e.g. Sales Copilot" style={{ width: "100%", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }} />
+                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Employee Name</label>
+                <input required type="text" value={agentForm.name} onChange={e => setAgentForm({...agentForm, name: e.target.value})} placeholder="e.g. Maya" style={{ width: "100%", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }} />
               </div>
               <div style={{ marginBottom: "1.25rem" }}>
-                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Agent Department / Role</label>
+                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Department / Role</label>
                 <select value={agentForm.type} onChange={e => setAgentForm({...agentForm, type: e.target.value})} style={{ width: "100%", padding: "1rem", background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }}>
                   {AGENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
@@ -503,7 +503,7 @@ export default function FlowAIDashboard() {
                   Cancel
                 </button>
                 <button type="submit" disabled={isSubmittingAgent} style={{ flex: 1, background: "#7B2DFF", color: "#fff", border: "none", borderRadius: "12px", padding: "1rem", fontWeight: 600, cursor: isSubmittingAgent ? "not-allowed" : "pointer", opacity: isSubmittingAgent ? 0.7 : 1 }}>
-                  {isSubmittingAgent ? "Saving..." : (editingAgent ? "Save Changes" : "Deploy Agent")}
+                  {isSubmittingAgent ? "Saving..." : (editingAgent ? "Save Changes" : "Hire Employee")}
                 </button>
               </div>
             </form>
