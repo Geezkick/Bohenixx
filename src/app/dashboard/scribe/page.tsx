@@ -1,39 +1,113 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "../dashboard.module.css";
 import { Mic, MicOff, Save, Loader2, BrainCircuit, FileText, CheckCircle2 } from "lucide-react";
+import PremiumLock from "@/components/PremiumLock";
 
 export default function ScribePage() {
   const [listening, setListening] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [transcript, setTranscript] = useState("");
   const [notes, setNotes] = useState({
     subjective: "",
     objective: "",
     assessment: "",
     plan: ""
   });
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
-  const toggleListen = () => {
+  useEffect(() => {
+    fetch('/api/subscription/check')
+      .then(res => res.json())
+      .then(data => setHasAccess(data.isActive))
+      .catch(() => setHasAccess(false));
+  }, []);
+
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      
+      recognitionRef.current.onresult = (event: any) => {
+        let currentTranscript = "";
+        for (let i = 0; i < event.results.length; i++) {
+          currentTranscript += event.results[i][0].transcript + " ";
+        }
+        setTranscript(currentTranscript);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error("Speech recognition error", event.error);
+        if (event.error === 'not-allowed') {
+          alert("Microphone access denied. Please enable it in your browser.");
+          setListening(false);
+        }
+      };
+    }
+  }, []);
+
+  const toggleListen = async () => {
     if (listening) {
       setListening(false);
       setProcessing(true);
       
-      // Simulate AI generating SOAP notes from ambient listening
-      setTimeout(() => {
-        setProcessing(false);
-        setNotes({
-          subjective: "Patient reports mild chest pain and shortness of breath over the past 2 days. Pain is localized to the center of the chest and does not radiate. No history of cardiac issues.",
-          objective: "BP 135/85, HR 88, SpO2 97% on room air. Lungs clear to auscultation bilaterally. Heart: regular rate and rhythm, no murmurs.",
-          assessment: "Atypical chest pain, likely musculoskeletal given the presentation, but cannot definitively rule out mild angina.",
-          plan: "1. Order 12-lead EKG today.\n2. Prescribe Ibuprofen 400mg PRN for pain.\n3. Return to clinic in 48 hours for follow-up if symptoms persist."
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+
+      // If transcript is empty, use a mock one to demonstrate
+      const finalTranscript = transcript.trim() || "The patient is a 45-year-old male presenting with a 3-day history of dry cough and low-grade fever. He states his highest temperature was 100.4 at home. He denies shortness of breath, chest pain, or nausea. On exam, heart rate is 82, blood pressure 120/80, oxygen saturation is 98% on room air. Lungs are clear to auscultation bilaterally. My assessment is an upper respiratory infection, likely viral. The plan is to recommend rest, hydration, and over-the-counter Tylenol for fever. He should return if symptoms worsen.";
+      
+      try {
+        const res = await fetch('/api/scribe/summarize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transcript: finalTranscript })
         });
-      }, 2500);
+        const data = await res.json();
+        if (data.soapNote) {
+          setNotes(data.soapNote);
+        } else {
+          alert(data.error || "Failed to generate note.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to connect to AI engine.");
+      } finally {
+        setProcessing(false);
+      }
     } else {
       setNotes({ subjective: "", objective: "", assessment: "", plan: "" });
+      setTranscript("");
       setListening(true);
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.start();
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        alert("Speech recognition is not supported in this browser. A simulated transcript will be used.");
+      }
     }
   };
+
+  if (hasAccess === null) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+        <Loader2 size={40} className="spin" color="#22c55e" />
+      </div>
+    );
+  }
+
+  if (!hasAccess) {
+    return <PremiumLock featureName="BX Ambient Scribe" />;
+  }
 
   return (
     <div>
@@ -86,6 +160,12 @@ export default function ScribePage() {
               <span style={{ fontSize: '0.85rem', color: '#B14CFF', fontWeight: 700 }}>{notes.subjective ? '98%' : '0%'}</span>
             </div>
           </div>
+          
+          {listening && (
+            <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(0,0,0,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', fontStyle: 'italic', maxHeight: '150px', overflowY: 'auto' }}>
+              {transcript || "Listening..."}
+            </div>
+          )}
         </div>
 
         {/* Note Output */}

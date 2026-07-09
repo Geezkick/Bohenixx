@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { db } from '@/lib/db';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/authOptions';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock');
 
 export async function POST(req: Request) {
   try {
+    const sessionAuth = await getServerSession(authOptions);
+    const userId = (sessionAuth?.user as any)?.id;
+    
     const body = await req.json();
     const { itemName, priceAmount, type, email } = body;
 
@@ -35,6 +40,11 @@ export async function POST(req: Request) {
       mode: 'payment',
       success_url: `${baseUrl}${returnUrl}?success=true`,
       cancel_url: `${baseUrl}${returnUrl}?canceled=true`,
+      client_reference_id: userId || undefined,
+      metadata: {
+        type,
+        userId: userId || 'anonymous'
+      }
     });
 
     // Create a pending transaction record

@@ -162,7 +162,10 @@ export default function FlowAIPage() {
         const data = await res.json();
         if (data.success) {
           setPaymentStatus("success");
-          setTimeout(() => setIsCheckoutOpen(false), 5000);
+          setTimeout(() => {
+            setIsCheckoutOpen(false);
+            window.location.href = '/dashboard/flow-ai';
+          }, 3000);
         } else {
           alert("Payment failed: " + data.message);
         }
@@ -175,7 +178,7 @@ export default function FlowAIPage() {
             itemName: `Flow AI ${selectedPlan} Plan`,
             priceAmount: selectedPlan === 'Starter' ? 49 : selectedPlan === 'Professional' ? 199 : 0,
             type: 'subscription',
-            returnUrl: '/flow-ai'
+            returnUrl: '/dashboard/flow-ai'
           })
         });
         const data = await res.json();
@@ -184,7 +187,10 @@ export default function FlowAIPage() {
         } else {
           // Simulation fallback if no stripe key
           setPaymentStatus("success");
-          setTimeout(() => setIsCheckoutOpen(false), 3000);
+          setTimeout(() => {
+            setIsCheckoutOpen(false);
+            window.location.href = '/dashboard/flow-ai';
+          }, 3000);
         }
       }
     } catch (err: any) {

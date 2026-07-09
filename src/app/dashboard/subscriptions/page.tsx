@@ -5,7 +5,7 @@ import styles from "../dashboard.module.css";
 import { 
   Package, Send, CheckCircle2, XCircle, Clock, Loader2, 
   BrainCircuit, Activity, FileText, CalendarCheck, MessageSquareHeart,
-  TrendingUp, ShieldCheck, AlertCircle, Zap, Video, Mic, Truck, HeartPulse, Megaphone, Users
+  TrendingUp, ShieldCheck, AlertCircle, Zap, Video, Mic, Truck, HeartPulse, Megaphone, Users, CreditCard
 } from "lucide-react";
 
 type ServiceRequestItem = {
@@ -133,9 +133,30 @@ export default function SubscriptionsPage() {
           <h1 className={styles.pageTitle}>Clinic Command Center</h1>
           <p className={styles.pageDesc}>Manage your AI-powered healthcare operations, products, and service requests.</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className={styles.btnPrimary}>
-          <Send size={16} /> {showForm ? "Cancel" : "New Service Request"}
-        </button>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <button 
+            onClick={async () => {
+              try {
+                const res = await fetch('/api/checkout/portal', { method: 'POST' });
+                const data = await res.json();
+                if (data.url) window.location.href = data.url;
+                else showToast(data.error || "Failed to open portal", "error");
+              } catch (e) {
+                showToast("Failed to open billing portal", "error");
+              }
+            }}
+            style={{ 
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', 
+              padding: '0.75rem 1.25rem', borderRadius: '10px', fontWeight: 600, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '8px'
+            }}
+          >
+            <CreditCard size={16} /> Manage Billing
+          </button>
+          <button onClick={() => setShowForm(!showForm)} className={styles.btnPrimary}>
+            <Send size={16} /> {showForm ? "Cancel" : "New Service Request"}
+          </button>
+        </div>
       </div>
 
       {/* ─── Healthcare App Cards ─── */}

@@ -71,6 +71,7 @@ model User {
   services      AppService[]
   audits        SeoAudit[]
   widgetConfigs WidgetConfig[]
+  flowAgents    FlowAgent[]
 }
 
 model ServiceRequest {
@@ -384,3 +385,36 @@ model Payment {
   updatedAt         DateTime @updatedAt
 }
 
+// --- Bohenix Flow AI ---
+
+model FlowAgent {
+  id              String     @id @default(cuid())
+  userId          String
+  name            String
+  type            String     // "hr", "sales", "finance", "support", "operations", "marketing", "legal", "project", "executive", "analytics", "custom"
+  systemPrompt    String?    @db.Text
+  status          String     @default("ACTIVE") // ACTIVE, PAUSED
+  tasksCompleted  Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  tasks FlowTask[]
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model FlowTask {
+  id        String   @id @default(cuid())
+  agentId   String
+  userId    String
+  prompt    String   @db.Text
+  result    String?  @db.Text
+  status    String   @default("RUNNING") // RUNNING, COMPLETED, FAILED
+  createdAt DateTime @default(now())
+
+  agent FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId])
+  @@index([userId])
+}

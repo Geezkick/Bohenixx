@@ -1,58 +1,38 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { sendEmail } from '@/utils/mailer';
-import { getSupportTicketTemplate, getInternalAlertTemplate } from '@/utils/emailTemplates';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { sendEmail } from "@/lib/email";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { email, message, subject } = await req.json();
+    const body = await req.json();
+    const { email, message, subject } = body;
 
     if (!email || !message) {
-      return NextResponse.json({ success: false, error: 'Email and message are required' }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
-    // Generate a unique ticket number
-    const ticketNumber = `BX-${Math.floor(100000 + Math.random() * 900000)}`;
+    const ticketNumber = `TKT-${Date.now().toString(36).toUpperCase()}`;
 
-    // Create Support Ticket in DB
     const ticket = await db.supportTicket.create({
       data: {
         ticketNumber,
         email,
-        subject: subject || 'Support Request',
+        subject: subject || "Support Request",
         message
       }
     });
 
-    // 1. Send Internal Alert to support@bohenix.africa
-    const alertHtml = getInternalAlertTemplate(`New Support Ticket Created (#${ticketNumber})`, {
-      "Sender Email": email,
-      "Subject": ticket.subject,
-      "Message": message
-    });
-
-    await sendEmail({
-      to: 'support@bohenix.africa',
-      from: 'support@bohenix.africa',
-      replyTo: email,
-      subject: `New Ticket #${ticketNumber}: ${ticket.subject}`,
-      html: alertHtml,
-      type: 'SUPPORT'
-    });
-
-    // 2. Send Ticket Confirmation to User
-    const userHtml = getSupportTicketTemplate(ticketNumber, message);
+    // Send auto-reply to user
     await sendEmail({
       to: email,
-      from: 'support@bohenix.africa',
-      subject: `[Ticket #${ticketNumber}] Support Request Received`,
-      html: userHtml,
+      subject: `Received: ${ticket.subject} [${ticketNumber}]`,
+      text: `Hello,\n\nWe have received your support request. Your ticket number is ${ticketNumber}.\n\nMessage received:\n${message}\n\nOur team will get back to you shortly.\n\nBest,\nBohenix Support`,
       type: 'SUPPORT'
     });
 
-    return NextResponse.json({ success: true, message: 'Ticket created successfully', ticketNumber });
-  } catch (error: any) {
-    console.error('Error in support route:', error);
-    return NextResponse.json({ success: false, error: 'Failed to create support ticket. Please try again.' }, { status: 500 });
+    return NextResponse.json({ success: true, ticketNumber });
+  } catch (error) {
+    console.error("Support API Error:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }

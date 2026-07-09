@@ -1,17 +1,16 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { sendEmail } from '@/utils/mailer';
-import { getJobApplicationTemplate, getInternalAlertTemplate } from '@/utils/emailTemplates';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { sendEmail } from "@/lib/email";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { email, name, position, portfolioUrl, coverLetter } = await req.json();
+    const body = await req.json();
+    const { email, name, position, portfolioUrl, coverLetter } = body;
 
     if (!email || !name || !position) {
-      return NextResponse.json({ success: false, error: 'Email, name, and position are required' }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
-    // Create Job Application in DB
     const application = await db.jobApplication.create({
       data: {
         email,
@@ -22,37 +21,17 @@ export async function POST(req: Request) {
       }
     });
 
-    // 1. Send Internal Alert to career@bohenix.africa
-    const alertHtml = getInternalAlertTemplate(`New Job Application Received: ${position}`, {
-      "Applicant Name": name,
-      "Applicant Email": email,
-      "Position": position,
-      "Portfolio/LinkedIn": portfolioUrl || 'Not provided',
-      "Cover Letter": coverLetter || 'Not provided'
-    });
-
-    await sendEmail({
-      to: 'career@bohenix.africa',
-      from: 'career@bohenix.africa',
-      replyTo: email,
-      subject: `New Application: ${name} for ${position}`,
-      html: alertHtml,
-      type: 'CAREER'
-    });
-
-    // 2. Send Application Confirmation to User
-    const userHtml = getJobApplicationTemplate(position);
+    // Send auto-reply to applicant
     await sendEmail({
       to: email,
-      from: 'career@bohenix.africa',
-      subject: `Application Received: ${position} at Bohenix`,
-      html: userHtml,
-      type: 'CAREER'
+      subject: `Application Received: ${position}`,
+      text: `Hello ${name},\n\nThank you for applying to Bohenix Technologies for the ${position} position.\n\nWe have received your application and our recruitment team will review it shortly. If your profile matches our requirements, we will reach out to you to schedule an interview.\n\nBest,\nBohenix Careers`,
+      type: 'CAREERS'
     });
 
-    return NextResponse.json({ success: true, message: 'Application submitted successfully' });
-  } catch (error: any) {
-    console.error('Error in career route:', error);
-    return NextResponse.json({ success: false, error: 'Failed to submit application. Please try again.' }, { status: 500 });
+    return NextResponse.json({ success: true, applicationId: application.id });
+  } catch (error) {
+    console.error("Career API Error:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }

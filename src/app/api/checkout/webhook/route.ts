@@ -35,6 +35,33 @@ export async function POST(req: Request) {
         where: { referenceId: session.id },
         data: { status: 'SUCCESS' },
       });
+
+      const userId = session.client_reference_id || session.metadata?.userId;
+      
+      if (userId && userId !== 'anonymous') {
+        // Upsert UserSubscription
+        const planType = session.metadata?.type || 'PREMIUM';
+        
+        const existingSub = await db.userSubscription.findFirst({
+          where: { userId }
+        });
+
+        if (existingSub) {
+          await db.userSubscription.update({
+            where: { id: existingSub.id },
+            data: { status: 'ACTIVE', planId: planType }
+          });
+        } else {
+          await db.userSubscription.create({
+            data: {
+              userId,
+              status: 'ACTIVE',
+              planId: planType,
+            }
+          });
+        }
+        console.log(`[Stripe] UserSubscription activated for user: ${userId}`);
+      }
     }
 
     return NextResponse.json({ received: true });

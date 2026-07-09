@@ -22,25 +22,32 @@ import { useAuth } from "@/context/AuthContext";
 import styles from "./dashboard.module.css";
 import Image from "next/image";
 
-const navItems = [
-  { name: "Overview", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
-  { name: "Products & Services", href: "/dashboard/subscriptions", icon: <Package size={18} /> },
-  { name: "BX Labs", href: "/dashboard/labs", icon: <FlaskConical size={18} /> },
-  { name: "Events", href: "/dashboard/events", icon: <Calendar size={18} /> },
-  { name: "Developer Portal", href: "/dashboard/developer", icon: <Code2 size={18} /> },
+const overviewItems = [
+  { name: "Command Center", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
+  { name: "Subscriptions", href: "/dashboard/subscriptions", icon: <Package size={18} /> },
   { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
 ];
 
-const productItems = [
+const flagshipItems = [
+  { name: "BX Flow AI", href: "/dashboard/flow-ai", icon: <Image src="/bohenixx.png" alt="BX Flow AI" width={18} height={18} /> },
   { name: "BX POS", href: "/dashboard/pos", icon: <Image src="/bohenixx.png" alt="BX POS" width={18} height={18} /> },
-  { name: "BX Social Proof", href: "/dashboard/testimonials", icon: <Image src="/bohenixx.png" alt="BX Social Proof" width={18} height={18} /> },
-  { name: "BX Invoices", href: "/dashboard/invoices", icon: <Image src="/bohenixx.png" alt="BX Invoices" width={18} height={18} /> },
-  { name: "BX Scheduler", href: "/dashboard/appointments", icon: <Image src="/bohenixx.png" alt="BX Scheduler" width={18} height={18} /> },
+];
+
+const suiteItems = [
+  { name: "Invoices", href: "/dashboard/invoices", icon: <Image src="/bohenixx.png" alt="BX Invoices" width={18} height={18} /> },
+  { name: "Scheduler", href: "/dashboard/appointments", icon: <Image src="/bohenixx.png" alt="BX Scheduler" width={18} height={18} /> },
+  { name: "Care CRM", href: "/dashboard/crm", icon: <Image src="/bohenixx.png" alt="BX CRM" width={18} height={18} /> },
+  { name: "Social Proof", href: "/dashboard/testimonials", icon: <Image src="/bohenixx.png" alt="BX Social Proof" width={18} height={18} /> },
+];
+
+const devItems = [
+  { name: "Developer Portal", href: "/dashboard/developer", icon: <Code2 size={18} /> },
+  { name: "BX Labs", href: "/dashboard/labs", icon: <FlaskConical size={18} /> },
 ];
 
 const siteLinks = [
   { name: "Homepage", href: "/", icon: <Home size={16} /> },
-  { name: "Products", href: "/products", icon: <Package size={16} /> },
+  { name: "Products", href: "/#products", icon: <Package size={16} /> },
   { name: "Services", href: "/services/request", icon: <Briefcase size={16} /> },
 ];
 
@@ -106,8 +113,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <nav className={styles.navLinks}>
-          <span className={styles.navLabel}>Dashboard</span>
-          {navItems.map((item) => {
+          <span className={styles.navLabel}>Overview</span>
+          {overviewItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
@@ -117,8 +124,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             );
           })}
 
-          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Products</span>
-          {productItems.map((item) => {
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Flagship Products</span>
+          {flagshipItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
+                {item.icon}
+                {item.name}
+              </Link>
+            );
+          })}
+
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Business Suite</span>
+          {suiteItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
+                {item.icon}
+                {item.name}
+              </Link>
+            );
+          })}
+
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Developers & Labs</span>
+          {devItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>

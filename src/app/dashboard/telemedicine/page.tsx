@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "../dashboard.module.css";
 import { 
   Video, Mic, MicOff, VideoOff, PhoneOff, Settings, 
@@ -13,23 +13,104 @@ export default function TelemedicinePage() {
   const [micMuted, setMicMuted] = useState(false);
   const [videoOff, setVideoOff] = useState(false);
   const [transcript, setTranscript] = useState<{role: 'ai'|'patient'|'doctor', text: string}[]>([]);
+  
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const recognitionRef = useRef<any>(null);
 
-  const startCall = () => {
+  useEffect(() => {
+    // Initialize Web Speech API
+    if (typeof window !== "undefined" && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = false;
+      
+      recognitionRef.current.onresult = (event: any) => {
+        const lastResultIndex = event.results.length - 1;
+        const text = event.results[lastResultIndex][0].transcript;
+        if (text.trim()) {
+          setTranscript(p => [...p, { role: 'doctor', text }]);
+        }
+      };
+    }
+
+    return () => {
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  }, [localStream, inCall]);
+
+  const startCall = async () => {
     setConnecting(true);
-    setTimeout(() => {
+    
+    try {
+      // Request real webcam/mic access
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setLocalStream(stream);
+      
       setConnecting(false);
       setInCall(true);
       
-      // Simulate live AI transcription
-      setTimeout(() => setTranscript(p => [...p, { role: 'ai', text: '[AI] Connection secure. Patient vitals acquired via IoT.'}]), 1000);
-      setTimeout(() => setTranscript(p => [...p, { role: 'patient', text: 'Hi Dr. Sarah, my throat has been hurting since yesterday.'}]), 3000);
-      setTimeout(() => setTranscript(p => [...p, { role: 'ai', text: '[AI] Symptom detected: Sore throat. Duration: 24hrs. Checking local epidemiological data... 15% spike in Strep A.'}]), 4500);
-    }, 1500);
+      // Start AI Transcription
+      if (recognitionRef.current) {
+        recognitionRef.current.start();
+        setTranscript([{ role: 'ai', text: '[AI] Secure connection established. Live transcription active.'}]);
+      }
+      
+    } catch (err) {
+      console.error("Failed to access media devices", err);
+      alert("Microphone and Camera access are required for Telemedicine.");
+      setConnecting(false);
+    }
   };
 
   const endCall = () => {
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+    }
+    setLocalStream(null);
     setInCall(false);
-    setTranscript([]);
+    
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  };
+
+  const toggleVideo = () => {
+    if (localStream) {
+      localStream.getVideoTracks().forEach(track => {
+        track.enabled = !track.enabled;
+      });
+      setVideoOff(!localStream.getVideoTracks()[0].enabled);
+    }
+  };
+
+  const toggleAudio = () => {
+    if (localStream) {
+      localStream.getAudioTracks().forEach(track => {
+        track.enabled = !track.enabled;
+      });
+      setMicMuted(!localStream.getAudioTracks()[0].enabled);
+    }
+  };
+
+  const autoGenerateRx = async () => {
+    if (transcript.length === 0) return;
+    
+    // Simulate sending to Gemini for Rx (similar to Scribe)
+    setTranscript(p => [...p, { role: 'ai', text: '[AI] Generating prescription and clinical summary...' }]);
+    
+    setTimeout(() => {
+      setTranscript(p => [...p, { role: 'ai', text: '[AI] Recommended Rx: Amoxicillin 500mg. Sent to pharmacy.' }]);
+    }, 2000);
   };
 
   return (
@@ -70,7 +151,7 @@ export default function TelemedicinePage() {
       ) : connecting ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5rem' }}>
           <Loader2 size={40} color="#00E5FF" className="spin" style={{ marginBottom: '1rem' }} />
-          <p style={{ color: '#00E5FF', fontWeight: 600 }}>Establishing end-to-end encrypted connection...</p>
+          <p style={{ color: '#00E5FF', fontWeight: 600 }}>Requesting camera and microphone access...</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '1.5rem', height: 'calc(100vh - 200px)' }}>
@@ -79,23 +160,24 @@ export default function TelemedicinePage() {
             background: '#000', borderRadius: '24px', position: 'relative', overflow: 'hidden',
             border: '1px solid rgba(255,255,255,0.1)'
           }}>
-            {/* Simulated Patient Video (Placeholder) */}
-            <div style={{ 
-              position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'url("https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80")',
-              backgroundSize: 'cover', backgroundPosition: 'center'
-            }} />
+            {/* Real Webcam Feed (Using local feed as main view for demonstration since no remote peer exists) */}
+            <video 
+              ref={localVideoRef}
+              autoPlay 
+              playsInline 
+              muted
+              style={{
+                width: '100%', height: '100%', objectFit: 'cover',
+                transform: 'scaleX(-1)', opacity: videoOff ? 0 : 1
+              }}
+            />
+            {videoOff && (
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)' }}>
+                <VideoOff size={60} />
+              </div>
+            )}
             
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%)' }} />
-
-            {/* Doctor PIP */}
-            <div style={{
-              position: 'absolute', top: '20px', right: '20px', width: '150px', height: '100px',
-              background: '#111', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.2)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)'
-            }}>
-              {videoOff ? <VideoOff size={30} /> : "You"}
-            </div>
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%)', pointerEvents: 'none' }} />
 
             {/* Vitals Overlay */}
             <div style={{
@@ -116,10 +198,10 @@ export default function TelemedicinePage() {
               display: 'flex', gap: '1rem', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)',
               padding: '0.75rem 1.5rem', borderRadius: '99px', border: '1px solid rgba(255,255,255,0.1)'
             }}>
-              <button onClick={() => setMicMuted(!micMuted)} style={{ background: micMuted ? 'rgba(255,255,255,0.2)' : 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px', borderRadius: '50%' }}>
+              <button onClick={toggleAudio} style={{ background: micMuted ? 'rgba(255,255,255,0.2)' : 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px', borderRadius: '50%' }}>
                 {micMuted ? <MicOff size={24} /> : <Mic size={24} />}
               </button>
-              <button onClick={() => setVideoOff(!videoOff)} style={{ background: videoOff ? 'rgba(255,255,255,0.2)' : 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px', borderRadius: '50%' }}>
+              <button onClick={toggleVideo} style={{ background: videoOff ? 'rgba(255,255,255,0.2)' : 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px', borderRadius: '50%' }}>
                 {videoOff ? <VideoOff size={24} /> : <Video size={24} />}
               </button>
               <button onClick={endCall} style={{ background: '#FF3366', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px 24px', borderRadius: '99px', fontWeight: 600 }}>
@@ -139,24 +221,20 @@ export default function TelemedicinePage() {
             </div>
             
             <div style={{ flex: 1, padding: '1rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {transcript.length === 0 && (
-                <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', marginTop: '2rem' }}>
-                  Listening...
-                </div>
-              )}
               {transcript.map((msg, i) => (
                 <div key={i} style={{ 
                   background: msg.role === 'ai' ? 'rgba(177,76,255,0.1)' : 'rgba(255,255,255,0.05)',
                   border: msg.role === 'ai' ? '1px solid rgba(177,76,255,0.2)' : 'none',
                   padding: '0.75rem', borderRadius: '12px', fontSize: '0.85rem', color: msg.role === 'ai' ? '#B14CFF' : '#fff'
                 }}>
+                  {msg.role === 'doctor' && <span style={{ fontWeight: 700, opacity: 0.5, marginRight: '6px' }}>You:</span>}
                   {msg.text}
                 </div>
               ))}
             </div>
 
             <div style={{ padding: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-              <button style={{ 
+              <button onClick={autoGenerateRx} style={{ 
                 width: '100%', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)',
                 color: '#22c55e', padding: '0.75rem', borderRadius: '10px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer'
               }}>

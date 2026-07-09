@@ -55,7 +55,7 @@ function AnimatedNumber({ value }: { value: number }) {
 
 const ecosystem = [
   { name: "BX POS", desc: "A highly advanced, multi-industry AI point-of-sale terminal. Fully customizable for retail, restaurants, medical, or any custom business type. Features dynamic AI insights, intelligent inventory forecasting, and seamless multi-payment billing.", icon: "/bohenixx.png", href: "/dashboard/pos", status: "active" },
-  { name: "BX Business Suite", desc: "A comprehensive AI-driven healthcare management suite. Automate patient medical billing, schedule intelligent AI-triaged appointments, and manage clinic reputation from a unified portal.", icon: "/bohenixx.png", href: "/dashboard/subscriptions", status: "active" },
+  { name: "BX Business Suite", desc: "A comprehensive AI-driven business management suite. Automate billing, schedule intelligent AI-triaged appointments, and manage CRM from a unified portal.", icon: "/bohenixx.png", href: "/dashboard/subscriptions", status: "active" },
   { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app", status: "development" },
   { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app", status: "development" },
   { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app", status: "development" },

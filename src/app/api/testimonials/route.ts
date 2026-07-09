@@ -1,44 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/authOptions';
 import { db } from '@/lib/db';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get config
+    let config = await db.widgetConfig.findUnique({ where: { userId } });
+    if (!config) {
+      config = await db.widgetConfig.create({
+        data: { userId }
+      });
+    }
+
+    // Get testimonials
     const testimonials = await db.testimonial.findMany({
-      where: { approved: true },
-      orderBy: { createdAt: 'desc' },
-      take: 20
+      where: { userId },
+      orderBy: { createdAt: 'desc' }
     });
-    return NextResponse.json(testimonials);
+
+    return NextResponse.json({ config, testimonials });
   } catch (error) {
     console.error("Error fetching testimonials:", error);
-    return NextResponse.json({ error: "Failed to fetch testimonials" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { name, company, message, rating } = body;
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
 
-    if (!name || !message) {
-      return NextResponse.json({ error: "Name and message are required" }, { status: 400 });
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const body = await req.json();
+    
+    // Simulate someone submitting a testimonial for this user
     const testimonial = await db.testimonial.create({
       data: {
-        name,
-        company,
-        message,
-        rating: rating || 5,
-        // Auto-approving for now so it's visible immediately. 
-        // In production, this should default to false and have an admin panel.
-        approved: true 
+        userId,
+        name: body.name || "Anonymous",
+        company: body.company || "",
+        message: body.message,
+        rating: body.rating || 5,
+        approved: false
       }
     });
 
-    return NextResponse.json({ success: true, testimonial }, { status: 201 });
+    return NextResponse.json({ testimonial });
   } catch (error) {
     console.error("Error creating testimonial:", error);
-    return NextResponse.json({ error: "Failed to post testimonial" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

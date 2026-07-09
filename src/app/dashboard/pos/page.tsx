@@ -4,12 +4,8 @@ import React, { useState, useMemo, useCallback, useEffect, Suspense } from "reac
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./pos.module.css";
-import {
-  Search, ShoppingCart, Plus, Minus, Trash2, CreditCard, Package,
-  BarChart3, Receipt, Clock, CheckCircle2, Printer, X, Shield, Users, 
-  Wifi, Loader2, ExternalLink, Activity, Pill, Stethoscope, AlertTriangle, Lightbulb, BrainCircuit, HeartPulse, Smartphone,
-  MonitorSmartphone, Watch, Shirt, Coffee, Utensils, CalendarClock, Laptop, BookOpen, Edit3, Tag
-} from "lucide-react";
+import { CalendarClock, Pill, Package, Utensils, Scissors, ShoppingCart, Activity, BrainCircuit, ScanLine, Smartphone, CreditCard, ChevronDown, Check, Zap, AlertTriangle, MessageSquareCode, Settings2, Plus, Minus, X, Info, Search, FileText, Loader2, BarChart3, Receipt, Clock, CheckCircle2, Printer, Shield, Users, Wifi, ExternalLink, Tag, MonitorSmartphone, Watch, Shirt, Coffee, Laptop, BookOpen, Edit3, Lightbulb, Trash2 } from "lucide-react";
+import PremiumLock from "@/components/PremiumLock";
 import { useNotification } from "@/context/NotificationContext";
 import { useAuth } from "@/context/AuthContext";
 
@@ -20,18 +16,6 @@ interface CartItem extends Product { quantity: number; }
 interface Transaction { id: string; items: CartItem[]; subtotal: number; tax: number; discount: number; total: number; date: Date; method: string; status: "completed" | "pending"; checkoutUrl?: string; clientName?: string; }
 
 // ─── Dynamic Data Sets ───
-const MEDICAL_CATEGORIES = ["All", "Pharmacy (Rx)", "OTC Meds", "Consultations", "Lab Tests", "Medical Devices"];
-const MEDICAL_PRODUCTS: Product[] = [
-  { id: "rx1", name: "Amoxicillin 500mg", price: 12.50, category: "Pharmacy (Rx)", icon: <Pill size={26} />, stock: 350, atcCode: "J01CA04" },
-  { id: "rx2", name: "Lisinopril 10mg", price: 8.99, category: "Pharmacy (Rx)", icon: <Pill size={26} />, stock: 120, atcCode: "C09AA03" },
-  { id: "rx3", name: "Warfarin 5mg", price: 15.00, category: "Pharmacy (Rx)", icon: <Pill size={26} />, stock: 80, interactsWith: ["otc1", "rx4"] },
-  { id: "rx4", name: "Aspirin 81mg (Rx)", price: 5.50, category: "Pharmacy (Rx)", icon: <Pill size={26} />, stock: 500, interactsWith: ["rx3", "otc1"] },
-  { id: "otc1", name: "Ibuprofen 400mg", price: 6.99, category: "OTC Meds", icon: <Package size={26} />, stock: 800, interactsWith: ["rx3", "rx4"] },
-  { id: "otc2", name: "Paracetamol 500mg", price: 4.50, category: "OTC Meds", icon: <Package size={26} />, stock: 45 },
-  { id: "c1", name: "General Consultation", price: 50.00, category: "Consultations", icon: <Stethoscope size={26} />, stock: 999 },
-  { id: "t1", name: "Comprehensive Blood Panel", price: 85.00, category: "Lab Tests", icon: <Activity size={26} />, stock: 999 },
-  { id: "d1", name: "Digital Thermometer", price: 14.99, category: "Medical Devices", icon: <HeartPulse size={26} />, stock: 60 },
-];
 
 const RETAIL_CATEGORIES = ["All", "Electronics", "Apparel", "Home Goods", "Accessories"];
 const RETAIL_PRODUCTS: Product[] = [
@@ -75,10 +59,9 @@ function POSContent() {
   const { user } = useAuth();
   const { showNotification } = useNotification();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Mode state
-  const [mode, setMode] = useState<BusinessMode>("Medical");
+  const [mode, setMode] = useState<BusinessMode>("Retail");
 
   useEffect(() => {
     const savedMode = localStorage.getItem("bx_pos_mode") as BusinessMode;
@@ -90,7 +73,7 @@ function POSContent() {
       case "Retail": return { title: "Retail", subtitle: "Next-gen retail terminal with predictive inventory.", cat: RETAIL_CATEGORIES, prod: RETAIL_PRODUCTS, clientLabel: "Customer Details", aiBtn: "AI Upsell Analysis", icon: <ShoppingCart size={16} /> };
       case "Restaurant": return { title: "Restaurant", subtitle: "High-speed kitchen and table management terminal.", cat: RESTAURANT_CATEGORIES, prod: RESTAURANT_PRODUCTS, clientLabel: "Table Number", aiBtn: "AI Combo Analysis", icon: <Utensils size={16} /> };
       case "Service": return { title: "Service", subtitle: "Booking and billing terminal for professionals.", cat: SERVICE_CATEGORIES, prod: SERVICE_PRODUCTS, clientLabel: "Client Name", aiBtn: "AI Schedule Optimizer", icon: <CalendarClock size={16} /> };
-      case "Medical": return { title: "Medical", subtitle: "Advanced healthcare point-of-sale with clinical AI.", cat: MEDICAL_CATEGORIES, prod: MEDICAL_PRODUCTS, clientLabel: "Patient Name", aiBtn: "Run AI Safety Check", icon: <BrainCircuit size={16} /> };
+
       default: return { title: mode || "Custom", subtitle: "AI-powered generalized point-of-sale terminal.", cat: ["All", "Products", "Services", "Miscellaneous"], prod: [], clientLabel: "Client / Customer Name", aiBtn: "Run AI Optimization", icon: <Activity size={16} /> };
     }
   }, [mode]);
@@ -120,7 +103,18 @@ function POSContent() {
   
   // AI State
   const [isAiChecking, setIsAiChecking] = useState(false);
-  const [aiWarning, setAiWarning] = useState<{ active: boolean; message: string; severity: 'high' | 'medium' }>({ active: false, message: "", severity: 'medium' });
+  const [aiWarning, setAiWarning] = useState<{active: boolean, severity: 'high'|'medium'|'low', message: string}>({active: false, severity: 'low', message: ""});
+
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch('/api/subscription/check')
+      .then(res => res.json())
+      .then(data => setHasAccess(data.isActive))
+      .catch(() => setHasAccess(false));
+  }, []);
+
+  const searchParams = useSearchParams();
 
   // Custom Item State
   const [showCustomItem, setShowCustomItem] = useState(false);
@@ -236,28 +230,7 @@ function POSContent() {
     setTimeout(() => {
       setIsAiChecking(false);
       
-      if (mode === "Medical") {
-        let interactionFound = false;
-        for (const item of cart) {
-          if (item.interactsWith) {
-            const conflictingItem = cart.find(cartItem => item.interactsWith?.includes(cartItem.id));
-            if (conflictingItem) {
-              interactionFound = true;
-              setAiWarning({
-                active: true,
-                severity: 'high',
-                message: `AI Safety Alert: Severe interaction detected between ${item.name} and ${conflictingItem.name}.`
-              });
-              break;
-            }
-          }
-        }
-        if (!interactionFound) {
-          setAiWarning({
-            active: true, severity: 'medium', message: `AI Safety Check complete: No known adverse interactions detected.`
-          });
-        }
-      } else if (mode === "Retail") {
+      if (mode === "Retail") {
         setAiWarning({ active: true, severity: 'medium', message: "AI Upsell: Customers buying these items often purchase an extended warranty." });
       } else if (mode === "Restaurant") {
         setAiWarning({ active: true, severity: 'medium', message: "AI Insights: Suggesting a seasonal beverage pairs well with this order." });
@@ -435,6 +408,18 @@ function POSContent() {
         </div>
       </div>
     );
+  }
+
+  if (hasAccess === null) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+        <Loader2 size={40} className="spin" color="#B14CFF" />
+      </div>
+    );
+  }
+
+  if (!hasAccess) {
+    return <PremiumLock featureName="BX Universal POS" />;
   }
 
   // ─── Transaction History View ───

@@ -3,32 +3,59 @@
 import React, { useState } from "react";
 import styles from "../dashboard.module.css";
 import { Megaphone, BrainCircuit, Users, Send, MessageSquare, Loader2, CheckCircle2 } from "lucide-react";
+import PremiumLock from "@/components/PremiumLock";
 
 export default function CRMPage() {
   const [generating, setGenerating] = useState(false);
   const [campaign, setCampaign] = useState<any>(null);
   const [sent, setSent] = useState(false);
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
-  const generateCampaign = () => {
+  React.useEffect(() => {
+    fetch('/api/subscription/check')
+      .then(res => res.json())
+      .then(data => setHasAccess(data.isActive))
+      .catch(() => setHasAccess(false));
+  }, []);
+
+  const generateCampaign = async () => {
     setGenerating(true);
     setCampaign(null);
     setSent(false);
 
-    // Simulate AI data analysis and campaign generation
-    setTimeout(() => {
-      setGenerating(false);
-      setCampaign({
-        targetAudience: "Patients 65+ with no flu shot on record (N = 342)",
-        trend: "Local epidemiological data indicates a 40% rise in Influenza A in the surrounding 10 miles.",
-        message: "Hi [First Name], Dr. Smith's clinic here. Flu cases are rising sharply in our area this week. Because you haven't had your annual vaccine yet, we've reserved a dose for you. Reply 'YES' to secure a 5-minute appointment tomorrow.",
-        estimatedConversion: "28%"
+    try {
+      const res = await fetch('/api/crm/generate', {
+        method: 'POST',
       });
-    }, 3000);
+      const data = await res.json();
+      if (data.campaign) {
+        setCampaign(data.campaign);
+      } else {
+        throw new Error(data.error || 'Failed to generate campaign');
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate campaign with AI.");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const sendCampaign = () => {
     setSent(true);
   };
+
+  if (hasAccess === null) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+        <Loader2 size={40} className="spin" color="#f59e0b" />
+      </div>
+    );
+  }
+
+  if (!hasAccess) {
+    return <PremiumLock featureName="BX Care CRM" />;
+  }
 
   return (
     <div>

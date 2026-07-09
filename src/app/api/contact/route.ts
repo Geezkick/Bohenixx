@@ -1,49 +1,34 @@
-import { NextResponse } from 'next/server';
-import { sendEmail } from '@/utils/mailer';
-import { getContactConfirmationTemplate, getInternalAlertTemplate } from '@/utils/emailTemplates';
+import { NextRequest, NextResponse } from "next/server";
+import { sendEmail } from "@/lib/email";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { email, message, subject, targetEmail } = await req.json();
+    const body = await req.json();
+    const { email, message, targetEmail, subject } = body;
 
     if (!email || !message) {
-      return NextResponse.json({ success: false, error: 'Email and message are required' }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
-    // Default to hello@bohenix.africa for general contact
-    const allowedTargets = ['ceo@bohenix.africa', 'hello@bohenix.africa', 'info@bohenix.africa'];
-    const toAddress = allowedTargets.includes(targetEmail) ? targetEmail : 'hello@bohenix.africa';
-
-    // 1. Send an internal alert to the target mailbox about the new inquiry
-    const alertHtml = getInternalAlertTemplate("New Website Contact Inquiry", {
-      "Sender Email": email,
-      "Target Department": toAddress,
-      "Message": message
-    });
-
+    // Send the inquiry to the appropriate internal inbox (simulated via our email service)
     await sendEmail({
-      to: toAddress,
-      from: toAddress, // Internal system account (must exist on HostAfrica)
-      replyTo: email,
-      subject: subject || `New Inquiry from ${email}`,
-      html: alertHtml,
-      type: 'CONTACT'
+      to: targetEmail || 'hello@bohenix.africa',
+      subject: subject || `New Website Inquiry from ${email}`,
+      text: `Inquiry from: ${email}\n\nMessage:\n${message}`,
+      type: 'INQUIRY_INTERNAL'
     });
 
-    // 2. Send the branded auto-responder back to the user
-    const userHtml = getContactConfirmationTemplate("");
+    // Send auto-reply to the user
     await sendEmail({
       to: email,
-      from: toAddress, // Send from the department they contacted
-      subject: 'Thank you for contacting Bohenix Solutions',
-      html: userHtml,
-      type: 'CONTACT'
+      subject: `Re: ${subject || 'Your Inquiry to Bohenix'}`,
+      text: `Hello,\n\nWe have received your message and our team will get back to you shortly.\n\nBest,\nBohenix Team`,
+      type: 'INQUIRY_REPLY'
     });
 
-    return NextResponse.json({ success: true, message: 'Message sent successfully' });
-  } catch (error: any) {
-    console.error('Error in contact route:', error);
-    return NextResponse.json({ success: false, error: 'Failed to process inquiry. Please try again.' }, { status: 500 });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Contact API Error:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
-
