@@ -313,19 +313,18 @@ ${inquiryMsg}
         <div className={styles.heroGrid}>
           <motion.div initial="hidden" animate="show" variants={stagger}>
             <motion.h1 variants={fadeUp} className={styles.title}>
-              The Future of <br />
-              <span className={styles.textPurple}>Work</span> <br />
-              Has Arrived.
+              Build an Entire Company <br />
+              <span className={styles.textPurple}>That Runs Itself.</span>
             </motion.h1>
             <motion.p variants={fadeUp} className={styles.subtitle}>
               Hire AI Employees That Never Sleep. Create an entire digital workforce that manages operations, sales, finance, customer support, HR and projects—all working together like a real company.
             </motion.p>
             <motion.div variants={fadeUp} className={styles.ctaGroup}>
               <Link href="/flow-ai" className={styles.primaryCta}>
-                Hire AI Workforce <ArrowRightIcon size={18} />
+                Deploy AI Workforce <ArrowRightIcon size={18} />
               </Link>
               <Link href="/flow-ai#demo" className={styles.secondaryCta}>
-                Watch Demo
+                See How It Works
               </Link>
             </motion.div>
           </motion.div>

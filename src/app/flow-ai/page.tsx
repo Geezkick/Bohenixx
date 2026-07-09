@@ -137,7 +137,7 @@ export default function FlowAIPage() {
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginTop: '3rem' }}>
             {employees.map((emp, i) => (
-              <motion.div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '2rem', display: 'flex', flexDirection: 'column' }} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
+              <motion.div key={i} style={{ background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '24px', padding: '2.5rem', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 24px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.02)' }} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                   <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#111114', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(123,45,255,0.3)' }}>
                     {emp.icon}
@@ -197,7 +197,7 @@ export default function FlowAIPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', width: '100%', marginTop: '40px' }}>
               {departments.map((dept, i) => (
-                <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1.5rem', textAlign: 'center' }}>
+                <div key={i} style={{ background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px', padding: '1.5rem', textAlign: 'center', boxShadow: '0 4px 24px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.02)' }}>
                   <div style={{ marginBottom: '1rem', color: '#00E5FF' }}>{dept.icon}</div>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>{dept.name}</h4>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, textAlign: 'left' }}>
@@ -229,7 +229,7 @@ export default function FlowAIPage() {
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '4rem' }}>
             {capabilities.map((cap, i) => (
-              <motion.div key={i} style={{ background: '#0A0A0C', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '2.5rem' }} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
+              <motion.div key={i} style={{ background: 'var(--bg-surface)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 4px 24px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.02)' }} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(123,45,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', border: '1px solid rgba(123,45,255,0.2)' }}>
                   {cap.icon}
                 </div>

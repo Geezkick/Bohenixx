@@ -52,8 +52,8 @@ export default function DashboardOverview() {
 
   return (
     <>
-      <h1 className={styles.pageTitle}>Welcome back, {user?.name?.split(" ")[0] || "User"}</h1>
-      <p className={styles.pageDesc}>Here's what's happening with your Bohenix ecosystem today.</p>
+      <h1 className={styles.pageTitle}>Mission Control</h1>
+      <p className={styles.pageDesc}>Welcome back, {user?.name?.split(" ")[0] || "User"}. Here's the live status of your autonomous operations.</p>
 
       <div className={styles.grid}>
         <div className={styles.card}>
@@ -107,8 +107,8 @@ export default function DashboardOverview() {
 
 
 
-      <div style={{ marginTop: "3rem" }}>
-        <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Recent Activity</h2>
+      <div style={{ marginTop: "4rem" }}>
+        <h2 style={{ fontSize: "1.25rem", marginBottom: "1.5rem", fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase", color: "var(--text-secondary)" }}>System Log</h2>
         <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.05)", padding: "0 1.5rem" }}>
           {loading ? (
             <div style={{ padding: "2rem", color: "rgba(255,255,255,0.4)", fontSize: "0.9rem" }}>Loading activity...</div>
