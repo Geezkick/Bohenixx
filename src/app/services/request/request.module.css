@@ -151,7 +151,7 @@
 }
 
 .submitBtn {
-  background: #00C853;
+  background: var(--color-purple-primary);
 }
 
 .prevBtn {
