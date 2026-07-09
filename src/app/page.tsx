@@ -54,15 +54,7 @@ function AnimatedNumber({ value }: { value: number }) {
 
 
 const ecosystem = [
-  { name: "BX POS", desc: "A highly advanced, multi-industry AI point-of-sale terminal. Fully customizable for retail, restaurants, medical, or any custom business type. Features dynamic AI insights, intelligent inventory forecasting, and seamless multi-payment billing.", icon: "/bohenixx.png", href: "/dashboard/pos", status: "active" },
-  { name: "BX Business Suite", desc: "A comprehensive AI-driven business management suite. Automate billing, schedule intelligent AI-triaged appointments, and manage CRM from a unified portal.", icon: "/bohenixx.png", href: "/dashboard/subscriptions", status: "active" },
-  { name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", href: "https://njiasafe.six.vercel.app", status: "development" },
-  { name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", href: "https://bohenixx.vercel.app", status: "development" },
-  { name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", href: "https://fixxo.vercel.app", status: "development" },
-  { name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Intelligent geo-matching and verified profiles.", icon: "/mboka.png", href: "https://mboka.vercel.app", status: "development" },
-  { name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Connect, engage, trade.", icon: <Sprout size={28} color="#00E676" />, href: "https://vunashorts.vercel.app", status: "development" },
-  { name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", href: "https://kwelify.vercel.app", status: "development" },
-  { name: "Safura", desc: "Autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and origin data without any manual input.", icon: <ScanLine size={28} color="#FF3D00" />, href: "https://safura-ai.vercel.app", status: "development" },
+  { name: "Bohenix Flow AI", desc: "An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents.", icon: "/bohenixx.png", href: "/flow-ai", status: "active" },
 ];
 
 const services = [
@@ -119,7 +111,7 @@ export default function CorporateLandingPage() {
           if (data.success) {
             setVisitors(data.visitors || 0);
             setStats({
-              products: ecosystem.length + 1, // +1 for Flow AI
+              products: 1, // Flow AI
               users: data.users || 0,
               countries: data.countries || 0
             });
@@ -223,9 +215,7 @@ export default function CorporateLandingPage() {
                 <Link href="/flow-ai#developers" className={styles.dropLink}>API & Docs</Link>
               </div>
             </div>
-            <Link href="#solutions" className={styles.navLink}>Solutions</Link>
             <Link href="/dashboard/developer" className={styles.navLink}>Developers</Link>
-            <Link href="#labs" className={styles.navLink}>Research</Link>
             <Link href="#company" className={styles.navLink}>Company</Link>
             <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.navLink} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>Contact</button>
           </div>
@@ -281,9 +271,6 @@ export default function CorporateLandingPage() {
             <motion.div variants={fadeUp} className={styles.ctaGroup}>
               <Link href="/flow-ai" className={styles.primaryCta}>
                 Discover Flow AI <ArrowRightIcon size={18} />
-              </Link>
-              <Link href="#products" className={styles.secondaryCta} style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
-                Explore All Products
               </Link>
             </motion.div>
           </motion.div>
@@ -400,46 +387,7 @@ export default function CorporateLandingPage() {
               </div>
             </motion.div>
 
-            {/* Other active products */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
-              {ecosystem.filter(p => p.status === 'active').map((product, idx) => (
-                <motion.div 
-                  key={idx} 
-                  initial="hidden" 
-                  whileInView="show" 
-                  viewport={{ once: true, margin: "-100px" }} 
-                  variants={fadeUp} 
-                  className={styles.showcaseCard}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '2rem', gap: '1.5rem' }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '100%' }}>
-                    <div className={styles.showcaseIcon} style={{ width: '48px', height: '48px' }}>
-                      {typeof product.icon === 'string' ? (
-                        <Image src={product.icon} alt={product.name} width={28} height={28} />
-                      ) : (
-                        product.icon
-                      )}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <h3 className={styles.showcaseTitle} style={{ margin: 0 }}>{product.name}</h3>
-                    </div>
-                    <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', padding: '4px 10px', background: 'rgba(0, 229, 255, 0.1)', borderRadius: '99px', color: '#00E5FF', textTransform: 'uppercase' }}>
-                      ACTIVE
-                    </span>
-                  </div>
-                  
-                  <div className={styles.showcaseContent} style={{ flex: 1 }}>
-                    <p className={styles.showcaseDesc}>{product.desc}</p>
-                  </div>
-
-                  <div style={{ width: '100%' }}>
-                    <a href={product.href} {...(product.href.startsWith("http") ? { target: "_blank" } : {})} className={styles.showcaseLink} style={{ width: '100%', justifyContent: 'center' }}>
-                      Access Platform <ArrowRightIcon size={16} />
-                    </a>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            {/* Other active products removed */}
           </div>
         </div>
       </section>
@@ -454,98 +402,7 @@ export default function CorporateLandingPage() {
         <TestimonialWall />
       </section>
 
-      {/* Services Section */}
-      <section id="solutions" className={styles.section}>
-        <div className={styles.contentContainer}>
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className={styles.sectionHeader}>
-            <h2>Enterprise Solutions</h2>
-            <p>End-to-end technological excellence for organizations that require absolute reliability and scale. Bohenix delivers production-grade solutions that work in the real world.</p>
-            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link href="/services/request" className={styles.primaryCta} style={{ display: 'inline-flex' }}>
-                 Request Service
-              </Link>
-              <button onClick={(e) => openContactModal('support@bohenix.africa', e)} className={styles.secondaryCta} style={{ display: 'inline-flex', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)' }}>
-                Contact Support
-              </button>
-            </div>
-          </motion.div>
 
-          <div className={styles.servicesGrid}>
-            {services.map((service, idx) => (
-              <motion.div 
-                key={idx} 
-                initial="hidden" 
-                whileInView="show" 
-                viewport={{ once: true }} 
-                variants={fadeUp} 
-                className={styles.serviceCard}
-              >
-                {service.icon || <BrainCircuit size={32} color="#7B2DFF" />}
-                <h3>{service.title}</h3>
-                <p className={styles.serviceDesc}>{service.desc}</p>
-                <ul className={styles.serviceList}>
-                  {service.items.map((item, i) => (
-                    <li key={i}><div style={{ marginTop: '10px', width: '4px', height: '4px', borderRadius: '50%', background: '#7B2DFF', flexShrink: 0 }} /> {item}</li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* BX Labs Section */}
-      <section id="labs" className={styles.section}>
-        <div className={styles.contentContainer}>
-          <div className={styles.sectionHeader}>
-            <h2>BX Labs</h2>
-            <p>Our dedicated research and innovation division — where cutting-edge ideas become production-ready technology that reshapes industries across Africa and the world.</p>
-          </div>
-
-          <div style={{ maxWidth: '800px', margin: '0 auto 4rem', textAlign: 'center', padding: '1rem 0' }}>
-            <p style={{ fontSize: '18px', color: '#B3B3B8', lineHeight: 1.8 }}>
-              BX Labs is Bohenix&apos;s frontier research engine. The foundations of Bohenix Flow AI were built here. We operate at the intersection of applied AI, autonomous agents, and deep technology to deliver breakthrough innovations that are commercially viable, ethically grounded, and built for global scale.
-            </p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
-            {[
-              { title: 'Multi-Agent Orchestration', tag: 'Core Research', desc: 'Advanced frameworks allowing diverse AI agents to collaborate, negotiate, and execute complex workflows seamlessly.' },
-              { title: 'Generative Workflow Synthesis', tag: 'Applied Research', desc: 'AI models that dynamically generate and optimize business processes based on real-time organizational data.' },
-              { title: 'Edge Inference & IoT', tag: 'Infrastructure', desc: 'Low-latency solutions bringing AI processing directly to the device, powering operations in restricted environments.' },
-              { title: 'Context-Aware NLP', tag: 'Language AI', desc: 'Deep reasoning language models capable of understanding nuanced business intent and regulatory constraints.' },
-            ].map(lab => (
-              <div key={lab.title} style={{ padding: '1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                  <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>{lab.title}</h4>
-                  <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', padding: '4px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', color: '#fff', textTransform: 'uppercase' }}>{lab.tag}</span>
-                </div>
-                <p style={{ fontSize: '15px', color: '#B3B3B8', lineHeight: 1.6, margin: 0 }}>{lab.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <h3 style={{ fontSize: '24px', fontWeight: 600, color: '#fff', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>Products in Incubation</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
-            {ecosystem.filter(p => p.status === 'development').map(product => (
-              <div key={product.name} style={{ padding: '1.5rem 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    {typeof product.icon === 'string' ? (
-                      <Image src={product.icon} alt={product.name} width={24} height={24} />
-                    ) : (
-                      React.cloneElement(product.icon as React.ReactElement<any>, { size: 24 })
-                    )}
-                     <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', margin: 0 }}>{product.name}</h4>
-                  </div>
-                  <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', padding: '4px 12px', background: 'rgba(255,152,0,0.1)', borderRadius: '99px', color: '#FF9800', textTransform: 'uppercase' }}>IN DEVELOPMENT</span>
-                </div>
-                <p style={{ fontSize: '15px', color: '#B3B3B8', lineHeight: 1.6, margin: 0 }}>{product.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Company Section (About & Founder) */}
       <section id="company" className={styles.section} style={{ background: 'rgba(255,255,255,0.01)' }}>
@@ -651,11 +508,9 @@ export default function CorporateLandingPage() {
           <div className={styles.footerCol}>
             <h4>Company & Services</h4>
             <ul>
-              <li><Link href="/services/request">Service Request</Link></li>
-              <li><a href="#solutions">Enterprise Solutions</a></li>
               <li><a href="#company">About Us</a></li>
               <li><button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>Careers</button></li>
-              <li><Link href="/developers">Developer Portal</Link></li>
+              <li><Link href="/dashboard/developer">Developer Portal</Link></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

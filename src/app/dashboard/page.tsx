@@ -5,7 +5,6 @@ import styles from "./dashboard.module.css";
 import { ArrowRight, Activity, Zap, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import SwipeableCards from "@/components/SwipeableCards";
 
 type OverviewData = {
   apiKeyCount: number;
@@ -84,8 +83,8 @@ export default function DashboardOverview() {
               ? "Checking account security..."
               : `Signed in via ${data?.signInMethod || "unknown"}. Account created ${data?.accountCreatedAt ? new Date(data.accountCreatedAt).toLocaleDateString() : "recently"}.`}
           </p>
-          <Link href="/dashboard/subscriptions" className={styles.btnSecondary} style={{ width: "100%", justifyContent: "center" }}>
-            Manage Services
+          <Link href="/dashboard/settings" className={styles.btnSecondary} style={{ width: "100%", justifyContent: "center" }}>
+            Account Settings
           </Link>
         </div>
 
@@ -106,14 +105,7 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      <div style={{ marginTop: "3rem" }}>
-        <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Ecosystem Apps</h2>
-        <SwipeableCards apps={[
-          { name: "Flow AI", icon: "bohenixx.png", tagline: "Autonomous Agents", color: "#00E5FF", url: "/dashboard/flow-ai" },
-          { name: "BX POS", icon: "bohenixx.png", tagline: "Terminal & Payments", color: "#B14CFF", url: "/dashboard/pos" },
-          { name: "BX Business Suite", icon: "bohenixx.png", tagline: "Invoices, Scheduling & Proof", color: "#B14CFF", url: "/dashboard/subscriptions" }
-        ]} />
-      </div>
+
 
       <div style={{ marginTop: "3rem" }}>
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Recent Activity</h2>

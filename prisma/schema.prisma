@@ -55,39 +55,14 @@ model User {
   apiKeys          ApiKey[]
   webhooks         Webhook[]
   eventRsvps       EventRsvp[]
-  serviceRequests  ServiceRequest[]
-  labWaitlist      LabWaitlist[]
   twoFactorSecret  String?
   twoFactorEnabled Boolean          @default(false)
   backupCodes      String?          @db.Text
 
-  // App Hub & Micro-SaaS Relations
-  subscriptions UserSubscription[]
-  installedApps UserApp[]
-  testimonials  Testimonial[]
-  invoices      Invoice[]
-  clients       Client[]
-  appointments  Appointment[]
-  services      AppService[]
-  audits        SeoAudit[]
-  widgetConfigs WidgetConfig[]
+  // Bohenix Flow AI Relations
   flowAgents    FlowAgent[]
 }
 
-model ServiceRequest {
-  id        String   @id @default(cuid())
-  userId    String?
-  service   String
-  budget    String
-  timeline  String
-  details   String   @db.Text
-  email     String
-  status    String   @default("PENDING")
-  createdAt DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
-}
 
 model ActivityLog {
   id        String   @id @default(cuid())
@@ -108,21 +83,6 @@ model Telemetry {
   updatedAt     DateTime @updatedAt
 }
 
-model Testimonial {
-  id        String   @id @default(cuid())
-  userId    String? // The Bohenix user who owns this testimonial (for the SaaS widget)
-  name      String
-  company   String?
-  message   String   @db.Text
-  rating    Int      @default(5)
-  videoUrl  String? // Support for video testimonials
-  approved  Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
 
 model SiteVisit {
   id        String   @id @default(cuid())
@@ -217,175 +177,10 @@ model EventRsvp {
   @@index([userId])
 }
 
-model LabWaitlist {
-  id        String   @id @default(cuid())
-  userId    String
-  labId     String
-  email     String
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, labId])
-  @@index([userId])
-}
 
 // ==========================================
-// BOHENIX MICRO-SAAS INFRASTRUCTURE
+// BOHENIX FLOW AI INFRASTRUCTURE
 // ==========================================
-
-model UserSubscription {
-  id        String    @id @default(cuid())
-  userId    String
-  planId    String // e.g., "FREE", "BUSINESS", "ENTERPRISE"
-  status    String // e.g., "ACTIVE", "CANCELED"
-  startDate DateTime  @default(now())
-  endDate   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model UserApp {
-  id        String   @id @default(cuid())
-  userId    String
-  appId     String // e.g., "bx-testimonials", "bx-invoices"
-  status    String // e.g., "INSTALLED", "UNINSTALLED"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, appId])
-  @@index([userId])
-}
-
-// --- App 1: Social Proof & Testimonial Widget ---
-
-model WidgetConfig {
-  id              String   @id @default(cuid())
-  userId          String   @unique
-  primaryColor    String   @default("#B14CFF")
-  layout          String   @default("grid") // grid, masonry, carousel
-  title           String   @default("Wall of Love")
-  requireApproval Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-// --- App 2: Invoice & Collections Automation ---
-
-model Client {
-  id        String   @id @default(cuid())
-  userId    String
-  name      String
-  email     String
-  company   String?
-  phone     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  invoices Invoice[]
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model Invoice {
-  id            String   @id @default(cuid())
-  userId        String
-  clientId      String
-  invoiceNumber String
-  amount        Float
-  currency      String   @default("USD")
-  status        String   @default("DRAFT") // DRAFT, SENT, PAID, OVERDUE
-  dueDate       DateTime
-  notes         String?  @db.Text
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([clientId])
-}
-
-// --- App 3: Niche Appointment Scheduling ---
-
-model AppService {
-  id          String   @id @default(cuid())
-  userId      String
-  name        String
-  description String?  @db.Text
-  duration    Int // duration in minutes
-  price       Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  appointments Appointment[]
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model Appointment {
-  id          String   @id @default(cuid())
-  userId      String
-  serviceId   String
-  clientName  String
-  clientEmail String
-  startTime   DateTime
-  endTime     DateTime
-  status      String   @default("CONFIRMED") // PENDING, CONFIRMED, CANCELED
-  notes       String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  service AppService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([serviceId])
-}
-
-// --- App 5: SEO & Analytics Audit ---
-
-model SeoAudit {
-  id         String   @id @default(cuid())
-  userId     String
-  url        String
-  score      Int?
-  reportData String?  @db.Text // JSON string containing audit results
-  status     String   @default("PENDING") // PENDING, COMPLETED, FAILED
-  createdAt  DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-// --- Payments Infrastructure ---
-
-model Payment {
-  id                String   @id @default(cuid())
-  provider          String   // "stripe" or "mpesa"
-  referenceId       String   @unique // Stripe Session ID or M-Pesa CheckoutRequestID
-  status            String   @default("PENDING") // PENDING, SUCCESS, FAILED
-  amount            Float
-  currency          String   @default("USD") // "KES" for M-Pesa
-  customerEmail     String?
-  customerPhone     String?
-  metadata          String?  @db.Text // JSON string for extra data like plan name
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-}
-
-// --- Bohenix Flow AI ---
 
 model FlowAgent {
   id              String     @id @default(cuid())
