@@ -5,17 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
-  CreditCard,
-  FlaskConical,
-  Calendar,
-  Code2,
   Settings,
   LogOut,
   Menu,
   X,
   Home,
-  Package,
-  Briefcase,
   Activity,
   ChevronRight,
 } from "lucide-react";
@@ -33,14 +27,8 @@ const flagshipItems = [
   { name: "Bohenix Flow AI", href: "/dashboard/flow-ai", icon: <Image src="/bohenixx.png" alt="Flow AI" width={18} height={18} /> },
 ];
 
-const devItems = [
-  { name: "Developer Portal", href: "/dashboard/developer", icon: <Code2 size={18} /> },
-];
-
 const siteLinks = [
   { name: "Homepage", href: "/", icon: <Home size={16} /> },
-  { name: "Products", href: "/#products", icon: <Package size={16} /> },
-  { name: "Services", href: "/services/request", icon: <Briefcase size={16} /> },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -97,7 +85,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className={styles.sidebarTop}>
           <Link href="/" className={styles.sidebarLogo}>
             <Image src="/bohenixx.png" alt="Bohenix Logo" width={28} height={28} />
-            <span className={styles.brandName}>Bohenix ONE</span>
+            <span className={styles.brandName}>Bohenix</span>
           </Link>
           <button className={styles.sidebarClose} onClick={() => setIsSidebarOpen(false)}>
             <X size={20} />
@@ -116,19 +104,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             );
           })}
 
-          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Flagship Products</span>
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Flow AI</span>
           {flagshipItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
-                {item.icon}
-                {item.name}
-              </Link>
-            );
-          })}
-
-          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Developers</span>
-          {devItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>

@@ -215,7 +215,6 @@ export default function CorporateLandingPage() {
                 <Link href="/flow-ai#developers" className={styles.dropLink}>API & Docs</Link>
               </div>
             </div>
-            <Link href="/dashboard/developer" className={styles.navLink}>Developers</Link>
             <Link href="#company" className={styles.navLink}>Company</Link>
             <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.navLink} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>Contact</button>
           </div>
@@ -510,7 +509,6 @@ export default function CorporateLandingPage() {
             <ul>
               <li><a href="#company">About Us</a></li>
               <li><button onClick={(e) => openContactModal('career@bohenix.africa', e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', padding: 0 }}>Careers</button></li>
-              <li><Link href="/dashboard/developer">Developer Portal</Link></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

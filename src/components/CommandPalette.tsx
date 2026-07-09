@@ -12,10 +12,8 @@ import {
 const MOCK_LINKS = [
   { name: "Dashboard Overview", href: "/dashboard", icon: <SignalIcon size={18} color="#00E5FF" />, category: "Dashboard" },
   { name: "Events & Activity Log", href: "/dashboard/events", icon: <FileTextIcon size={18} color="#B14CFF" />, category: "Dashboard" },
-  { name: "Developer Portal", href: "/dashboard/developer", icon: <SettingsIcon size={18} color="#00E5FF" />, category: "Dashboard" },
   { name: "Account Settings", href: "/dashboard/settings", icon: <SettingsIcon size={18} color="#22c55e" />, category: "Dashboard" },
   { name: "Bohenix Flow AI", href: "/dashboard/flow-ai", icon: <Image src="/bohenixx.png" alt="Logo" width={18} height={18} />, category: "Apps" },
-  { name: "Developer Documentation", href: "/dashboard/developer", icon: <BookOpenIcon size={18} color="#B14CFF" />, category: "System" },
 ];
 
 export default function CommandPalette() {

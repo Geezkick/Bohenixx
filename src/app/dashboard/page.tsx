@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
-import { ArrowRight, Activity, Zap, ShieldCheck } from "lucide-react";
+import { ArrowRight, Activity, ShieldCheck, BrainCircuit } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
@@ -58,17 +58,17 @@ export default function DashboardOverview() {
       <div className={styles.grid}>
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <span className={styles.cardTitle}>API & Integrations</span>
-            <Zap color="#B14CFF" size={24} />
+            <span className={styles.cardTitle}>Flow AI Tasks</span>
+            <BrainCircuit color="#B14CFF" size={24} />
           </div>
-          <div className={styles.cardValue}>{loading ? "—" : data?.apiKeyCount ?? 0}</div>
+          <div className={styles.cardValue}>{loading ? "—" : data?.flowAi?.completedTasks ?? 0}</div>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
             {loading
-              ? "Loading your integrations..."
-              : `${data?.apiKeyCount ?? 0} active API key${data?.apiKeyCount === 1 ? "" : "s"}, ${data?.webhookCount ?? 0} active webhook${data?.webhookCount === 1 ? "" : "s"}.`}
+              ? "Loading task stats..."
+              : `${data?.flowAi?.completedTasks ?? 0} tasks completed autonomously by your AI agents.`}
           </p>
-          <Link href="/dashboard/developer" className={styles.btnPrimary} style={{ width: "100%", justifyContent: "center" }}>
-            Manage Integrations <ArrowRight size={16} />
+          <Link href="/dashboard/flow-ai" className={styles.btnPrimary} style={{ width: "100%", justifyContent: "center" }}>
+            View Tasks <ArrowRight size={16} />
           </Link>
         </div>
 
