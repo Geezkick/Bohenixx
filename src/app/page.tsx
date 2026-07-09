@@ -389,7 +389,32 @@ export default function CorporateLandingPage() {
               </div>
             </motion.div>
 
-            {/* Other active products removed */}
+            {/* Custom Software Services */}
+            <motion.div 
+              initial="hidden" 
+              whileInView="show" 
+              viewport={{ once: true, margin: "-100px" }} 
+              variants={fadeUp} 
+              className={styles.showcaseCard}
+              style={{ gridTemplateColumns: '1fr', textAlign: 'center', padding: '4rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <div className={styles.showcaseContent} style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                  <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(0,229,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,229,255,0.2)' }}>
+                    <Code size={32} color="#00E5FF" />
+                  </div>
+                </div>
+                <h3 className={styles.showcaseTitle} style={{ fontSize: '32px', marginBottom: '1rem', fontWeight: 700 }}>Custom Software & Enterprise Solutions</h3>
+                <p className={styles.showcaseDesc} style={{ fontSize: '18px', marginBottom: '2.5rem', color: '#B3B3B8' }}>
+                  Beyond our Flow AI flagship, Bohenix builds world-class custom software. From complex enterprise ERP systems and intelligent mobile applications to secure cloud infrastructures—we engineer digital solutions tailored to your unique business needs.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                  <button onClick={(e) => openContactModal('services@bohenix.africa', e)} className={styles.primaryCta} style={{ display: 'inline-flex', cursor: 'pointer', background: 'transparent', border: '1px solid #00E5FF', color: '#00E5FF' }}>
+                    Request a Service <ArrowRightIcon size={16} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
