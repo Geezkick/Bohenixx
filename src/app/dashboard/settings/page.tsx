@@ -40,7 +40,7 @@ export default function SettingsPage() {
     localStorage.setItem("bx_pos_mode", posMode);
     setTimeout(() => {
       setSavingPosMode(false);
-      pushToast("POS Configuration updated", "success");
+      pushToast("Flow AI Configuration updated", "success");
     }, 400);
   };
 
@@ -442,17 +442,17 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* POS Configuration */}
+        {/* Flow AI Workspace Configuration */}
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
-            <Settings size={24} color="#f59e0b" />
-            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>POS Configuration</h2>
+            <Settings size={24} color="#00E5FF" />
+            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>Flow AI Configuration</h2>
           </div>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem", maxWidth: "500px" }}>
-            Customize the Point of Sale terminal for your specific business industry. This changes the AI insights, terminology, and default inventory.
+            Customize your autonomous AI agents for your specific business industry. This adapts the agent workflows, terminology, and predictive insights.
           </p>
           <div style={{ marginBottom: "1.5rem", maxWidth: "420px" }}>
-            <label style={{ display: "block", fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.5rem" }}>Business Mode</label>
+            <label style={{ display: "block", fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.5rem" }}>Industry Mode</label>
             <select
               value={posMode === "Medical" || posMode === "Retail" || posMode === "Restaurant" || posMode === "Service" ? posMode : "Other"}
               onChange={(e) => {
@@ -461,10 +461,10 @@ export default function SettingsPage() {
               }}
               style={{ width: "100%", background: "#000", padding: "0.85rem 1rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", outline: "none", WebkitAppearance: "none", appearance: "none", marginBottom: (posMode !== "Medical" && posMode !== "Retail" && posMode !== "Restaurant" && posMode !== "Service") ? "0.5rem" : "0" }}
             >
-              <option value="Medical">Medical / Pharmacy</option>
-              <option value="Retail">Retail Store</option>
-              <option value="Restaurant">Restaurant / Cafe</option>
-              <option value="Service">Consulting / Services</option>
+              <option value="Medical">Medical / Healthcare</option>
+              <option value="Retail">Retail & E-commerce</option>
+              <option value="Restaurant">Food & Beverage</option>
+              <option value="Service">Consulting / Enterprise Services</option>
               <option value="Other">Other (Custom Industry)</option>
             </select>
             {(posMode !== "Medical" && posMode !== "Retail" && posMode !== "Restaurant" && posMode !== "Service") && (
@@ -477,8 +477,8 @@ export default function SettingsPage() {
               />
             )}
           </div>
-          <button onClick={handleSavePosMode} disabled={savingPosMode} className={styles.btnPrimary} style={{ opacity: savingPosMode ? 0.6 : 1, background: "linear-gradient(135deg, #f59e0b, #d97706)" }}>
-            {savingPosMode ? "Saving..." : "Save Configuration"}
+          <button onClick={handleSavePosMode} disabled={savingPosMode} className={styles.btnPrimary} style={{ opacity: savingPosMode ? 0.6 : 1, background: "linear-gradient(135deg, #00E5FF, #00B3CC)", color: "#000" }}>
+            {savingPosMode ? "Saving..." : "Save AI Configuration"}
           </button>
         </div>
 
