@@ -173,6 +173,7 @@ export default function FlowAIDashboard() {
   const deleteAgent = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     if (!confirm("Are you sure you want to delete this agent? All its tasks will also be deleted.")) return;
+    if (!confirm("FINAL WARNING: This action cannot be undone. Are you absolutely sure?")) return;
     try {
       await fetch(`/api/flow-ai/agents/${id}`, { method: "DELETE" });
       if (selectedAgent?.id === id) setSelectedAgent(null);

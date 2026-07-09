@@ -71,13 +71,26 @@ export default function FlowAIPage() {
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
-    setTimeout(() => {
-      setPaymentStatus("success");
-      setTimeout(() => {
-        setIsCheckoutOpen(false);
-        window.location.href = '/dashboard/flow-ai';
-      }, 3000);
-    }, 2000);
+    
+    try {
+      const res = await fetch("/api/flow-ai/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: selectedPlan, currency: currency.toLowerCase() })
+      });
+      const data = await res.json();
+      
+      if (data.success && data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to initialize checkout. Please try again.");
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("An error occurred. Please try again.");
+      setIsProcessing(false);
+    }
   };
 
   return (
