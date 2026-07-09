@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/activityLogger";
 
 // GET single agent with stats
 export async function GET(
@@ -95,6 +96,18 @@ export async function PATCH(
       data: updateData,
     });
 
+    let actionDesc = `Updated agent: ${agent.name}`;
+    if (body.status !== undefined && body.status !== existing.status) {
+      actionDesc = body.status === "PAUSED" ? `Paused agent: ${agent.name}` : `Resumed agent: ${agent.name}`;
+    }
+
+    await logActivity({
+      userId,
+      app: "Flow AI",
+      action: actionDesc,
+      color: "#00E5FF",
+    });
+
     return NextResponse.json({ success: true, agent });
   } catch (error) {
     console.error("Error updating agent:", error);
@@ -126,6 +139,13 @@ export async function DELETE(
     }
 
     await db.flowAgent.delete({ where: { id } });
+
+    await logActivity({
+      userId,
+      app: "Flow AI",
+      action: `Deleted agent: ${existing.name}`,
+      color: "#FF3366",
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

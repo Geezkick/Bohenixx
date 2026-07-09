@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { db } from "@/lib/db";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logActivity } from "@/lib/activityLogger";
+import { triggerWebhooks } from "@/lib/webhookEngine";
 
 // GET single task
 export async function GET(
@@ -131,6 +133,22 @@ export async function POST(
         data: { tasksCompleted: { increment: 1 }, lastActiveAt: new Date() },
       });
 
+      await triggerWebhooks(userId, "flow_ai.task.completed", {
+        task_id: completedTask.id,
+        agent_id: agent.id,
+        agent_type: agent.type,
+        prompt: existing.prompt,
+        result: responseText,
+        status: "success"
+      });
+
+      await logActivity({
+        userId,
+        app: "Flow AI",
+        action: `Task retried and completed by ${agent.name}`,
+        color: "#7B2DFF",
+      });
+
       return NextResponse.json({ success: true, task: completedTask });
     } catch (aiError: any) {
       await db.flowTask.update({
@@ -140,6 +158,15 @@ export async function POST(
           error: aiError.message || "AI execution failed",
           completedAt: new Date(),
         },
+      });
+
+      await triggerWebhooks(userId, "flow_ai.task.failed", {
+        task_id: id,
+        agent_id: agent.id,
+        agent_type: agent.type,
+        prompt: existing.prompt,
+        error: aiError.message || "AI execution failed",
+        status: "failed"
       });
       return NextResponse.json({ success: false, error: aiError.message || "AI execution failed" }, { status: 500 });
     }

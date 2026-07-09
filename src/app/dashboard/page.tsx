@@ -20,6 +20,10 @@ type OverviewData = {
     color: string;
     createdAt: string;
   }[];
+  flowAi?: {
+    activeAgents: number;
+    completedTasks: number;
+  };
 };
 
 function timeAgo(dateStr: string) {
@@ -87,15 +91,17 @@ export default function DashboardOverview() {
 
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <span className={styles.cardTitle}>Activity</span>
+            <span className={styles.cardTitle}>AI Workforce</span>
             <Activity color="#00E5FF" size={24} />
           </div>
-          <div className={styles.cardValue}>{loading ? "—" : data?.recentActivity.length ?? 0}</div>
+          <div className={styles.cardValue}>{loading ? "—" : data?.flowAi?.activeAgents ?? 0}</div>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-            Recent actions across your developer portal and account.
+            {loading
+              ? "Loading AI stats..."
+              : `${data?.flowAi?.activeAgents ?? 0} active agents deployed. ${data?.flowAi?.completedTasks ?? 0} tasks completed autonomously.`}
           </p>
-          <Link href="/dashboard/events" className={styles.btnSecondary} style={{ width: "100%", justifyContent: "center" }}>
-            View Events
+          <Link href="/dashboard/flow-ai" className={styles.btnSecondary} style={{ width: "100%", justifyContent: "center" }}>
+            Manage Agents
           </Link>
         </div>
       </div>
@@ -103,6 +109,7 @@ export default function DashboardOverview() {
       <div style={{ marginTop: "3rem" }}>
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1.5rem", fontWeight: 600 }}>Ecosystem Apps</h2>
         <SwipeableCards apps={[
+          { name: "Flow AI", icon: "bohenixx.png", tagline: "Autonomous Agents", color: "#00E5FF", url: "/dashboard/flow-ai" },
           { name: "BX POS", icon: "bohenixx.png", tagline: "Terminal & Payments", color: "#B14CFF", url: "/dashboard/pos" },
           { name: "BX Business Suite", icon: "bohenixx.png", tagline: "Invoices, Scheduling & Proof", color: "#B14CFF", url: "/dashboard/subscriptions" }
         ]} />

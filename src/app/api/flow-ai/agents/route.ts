@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/activityLogger";
 
 export async function GET(req: NextRequest) {
   try {
@@ -50,6 +51,13 @@ export async function POST(req: NextRequest) {
         description: description || null,
         systemPrompt: systemPrompt || null,
       },
+    });
+
+    await logActivity({
+      userId,
+      app: "Flow AI",
+      action: `Deployed new ${type} agent: ${name}`,
+      color: "#00E5FF",
     });
 
     return NextResponse.json({ success: true, agent });

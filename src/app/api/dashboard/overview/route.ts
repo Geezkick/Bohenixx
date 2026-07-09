@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const [activeKeyCount, activeWebhookCount, user, recentActivity] = await Promise.all([
+  const [activeKeyCount, activeWebhookCount, user, recentActivity, activeAgents, completedTasks] = await Promise.all([
     db.apiKey.count({ where: { userId, revokedAt: null } }),
     db.webhook.count({ where: { userId, isActive: true } }),
     db.user.findUnique({
@@ -22,6 +22,8 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
       take: 6,
     }),
+    db.flowAgent.count({ where: { userId, status: "ACTIVE" } }),
+    db.flowTask.count({ where: { userId, status: "COMPLETED" } }),
   ]);
 
   const hasPassword = !!user?.password;
@@ -35,5 +37,9 @@ export async function GET() {
     signInMethod,
     hasPassword,
     recentActivity,
+    flowAi: {
+      activeAgents,
+      completedTasks,
+    }
   });
 }

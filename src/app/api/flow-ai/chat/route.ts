@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { db } from "@/lib/db";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logActivity } from "@/lib/activityLogger";
+import { triggerWebhooks } from "@/lib/webhookEngine";
 
 // Chat endpoint — multi-turn conversation with an agent
 export async function POST(req: NextRequest) {
@@ -72,6 +74,22 @@ export async function POST(req: NextRequest) {
     await db.flowAgent.update({
       where: { id: agentId },
       data: { tasksCompleted: { increment: 1 }, lastActiveAt: new Date() },
+    });
+
+    await triggerWebhooks(userId, "flow_ai.task.completed", {
+      task_id: task.id,
+      agent_id: agentId,
+      agent_type: agent.type,
+      prompt: lastMessage.content,
+      result: responseText,
+      status: "success"
+    });
+
+    await logActivity({
+      userId,
+      app: "Flow AI Chat",
+      action: `Chat task completed by ${agent.name}`,
+      color: "#00E5FF",
     });
 
     return NextResponse.json({
