@@ -129,6 +129,10 @@ export default function CorporateLandingPage() {
   const [inquiryMsg, setInquiryMsg] = useState("");
   const [inquiryName, setInquiryName] = useState("");
   const [inquiryPortfolio, setInquiryPortfolio] = useState("");
+  const [inquiryBudget, setInquiryBudget] = useState("");
+  const [inquiryTimeline, setInquiryTimeline] = useState("");
+  const [inquiryServiceType, setInquiryServiceType] = useState("");
+  
   const [isSendingInquiry, setIsSendingInquiry] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactTarget, setContactTarget] = useState("hello@bohenix.africa");
@@ -157,6 +161,17 @@ export default function CorporateLandingPage() {
       } else if (contactTarget === 'career@bohenix.africa') {
         endpoint = '/api/career';
         payload = { email: inquiryEmail, name: inquiryName || 'Applicant', position: 'General Application', portfolioUrl: inquiryPortfolio, coverLetter: inquiryMsg };
+      } else if (contactTarget === 'services@bohenix.africa') {
+        // Services request payload formatting
+        payload.subject = `New Service Request: ${inquiryServiceType || 'Custom Project'}`;
+        payload.message = `
+Service Required: ${inquiryServiceType}
+Budget Range: ${inquiryBudget}
+Expected Timeline: ${inquiryTimeline}
+
+Project Details:
+${inquiryMsg}
+        `;
       }
 
       const res = await fetch(endpoint, {
@@ -233,8 +248,12 @@ export default function CorporateLandingPage() {
         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(5,5,5,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(20px)' }}>
           <div style={{ background: '#111114', padding: '3rem', borderRadius: '24px', width: '90%', maxWidth: '500px', border: '1px solid rgba(255,255,255,0.08)', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
             <button onClick={() => setIsContactModalOpen(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: '#B3B3B8', fontSize: '1.5rem', cursor: 'pointer' }}>✕</button>
-            <h3 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em' }}>Send Inquiry</h3>
-            <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '15px' }}>Directly to <strong style={{ color: '#7B2DFF' }}>{contactTarget}</strong></p>
+            <h3 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em' }}>
+              {contactTarget === 'services@bohenix.africa' ? 'Request Software Service' : 'Send Inquiry'}
+            </h3>
+            <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '15px' }}>
+              {contactTarget === 'services@bohenix.africa' ? 'Tell us about your project requirements and we will engineer a solution.' : <>Directly to <strong style={{ color: '#7B2DFF' }}>{contactTarget}</strong></>}
+            </p>
             
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <input type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email Address" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
@@ -245,10 +264,40 @@ export default function CorporateLandingPage() {
                   <input type="url" value={inquiryPortfolio} onChange={(e) => setInquiryPortfolio(e.target.value)} placeholder="LinkedIn or Portfolio URL" style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', fontSize: '15px' }} />
                 </>
               )}
+
+              {contactTarget === 'services@bohenix.africa' && (
+                <>
+                  <select value={inquiryServiceType} onChange={(e) => setInquiryServiceType(e.target.value)} style={{ width: '100%', padding: '1rem', background: '#050505', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#B3B3B8', outline: 'none', fontSize: '15px', appearance: 'none' }}>
+                    <option value="">Select Service Type...</option>
+                    <option value="Enterprise SaaS Development">Enterprise SaaS Development</option>
+                    <option value="Custom Mobile Application">Custom Mobile Application</option>
+                    <option value="AI Integration & Automation">AI Integration & Automation</option>
+                    <option value="Cloud Infrastructure & DevOps">Cloud Infrastructure & DevOps</option>
+                    <option value="E-Commerce System">E-Commerce System</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    <select value={inquiryBudget} onChange={(e) => setInquiryBudget(e.target.value)} style={{ flex: 1, padding: '1rem', background: '#050505', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#B3B3B8', outline: 'none', fontSize: '15px', appearance: 'none', minWidth: '150px' }}>
+                      <option value="">Select Budget Range...</option>
+                      <option value="< $5,000">Less than $5,000</option>
+                      <option value="$5,000 - $20,000">$5,000 - $20,000</option>
+                      <option value="$20,000 - $50,000">$20,000 - $50,000</option>
+                      <option value="$50,000+">$50,000+</option>
+                    </select>
+                    <select value={inquiryTimeline} onChange={(e) => setInquiryTimeline(e.target.value)} style={{ flex: 1, padding: '1rem', background: '#050505', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#B3B3B8', outline: 'none', fontSize: '15px', appearance: 'none', minWidth: '150px' }}>
+                      <option value="">Select Timeline...</option>
+                      <option value="ASAP (Urgent)">ASAP (Urgent)</option>
+                      <option value="1 - 3 Months">1 - 3 Months</option>
+                      <option value="3 - 6 Months">3 - 6 Months</option>
+                      <option value="Flexible">Flexible</option>
+                    </select>
+                  </div>
+                </>
+              )}
               
-              <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder={contactTarget === 'career@bohenix.africa' ? "Brief Cover Letter or Summary..." : "Type your message here..."} rows={5} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical', fontSize: '15px' }}></textarea>
-              <button type="button" disabled={isSendingInquiry} onClick={handleSendInquiry} style={{ background: '#7B2DFF', color: '#fff', padding: '1rem', borderRadius: '12px', border: 'none', fontSize: '16px', fontWeight: 600, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1, transition: 'all 0.2s' }}>
-                {isSendingInquiry ? "Sending..." : "Send Message"}
+              <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder={contactTarget === 'career@bohenix.africa' ? "Brief Cover Letter or Summary..." : contactTarget === 'services@bohenix.africa' ? "Describe your project requirements, goals, and any specific features you need..." : "Type your message here..."} rows={contactTarget === 'services@bohenix.africa' ? 4 : 5} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical', fontSize: '15px' }}></textarea>
+              <button type="button" disabled={isSendingInquiry} onClick={handleSendInquiry} style={{ background: contactTarget === 'services@bohenix.africa' ? '#00E5FF' : '#7B2DFF', color: contactTarget === 'services@bohenix.africa' ? '#050505' : '#fff', padding: '1rem', borderRadius: '12px', border: 'none', fontSize: '16px', fontWeight: 700, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1, transition: 'all 0.2s' }}>
+                {isSendingInquiry ? "Processing..." : contactTarget === 'services@bohenix.africa' ? "Submit Project Request" : "Send Message"}
               </button>
             </form>
           </div>
