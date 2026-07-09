@@ -11,10 +11,15 @@ import {
   XCircle,
   Copy,
   Loader2,
-  Settings,
+  Sun,
+  Moon,
+  Monitor,
+  Globe,
 } from "lucide-react";
 
 type Toast = { id: number; message: string; kind: "success" | "error" };
+type ThemeMode = "dark" | "light" | "system";
+type Language = "en" | "sw";
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -26,22 +31,32 @@ export default function SettingsPage() {
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3500);
   };
 
-  // POS Settings
-  const [posMode, setPosMode] = useState<string>("Medical");
-  const [savingPosMode, setSavingPosMode] = useState(false);
+  // Appearance
+  const [theme, setTheme] = useState<ThemeMode>("dark");
 
   useEffect(() => {
-    const savedMode = localStorage.getItem("bx_pos_mode");
-    if (savedMode) setPosMode(savedMode);
+    const saved = localStorage.getItem("bx_theme") as ThemeMode | null;
+    if (saved) setTheme(saved);
   }, []);
 
-  const handleSavePosMode = () => {
-    setSavingPosMode(true);
-    localStorage.setItem("bx_pos_mode", posMode);
-    setTimeout(() => {
-      setSavingPosMode(false);
-      pushToast("Flow AI Configuration updated", "success");
-    }, 400);
+  const handleThemeChange = (mode: ThemeMode) => {
+    setTheme(mode);
+    localStorage.setItem("bx_theme", mode);
+    pushToast(`Appearance set to ${mode.charAt(0).toUpperCase() + mode.slice(1)}`, "success");
+  };
+
+  // Language
+  const [language, setLanguage] = useState<Language>("en");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("bx_language") as Language | null;
+    if (saved) setLanguage(saved);
+  }, []);
+
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem("bx_language", lang);
+    pushToast(`Language set to ${lang === "en" ? "English" : "Kiswahili"}`, "success");
   };
 
   // Profile
@@ -442,44 +457,89 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* Flow AI Workspace Configuration */}
+        {/* Appearance */}
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
-            <Settings size={24} color="#00E5FF" />
-            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>Flow AI Configuration</h2>
+            <Sun size={24} color="#f59e0b" />
+            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>Appearance</h2>
           </div>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem", maxWidth: "500px" }}>
-            Customize your autonomous AI agents for your specific business industry. This adapts the agent workflows, terminology, and predictive insights.
+            Choose how Bohenix looks to you. Select a theme preference below.
           </p>
-          <div style={{ marginBottom: "1.5rem", maxWidth: "420px" }}>
-            <label style={{ display: "block", fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.5rem" }}>Industry Mode</label>
-            <select
-              value={posMode === "Medical" || posMode === "Retail" || posMode === "Restaurant" || posMode === "Service" ? posMode : "Other"}
-              onChange={(e) => {
-                if (e.target.value !== "Other") setPosMode(e.target.value);
-                else setPosMode("");
-              }}
-              style={{ width: "100%", background: "#000", padding: "0.85rem 1rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", outline: "none", WebkitAppearance: "none", appearance: "none", marginBottom: (posMode !== "Medical" && posMode !== "Retail" && posMode !== "Restaurant" && posMode !== "Service") ? "0.5rem" : "0" }}
-            >
-              <option value="Medical">Medical / Healthcare</option>
-              <option value="Retail">Retail & E-commerce</option>
-              <option value="Restaurant">Food & Beverage</option>
-              <option value="Service">Consulting / Enterprise Services</option>
-              <option value="Other">Other (Custom Industry)</option>
-            </select>
-            {(posMode !== "Medical" && posMode !== "Retail" && posMode !== "Restaurant" && posMode !== "Service") && (
-              <input
-                type="text"
-                placeholder="Enter your industry (e.g. Real Estate)"
-                value={posMode}
-                onChange={(e) => setPosMode(e.target.value)}
-                style={{ width: "100%", background: "#000", padding: "0.85rem 1rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", outline: "none" }}
-              />
-            )}
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+            {([
+              { mode: "dark" as ThemeMode, icon: <Moon size={20} />, label: "Dark" },
+              { mode: "light" as ThemeMode, icon: <Sun size={20} />, label: "Light" },
+              { mode: "system" as ThemeMode, icon: <Monitor size={20} />, label: "System" },
+            ]).map((opt) => (
+              <button
+                key={opt.mode}
+                onClick={() => handleThemeChange(opt.mode)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "1rem 1.5rem",
+                  borderRadius: "14px",
+                  background: theme === opt.mode ? "rgba(123,45,255,0.12)" : "rgba(255,255,255,0.03)",
+                  border: theme === opt.mode ? "1px solid #7B2DFF" : "1px solid rgba(255,255,255,0.08)",
+                  color: theme === opt.mode ? "#fff" : "rgba(255,255,255,0.6)",
+                  cursor: "pointer",
+                  fontWeight: theme === opt.mode ? 700 : 500,
+                  fontSize: "0.95rem",
+                  transition: "all 0.2s",
+                  minWidth: "130px",
+                  fontFamily: "inherit",
+                }}
+              >
+                {opt.icon}
+                {opt.label}
+                {theme === opt.mode && <CheckCircle2 size={16} color="#7B2DFF" style={{ marginLeft: "auto" }} />}
+              </button>
+            ))}
           </div>
-          <button onClick={handleSavePosMode} disabled={savingPosMode} className={styles.btnPrimary} style={{ opacity: savingPosMode ? 0.6 : 1, background: "linear-gradient(135deg, #00E5FF, #00B3CC)", color: "#000" }}>
-            {savingPosMode ? "Saving..." : "Save AI Configuration"}
-          </button>
+        </div>
+
+        {/* Language */}
+        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
+            <Globe size={24} color="#00E5FF" />
+            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>Language</h2>
+          </div>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem", maxWidth: "500px" }}>
+            Set your preferred language for the Bohenix platform interface.
+          </p>
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+            {([
+              { code: "en" as Language, label: "English", native: "English" },
+              { code: "sw" as Language, label: "Kiswahili", native: "Kiswahili" },
+            ]).map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "1rem 1.5rem",
+                  borderRadius: "14px",
+                  background: language === lang.code ? "rgba(0,229,255,0.08)" : "rgba(255,255,255,0.03)",
+                  border: language === lang.code ? "1px solid #00E5FF" : "1px solid rgba(255,255,255,0.08)",
+                  color: language === lang.code ? "#fff" : "rgba(255,255,255,0.6)",
+                  cursor: "pointer",
+                  fontWeight: language === lang.code ? 700 : 500,
+                  fontSize: "0.95rem",
+                  transition: "all 0.2s",
+                  minWidth: "160px",
+                  fontFamily: "inherit",
+                }}
+              >
+                <span style={{ fontSize: "1.2rem" }}>{lang.code === "en" ? "🇬🇧" : "🇰🇪"}</span>
+                <span>{lang.native}</span>
+                {language === lang.code && <CheckCircle2 size={16} color="#00E5FF" style={{ marginLeft: "auto" }} />}
+              </button>
+            ))}
+          </div>
         </div>
 
       </div>
