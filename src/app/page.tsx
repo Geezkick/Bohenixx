@@ -249,9 +249,12 @@ ${inquiryMsg}
         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(5,5,5,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(20px)' }}>
           <div style={{ background: '#111114', padding: '3rem', borderRadius: '24px', width: '90%', maxWidth: '500px', border: '1px solid rgba(255,255,255,0.08)', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
             <button onClick={() => setIsContactModalOpen(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: '#B3B3B8', fontSize: '1.5rem', cursor: 'pointer' }}>✕</button>
-            <h3 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em' }}>
-              {contactTarget === 'services@bohenix.africa' ? 'Request Software Service' : 'Send Inquiry'}
-            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '0.5rem' }}>
+              <Image src="/bohenixx.png" alt="Bohenix Logo" width={32} height={32} />
+              <h3 style={{ fontSize: '28px', fontWeight: 700, color: '#fff', letterSpacing: '-0.02em', margin: 0 }}>
+                {contactTarget === 'services@bohenix.africa' ? 'Request Software Service' : 'Send Inquiry'}
+              </h3>
+            </div>
             <p style={{ color: '#B3B3B8', marginBottom: '2.5rem', fontSize: '15px' }}>
               {contactTarget === 'services@bohenix.africa' ? 'Tell us about your project requirements and we will engineer a solution.' : <>Directly to <strong style={{ color: '#7B2DFF' }}>{contactTarget}</strong></>}
             </p>
@@ -297,7 +300,7 @@ ${inquiryMsg}
               )}
               
               <textarea value={inquiryMsg} onChange={(e) => setInquiryMsg(e.target.value)} placeholder={contactTarget === 'career@bohenix.africa' ? "Brief Cover Letter or Summary..." : contactTarget === 'services@bohenix.africa' ? "Describe your project requirements, goals, and any specific features you need..." : "Type your message here..."} rows={contactTarget === 'services@bohenix.africa' ? 4 : 5} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff', outline: 'none', resize: 'vertical', fontSize: '15px' }}></textarea>
-              <button type="button" disabled={isSendingInquiry} onClick={handleSendInquiry} style={{ background: contactTarget === 'services@bohenix.africa' ? '#00E5FF' : '#7B2DFF', color: contactTarget === 'services@bohenix.africa' ? '#050505' : '#fff', padding: '1rem', borderRadius: '12px', border: 'none', fontSize: '16px', fontWeight: 700, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1, transition: 'all 0.2s' }}>
+              <button type="button" disabled={isSendingInquiry} onClick={handleSendInquiry} style={{ background: '#7B2DFF', color: '#fff', padding: '1rem', borderRadius: '12px', border: 'none', fontSize: '16px', fontWeight: 700, cursor: isSendingInquiry ? 'not-allowed' : 'pointer', opacity: isSendingInquiry ? 0.7 : 1, transition: 'all 0.2s' }}>
                 {isSendingInquiry ? "Processing..." : contactTarget === 'services@bohenix.africa' ? "Submit Project Request" : "Send Message"}
               </button>
             </form>
@@ -459,7 +462,7 @@ ${inquiryMsg}
                   Beyond our Flow AI flagship, Bohenix builds world-class custom software. From complex enterprise ERP systems and intelligent mobile applications to secure cloud infrastructures—we engineer digital solutions tailored to your unique business needs.
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                  <button onClick={(e) => openContactModal('services@bohenix.africa', e)} className={styles.primaryCta} style={{ display: 'inline-flex', cursor: 'pointer', background: 'transparent', border: '1px solid #00E5FF', color: '#00E5FF' }}>
+                  <button onClick={(e) => openContactModal('services@bohenix.africa', e)} className={styles.primaryCta} style={{ display: 'inline-flex', cursor: 'pointer', border: 'none' }}>
                     Request a Service <ArrowRightIcon size={16} />
                   </button>
                 </div>
