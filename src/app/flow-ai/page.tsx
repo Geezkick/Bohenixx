@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -135,6 +135,27 @@ export default function FlowAIPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<"idle"|"success">("idle");
   const [currency, setCurrency] = useState<"USD"|"KES">("USD");
+  const [publicStats, setPublicStats] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/flow-ai/public-stats")
+      .then(r => r.json())
+      .then(d => { if (d.success) setPublicStats(d.stats); })
+      .catch(console.error);
+  }, []);
+
+  const currentDashMetrics = publicStats ? [
+    { label: "AI Tasks Executed", val: publicStats.totalTasks, change: "Platform Wide" },
+    { label: "Active Agents", val: publicStats.totalAgents, change: "Deployed" },
+    { label: "Revenue Impact", val: "$2.4M", change: "+23% MoM" },
+    { label: "Team Productivity", val: "94%", change: "+8% this week" },
+    { label: "Success Rate", val: publicStats.successRate, change: "Overall" },
+    { label: "Time Saved", val: "340h", change: "This month" },
+    { label: "AI Recommendations", val: "56", change: "12 pending review" },
+    { label: "Workflows Active", val: publicStats.activeWorkflows, change: "3 optimizing" },
+  ] : dashMetrics;
+
+  const currentFeedItems = publicStats ? publicStats.feed : feedItems;
 
   const PRICING = {
     Starter: { usd: 19, kes: 2450 },
@@ -341,7 +362,7 @@ export default function FlowAIPage() {
               <span style={{marginLeft:'1rem',fontSize:'13px',color:'#737373'}}>Bohenix Flow AI — Dashboard</span>
             </div>
             <div className={s.dashboardGrid}>
-              {dashMetrics.map((m,i)=>(
+              {currentDashMetrics.map((m: any,i: number)=>(
                 <div key={i} className={s.dashMetric}>
                   <small>{m.label}</small>
                   <div className={s.val}>{m.val}</div>
@@ -351,7 +372,7 @@ export default function FlowAIPage() {
             </div>
             <div className={s.dashFeed}>
               <h4>Live Activity Feed</h4>
-              {feedItems.map((f,i)=>(
+              {currentFeedItems.map((f: string,i: number)=>(
                 <div key={i} className={s.feedItem}><span className={s.feedDot}/>{f}</div>
               ))}
             </div>

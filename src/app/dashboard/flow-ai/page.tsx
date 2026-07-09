@@ -1,16 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "../dashboard.module.css";
-import { BrainCircuit, Plus, Bot, Send, Loader2, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { 
+  BrainCircuit, Plus, Bot, Send, Loader2, CheckCircle2, XCircle, 
+  Trash2, Pause, Play, Edit3, MessageSquare, Copy, RefreshCw 
+} from "lucide-react";
 
 type FlowAgent = {
   id: string;
   name: string;
   type: string;
+  description: string | null;
+  systemPrompt: string | null;
   status: string;
   tasksCompleted: number;
+  lastActiveAt: string | null;
   createdAt: string;
+  _count?: { tasks: number };
 };
 
 type FlowTask = {
@@ -18,283 +25,485 @@ type FlowTask = {
   agentId: string;
   prompt: string;
   result: string | null;
+  error: string | null;
   status: string;
+  startedAt: string;
+  completedAt: string | null;
   createdAt: string;
-  agent?: FlowAgent;
+  agent?: { id: string; name: string; type: string };
+};
+
+type FlowStats = {
+  totalAgents: number;
+  activeAgents: number;
+  totalTasks: number;
+  completedTasks: number;
+  runningTasks: number;
+  successRate: number;
+  avgCompletionMs: number;
 };
 
 const AGENT_TYPES = [
-  "Sales", "Marketing", "HR", "Finance", "Operations", "Legal", "Support", "Analytics", "Project Management", "Executive Assistant", "Custom"
+  "Sales", "Marketing", "HR", "Finance", "Operations", 
+  "Legal", "Support", "Analytics", "Project Management", 
+  "Executive Assistant", "Custom"
+];
+
+const TEMPLATES = [
+  "Draft a cold email", "Analyze this data", "Write a project plan", 
+  "Create an onboarding checklist", "Draft a weekly report"
 ];
 
 export default function FlowAIDashboard() {
   const [agents, setAgents] = useState<FlowAgent[]>([]);
   const [tasks, setTasks] = useState<FlowTask[]>([]);
+  const [stats, setStats] = useState<FlowStats | null>(null);
   const [loading, setLoading] = useState(true);
   
   // Modals & Forms
-  const [showCreateAgent, setShowCreateAgent] = useState(false);
-  const [newAgent, setNewAgent] = useState({ name: "", type: "Sales", systemPrompt: "" });
-  const [isCreatingAgent, setIsCreatingAgent] = useState(false);
+  const [showAgentModal, setShowAgentModal] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<FlowAgent | null>(null);
+  const [agentForm, setAgentForm] = useState({ name: "", type: "Sales", description: "", systemPrompt: "" });
+  const [isSubmittingAgent, setIsSubmittingAgent] = useState(false);
 
+  // Chat & Tasks state
   const [selectedAgent, setSelectedAgent] = useState<FlowAgent | null>(null);
-  const [taskPrompt, setTaskPrompt] = useState("");
-  const [isExecutingTask, setIsExecutingTask] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [isChatting, setIsChatting] = useState(false);
+  const [messages, setMessages] = useState<{ role: string; content: string; taskId?: string }[]>([]);
+  const [taskFilter, setTaskFilter] = useState("ALL");
+  const chatBottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadData();
+    // Poll stats every 30s
+    const interval = setInterval(loadStats, 30000);
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (chatBottomRef.current) {
+      chatBottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const loadData = async () => {
     setLoading(true);
-    try {
-      const [agentsRes, tasksRes] = await Promise.all([
-        fetch("/api/flow-ai/agents"),
-        fetch("/api/flow-ai/tasks")
-      ]);
-      const agentsData = await agentsRes.json();
-      const tasksData = await tasksRes.json();
-      if (agentsData.success) setAgents(agentsData.agents);
-      if (tasksData.success) setTasks(tasksData.tasks);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    await Promise.all([loadAgents(), loadTasks(), loadStats()]);
+    setLoading(false);
   };
 
-  const handleCreateAgent = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newAgent.name) return;
-    setIsCreatingAgent(true);
+  const loadAgents = async () => {
     try {
-      const res = await fetch("/api/flow-ai/agents", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newAgent)
-      });
-      if (res.ok) {
-        setShowCreateAgent(false);
-        setNewAgent({ name: "", type: "Sales", systemPrompt: "" });
-        loadData();
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsCreatingAgent(false);
-    }
-  };
-
-  const handleRunTask = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedAgent || !taskPrompt.trim()) return;
-    setIsExecutingTask(true);
-    try {
-      // Optimistic update for UX
-      const tempTask: FlowTask = {
-        id: 'temp-' + Date.now(),
-        agentId: selectedAgent.id,
-        prompt: taskPrompt,
-        result: null,
-        status: "RUNNING",
-        createdAt: new Date().toISOString(),
-        agent: selectedAgent
-      };
-      setTasks(prev => [tempTask, ...prev]);
-
-      const res = await fetch("/api/flow-ai/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agentId: selectedAgent.id, prompt: taskPrompt })
-      });
+      const res = await fetch("/api/flow-ai/agents");
       const data = await res.json();
       if (data.success) {
-        setTaskPrompt("");
-        loadData(); // Reload to get real task with results
-      } else {
-        alert(data.error);
-        loadData(); // Revert optimistic update
+        setAgents(data.agents);
+        // Update selected agent if it exists in the new list
+        if (selectedAgent) {
+          const updated = data.agents.find((a: FlowAgent) => a.id === selectedAgent.id);
+          if (updated) setSelectedAgent(updated);
+        }
       }
-    } catch (err) {
-      console.error(err);
-      loadData(); // Revert optimistic update
+    } catch (err) { console.error(err); }
+  };
+
+  const loadTasks = async () => {
+    try {
+      let url = "/api/flow-ai/tasks?limit=50";
+      if (selectedAgent) url += `&agentId=${selectedAgent.id}`;
+      if (taskFilter !== "ALL") url += `&status=${taskFilter}`;
+      
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) setTasks(data.tasks);
+    } catch (err) { console.error(err); }
+  };
+
+  const loadStats = async () => {
+    try {
+      const res = await fetch("/api/flow-ai/stats");
+      const data = await res.json();
+      if (data.success) setStats(data.stats);
+    } catch (err) { console.error(err); }
+  };
+
+  // Reload tasks when filter or selected agent changes
+  useEffect(() => {
+    if (!loading) loadTasks();
+  }, [selectedAgent, taskFilter]);
+
+  // Agent Management
+  const handleSaveAgent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!agentForm.name) return;
+    setIsSubmittingAgent(true);
+    try {
+      const url = editingAgent ? `/api/flow-ai/agents/${editingAgent.id}` : "/api/flow-ai/agents";
+      const method = editingAgent ? "PATCH" : "POST";
+      
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(agentForm)
+      });
+      if (res.ok) {
+        setShowAgentModal(false);
+        setEditingAgent(null);
+        setAgentForm({ name: "", type: "Sales", description: "", systemPrompt: "" });
+        loadData();
+      }
+    } catch (err) { console.error(err); }
+    finally { setIsSubmittingAgent(false); }
+  };
+
+  const toggleAgentStatus = async (e: React.MouseEvent, agent: FlowAgent) => {
+    e.stopPropagation();
+    try {
+      const newStatus = agent.status === "ACTIVE" ? "PAUSED" : "ACTIVE";
+      await fetch(`/api/flow-ai/agents/${agent.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      });
+      loadData();
+    } catch (err) { console.error(err); }
+  };
+
+  const deleteAgent = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this agent? All its tasks will also be deleted.")) return;
+    try {
+      await fetch(`/api/flow-ai/agents/${id}`, { method: "DELETE" });
+      if (selectedAgent?.id === id) setSelectedAgent(null);
+      loadData();
+    } catch (err) { console.error(err); }
+  };
+
+  const openEditAgent = (e: React.MouseEvent, agent: FlowAgent) => {
+    e.stopPropagation();
+    setEditingAgent(agent);
+    setAgentForm({ 
+      name: agent.name, 
+      type: agent.type, 
+      description: agent.description || "", 
+      systemPrompt: agent.systemPrompt || "" 
+    });
+    setShowAgentModal(true);
+  };
+
+  // Chat & Task Execution
+  const handleSendMessage = async (e?: React.FormEvent, promptOverride?: string) => {
+    if (e) e.preventDefault();
+    const prompt = promptOverride || chatInput;
+    if (!selectedAgent || !prompt.trim() || selectedAgent.status === "PAUSED") return;
+
+    const userMessage = { role: "user", content: prompt };
+    setMessages(prev => [...prev, userMessage]);
+    setChatInput("");
+    setIsChatting(true);
+
+    try {
+      const currentMessages = [...messages, userMessage];
+      const res = await fetch("/api/flow-ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agentId: selectedAgent.id, messages: currentMessages })
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+        setMessages(prev => [...prev, { role: "model", content: data.response, taskId: data.taskId }]);
+        loadTasks();
+        loadStats();
+      } else {
+        setMessages(prev => [...prev, { role: "model", content: `Error: ${data.error}` }]);
+      }
+    } catch (err: any) {
+      setMessages(prev => [...prev, { role: "model", content: `Error: ${err.message}` }]);
     } finally {
-      setIsExecutingTask(false);
+      setIsChatting(false);
     }
+  };
+
+  const handleRetryTask = async (taskId: string) => {
+    try {
+      await fetch(`/api/flow-ai/tasks/${taskId}`, { method: "POST" });
+      loadTasks();
+      loadStats();
+    } catch (err) { console.error(err); }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!");
+  };
+
+  const timeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    if (diff < 60000) return "Just now";
+    return Math.floor(diff / 60000) + "m ago";
   };
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
         <div>
           <h1 className={styles.pageTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <BrainCircuit size={32} color="#7B2DFF" /> Flow AI Dashboard
+            <BrainCircuit size={32} color="#7B2DFF" /> Flow AI Command
           </h1>
-          <p className={styles.pageDesc}>Deploy autonomous AI agents to automate your business workflows.</p>
+          <p className={styles.pageDesc} style={{ marginBottom: 0 }}>Deploy and manage your autonomous AI workforce.</p>
         </div>
-        <button onClick={() => setShowCreateAgent(true)} className={styles.btnPrimary}>
+        <button onClick={() => { setEditingAgent(null); setAgentForm({ name: "", type: "Sales", description: "", systemPrompt: "" }); setShowAgentModal(true); }} className={styles.btnPrimary}>
           <Plus size={16} /> Deploy New Agent
         </button>
       </div>
 
-      {loading ? (
+      {loading && !stats ? (
         <div style={{ padding: "4rem", textAlign: "center", color: "rgba(255,255,255,0.5)" }}>
           <Loader2 size={24} className={styles.spin} style={{ margin: "0 auto 1rem" }} />
-          Loading Flow AI Core...
+          Booting Flow AI...
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "2rem", marginTop: "2rem" }}>
-          
-          {/* Left Column: Agents List */}
-          <div>
-            <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem" }}>Your AI Workforce ({agents.length})</h2>
-            
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              {agents.length === 0 ? (
-                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "rgba(255,255,255,0.5)" }}>
-                  No agents deployed yet.
-                </div>
-              ) : (
-                agents.map(agent => (
-                  <div 
-                    key={agent.id} 
-                    onClick={() => setSelectedAgent(agent)}
-                    style={{ 
-                      background: selectedAgent?.id === agent.id ? "rgba(123,45,255,0.1)" : "rgba(255,255,255,0.02)", 
-                      border: selectedAgent?.id === agent.id ? "1px solid #7B2DFF" : "1px solid rgba(255,255,255,0.05)", 
-                      borderRadius: "16px", padding: "1.25rem", cursor: "pointer", transition: "all 0.2s"
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <Bot size={20} color="#7B2DFF" />
-                        <h3 style={{ fontSize: "1.1rem", fontWeight: 600 }}>{agent.name}</h3>
-                      </div>
-                      <span style={{ fontSize: "0.75rem", background: "rgba(34,197,94,0.1)", color: "#22c55e", padding: "4px 8px", borderRadius: "99px", fontWeight: 700 }}>
-                        {agent.status}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)" }}>
-                      Role: {agent.type} Agent<br />
-                      Tasks Completed: {agent.tasksCompleted}
-                    </div>
-                  </div>
-                ))
-              )}
+        <>
+          {/* Stats Bar */}
+          {stats && (
+            <div className={styles.statsBar}>
+              <div className={styles.statCard}>
+                <div className={styles.statCardLabel}>Active Agents</div>
+                <div className={styles.statCardValue}>{stats.activeAgents} <span style={{fontSize: '1rem', color: 'rgba(255,255,255,0.4)'}}>/ {stats.totalAgents}</span></div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statCardLabel}>Tasks Completed</div>
+                <div className={styles.statCardValue}>{stats.completedTasks}</div>
+                <div className={styles.statCardChange}>+ {stats.runningTasks} running now</div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statCardLabel}>Success Rate</div>
+                <div className={styles.statCardValue}>{stats.successRate}%</div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statCardLabel}>Avg Completion</div>
+                <div className={styles.statCardValue}>{stats.avgCompletionMs > 0 ? (stats.avgCompletionMs / 1000).toFixed(1) : "0"}s</div>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Right Column: Task Execution & Feed */}
-          <div>
-            <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem" }}>Agent Task Console</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "2rem" }}>
             
-            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem", marginBottom: "2rem" }}>
-              {selectedAgent ? (
-                <form onSubmit={handleRunTask}>
-                  <div style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "rgba(255,255,255,0.6)" }}>
-                    Drafting task for: <strong style={{ color: "#7B2DFF" }}>{selectedAgent.name} ({selectedAgent.type})</strong>
+            {/* Left Column: Agents List */}
+            <div>
+              <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                Your AI Workforce
+                <button onClick={loadAgents} style={{ background: 'none', border: 'none', color: '#B3B3B8', cursor: 'pointer' }}><RefreshCw size={16} /></button>
+              </h2>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {agents.length === 0 ? (
+                  <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "rgba(255,255,255,0.5)" }}>
+                    No agents deployed yet.
                   </div>
-                  <div style={{ position: "relative" }}>
-                    <textarea 
-                      value={taskPrompt}
-                      onChange={(e) => setTaskPrompt(e.target.value)}
-                      placeholder="E.g., Write a cold outreach email for a new B2B client..."
-                      disabled={isExecutingTask}
-                      rows={4}
+                ) : (
+                  agents.map(agent => (
+                    <div 
+                      key={agent.id} 
+                      onClick={() => { setSelectedAgent(agent); setMessages([]); }}
                       style={{ 
-                        width: "100%", background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.1)", 
-                        borderRadius: "16px", padding: "1.25rem", color: "#fff", resize: "vertical", fontSize: "1rem",
-                        outline: "none"
-                      }}
-                    />
-                    <button 
-                      type="submit" 
-                      disabled={isExecutingTask || !taskPrompt.trim()}
-                      style={{ 
-                        position: "absolute", bottom: "1rem", right: "1rem", 
-                        background: "#7B2DFF", color: "#fff", border: "none", borderRadius: "12px", 
-                        padding: "0.5rem 1rem", display: "flex", alignItems: "center", gap: "8px", 
-                        fontWeight: 600, cursor: isExecutingTask ? "not-allowed" : "pointer", opacity: isExecutingTask ? 0.7 : 1
+                        background: selectedAgent?.id === agent.id ? "rgba(123,45,255,0.1)" : "rgba(255,255,255,0.02)", 
+                        border: selectedAgent?.id === agent.id ? "1px solid #7B2DFF" : "1px solid rgba(255,255,255,0.05)", 
+                        borderRadius: "16px", padding: "1.25rem", cursor: "pointer", transition: "all 0.2s",
+                        opacity: agent.status === "PAUSED" ? 0.6 : 1
                       }}
                     >
-                      {isExecutingTask ? <Loader2 size={16} className={styles.spin} /> : <Send size={16} />}
-                      {isExecutingTask ? "Running Task..." : "Execute"}
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <div style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "2rem 0" }}>
-                  Select an agent from the left to assign a task.
-                </div>
-              )}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <Bot size={20} color={agent.status === "ACTIVE" ? "#7B2DFF" : "#B3B3B8"} />
+                          <h3 style={{ fontSize: "1.1rem", fontWeight: 600 }}>{agent.name}</h3>
+                        </div>
+                        <span style={{ fontSize: "0.75rem", background: agent.status === "ACTIVE" ? "rgba(34,197,94,0.1)" : "rgba(245,158,11,0.1)", color: agent.status === "ACTIVE" ? "#22c55e" : "#f59e0b", padding: "4px 8px", borderRadius: "99px", fontWeight: 700 }}>
+                          {agent.status}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.5rem" }}>
+                        Role: {agent.type} Agent<br />
+                        Tasks: {agent.tasksCompleted} | Last Active: {agent.lastActiveAt ? timeAgo(agent.lastActiveAt) : "Never"}
+                      </div>
+                      
+                      {selectedAgent?.id === agent.id && (
+                        <div className={styles.agentActions}>
+                          <button onClick={(e) => toggleAgentStatus(e, agent)} className={`${styles.agentActionBtn} ${styles.btnPause}`}>
+                            {agent.status === "ACTIVE" ? <><Pause size={14} /> Pause</> : <><Play size={14} /> Resume</>}
+                          </button>
+                          <button onClick={(e) => openEditAgent(e, agent)} className={`${styles.agentActionBtn} ${styles.btnEdit}`}>
+                            <Edit3 size={14} /> Edit
+                          </button>
+                          <button onClick={(e) => deleteAgent(e, agent.id)} className={`${styles.agentActionBtn} ${styles.btnDelete}`}>
+                            <Trash2 size={14} /> Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
 
-            <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem" }}>Live Task Feed</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-              {tasks.length === 0 ? (
-                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "rgba(255,255,255,0.5)" }}>
-                  No tasks executed yet.
-                </div>
-              ) : (
-                tasks.map(task => (
-                  <div key={task.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "16px", overflow: "hidden" }}>
-                    <div style={{ padding: "1.25rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "flex-start", background: "rgba(0,0,0,0.2)" }}>
-                      <div>
-                        <div style={{ fontSize: "0.85rem", color: "#7B2DFF", fontWeight: 600, marginBottom: "0.25rem" }}>
-                          {task.agent?.name} ({task.agent?.type})
+            {/* Right Column: Chat & Tasks */}
+            <div>
+              {selectedAgent ? (
+                <>
+                  <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem", display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <MessageSquare size={18} color="#7B2DFF" /> Chat with {selectedAgent.name}
+                  </h2>
+                  
+                  <div className={styles.chatContainer}>
+                    <div className={styles.chatMessages}>
+                      {messages.length === 0 && (
+                        <div style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", margin: "auto" }}>
+                          <Bot size={40} style={{ opacity: 0.5, marginBottom: "1rem" }} />
+                          <p>Start a conversation with {selectedAgent.name}.</p>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center", marginTop: "1.5rem" }}>
+                            {TEMPLATES.map(t => (
+                              <button key={t} onClick={() => handleSendMessage(undefined, t)} className={styles.templatePill}>{t}</button>
+                            ))}
+                          </div>
                         </div>
-                        <div style={{ fontSize: "0.95rem", color: "#fff", lineHeight: 1.5 }}>
-                          <span style={{ color: "rgba(255,255,255,0.5)", marginRight: "8px" }}>Task:</span>
-                          {task.prompt}
+                      )}
+                      
+                      {messages.map((msg, i) => (
+                        <div key={i} className={`${styles.chatMessage} ${msg.role === "user" ? styles.chatMessageUser : styles.chatMessageAgent}`}>
+                          {msg.content}
+                          {msg.role === "model" && msg.taskId && (
+                            <button onClick={() => copyToClipboard(msg.content)} style={{ marginTop: '0.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <Copy size={12} /> Copy Result
+                            </button>
+                          )}
                         </div>
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", fontWeight: 700, padding: "4px 8px", borderRadius: "99px", background: task.status === "RUNNING" ? "rgba(0,229,255,0.1)" : task.status === "COMPLETED" ? "rgba(34,197,94,0.1)" : "rgba(255,51,102,0.1)", color: task.status === "RUNNING" ? "#00E5FF" : task.status === "COMPLETED" ? "#22c55e" : "#FF3366" }}>
-                        {task.status === "RUNNING" && <Loader2 size={12} className={styles.spin} />}
-                        {task.status === "COMPLETED" && <CheckCircle2 size={12} />}
-                        {task.status === "FAILED" && <XCircle size={12} />}
-                        {task.status}
-                      </div>
+                      ))}
+                      
+                      {isChatting && (
+                        <div className={styles.typingIndicator}>
+                          Agent is thinking <span className={styles.typingDot}></span><span className={styles.typingDot}></span><span className={styles.typingDot}></span>
+                        </div>
+                      )}
+                      <div ref={chatBottomRef} />
                     </div>
-                    {task.status === "COMPLETED" && task.result && (
-                      <div style={{ padding: "1.5rem", fontSize: "0.9rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, background: "rgba(255,255,255,0.01)", whiteSpace: "pre-wrap" }}>
-                        {task.result}
+                    
+                    <form onSubmit={handleSendMessage} className={styles.chatInputContainer}>
+                      <input 
+                        type="text" 
+                        value={chatInput} 
+                        onChange={(e) => setChatInput(e.target.value)} 
+                        placeholder={selectedAgent.status === "PAUSED" ? "Agent is paused..." : "Message agent..."}
+                        disabled={isChatting || selectedAgent.status === "PAUSED"}
+                        className={styles.chatInput}
+                      />
+                      <button type="submit" disabled={isChatting || !chatInput.trim() || selectedAgent.status === "PAUSED"} className={styles.chatSendBtn}>
+                        <Send size={18} />
+                      </button>
+                    </form>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "1rem" }}>
+                    <h2 style={{ fontSize: "1.2rem", fontWeight: 600 }}>Task History</h2>
+                    <div className={styles.filterPillContainer} style={{ marginBottom: 0 }}>
+                      {["ALL", "COMPLETED", "RUNNING", "FAILED"].map(f => (
+                        <button key={f} onClick={() => setTaskFilter(f)} className={`${styles.filterPill} ${taskFilter === f ? styles.filterPillActive : ""}`}>
+                          {f}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    {tasks.length === 0 ? (
+                      <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "rgba(255,255,255,0.5)" }}>
+                        No tasks found for this filter.
                       </div>
+                    ) : (
+                      tasks.map(task => (
+                        <div key={task.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "16px", overflow: "hidden" }}>
+                          <div style={{ padding: "1rem 1.5rem", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "flex-start", background: "rgba(0,0,0,0.2)" }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: "0.95rem", color: "#fff", lineHeight: 1.5, marginBottom: '0.5rem' }}>
+                                {task.prompt}
+                              </div>
+                              <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)" }}>
+                                {new Date(task.createdAt).toLocaleString()}
+                              </div>
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.5rem" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", fontWeight: 700, padding: "4px 8px", borderRadius: "99px", background: task.status === "RUNNING" ? "rgba(0,229,255,0.1)" : task.status === "COMPLETED" ? "rgba(34,197,94,0.1)" : "rgba(255,51,102,0.1)", color: task.status === "RUNNING" ? "#00E5FF" : task.status === "COMPLETED" ? "#22c55e" : "#FF3366" }}>
+                                {task.status === "RUNNING" && <Loader2 size={12} className={styles.spin} />}
+                                {task.status === "COMPLETED" && <CheckCircle2 size={12} />}
+                                {task.status === "FAILED" && <XCircle size={12} />}
+                                {task.status}
+                              </div>
+                              {task.status === "FAILED" && (
+                                <button onClick={() => handleRetryTask(task.id)} style={{ background: 'none', border: '1px solid #FF3366', color: '#FF3366', borderRadius: '4px', padding: '2px 8px', fontSize: '0.7rem', cursor: 'pointer' }}>Retry</button>
+                              )}
+                            </div>
+                          </div>
+                          {task.status === "COMPLETED" && task.result && (
+                            <div style={{ padding: "1.25rem 1.5rem", fontSize: "0.9rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, background: "rgba(255,255,255,0.01)", whiteSpace: "pre-wrap" }}>
+                              {task.result}
+                            </div>
+                          )}
+                          {task.status === "FAILED" && task.error && (
+                            <div style={{ padding: "1.25rem 1.5rem", fontSize: "0.9rem", color: "#FF3366", lineHeight: 1.6, background: "rgba(255,51,102,0.05)" }}>
+                              Error: {task.error}
+                            </div>
+                          )}
+                        </div>
+                      ))
                     )}
                   </div>
-                ))
+                </>
+              ) : (
+                <div style={{ textAlign: "center", color: "rgba(255,255,255,0.4)", padding: "4rem 0", background: "rgba(255,255,255,0.02)", border: "1px dashed rgba(255,255,255,0.1)", borderRadius: "20px" }}>
+                  <Bot size={48} style={{ opacity: 0.3, margin: "0 auto 1rem" }} />
+                  <h3>No Agent Selected</h3>
+                  <p style={{ marginTop: "0.5rem" }}>Select an agent from the left to start collaborating.</p>
+                </div>
               )}
             </div>
           </div>
-        </div>
+        </>
       )}
 
-      {/* Create Agent Modal */}
-      {showCreateAgent && (
+      {/* Create/Edit Agent Modal */}
+      {showAgentModal && (
         <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(5,5,5,0.8)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(20px)" }}>
-          <div style={{ background: "#111114", padding: "3rem", borderRadius: "24px", width: "100%", maxWidth: "500px", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <h3 style={{ fontSize: "24px", fontWeight: 700, marginBottom: "2rem", color: "#fff" }}>Deploy AI Agent</h3>
-            <form onSubmit={handleCreateAgent}>
-              <div style={{ marginBottom: "1.5rem" }}>
+          <div style={{ background: "#111114", padding: "2.5rem", borderRadius: "24px", width: "100%", maxWidth: "500px", border: "1px solid rgba(255,255,255,0.08)", maxHeight: "90vh", overflowY: "auto" }}>
+            <h3 style={{ fontSize: "24px", fontWeight: 700, marginBottom: "2rem", color: "#fff" }}>
+              {editingAgent ? "Edit Agent" : "Deploy AI Agent"}
+            </h3>
+            <form onSubmit={handleSaveAgent}>
+              <div style={{ marginBottom: "1.25rem" }}>
                 <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Agent Name</label>
-                <input required type="text" value={newAgent.name} onChange={e => setNewAgent({...newAgent, name: e.target.value})} placeholder="e.g. Sales Copilot" style={{ width: "100%", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }} />
+                <input required type="text" value={agentForm.name} onChange={e => setAgentForm({...agentForm, name: e.target.value})} placeholder="e.g. Sales Copilot" style={{ width: "100%", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }} />
               </div>
-              <div style={{ marginBottom: "1.5rem" }}>
+              <div style={{ marginBottom: "1.25rem" }}>
                 <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Agent Department / Role</label>
-                <select value={newAgent.type} onChange={e => setNewAgent({...newAgent, type: e.target.value})} style={{ width: "100%", padding: "1rem", background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }}>
+                <select value={agentForm.type} onChange={e => setAgentForm({...agentForm, type: e.target.value})} style={{ width: "100%", padding: "1rem", background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }}>
                   {AGENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
-              <div style={{ marginBottom: "2.5rem" }}>
+              <div style={{ marginBottom: "1.25rem" }}>
+                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Short Description</label>
+                <input type="text" value={agentForm.description} onChange={e => setAgentForm({...agentForm, description: e.target.value})} placeholder="e.g. Handles outbound lead generation" style={{ width: "100%", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }} />
+              </div>
+              <div style={{ marginBottom: "2rem" }}>
                 <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>System Instructions (Optional)</label>
-                <textarea value={newAgent.systemPrompt} onChange={e => setNewAgent({...newAgent, systemPrompt: e.target.value})} placeholder="E.g., You are a senior sales rep. Always format your responses as a 3-paragraph email..." rows={4} style={{ width: "100%", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none", resize: "vertical" }} />
+                <textarea value={agentForm.systemPrompt} onChange={e => setAgentForm({...agentForm, systemPrompt: e.target.value})} placeholder="E.g., You are a senior sales rep. Always format your responses as a 3-paragraph email..." rows={4} style={{ width: "100%", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none", resize: "vertical" }} />
               </div>
               
               <div style={{ display: "flex", gap: "1rem" }}>
-                <button type="button" onClick={() => setShowCreateAgent(false)} style={{ flex: 1, background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", padding: "1rem", cursor: "pointer" }}>
+                <button type="button" onClick={() => setShowAgentModal(false)} style={{ flex: 1, background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", padding: "1rem", cursor: "pointer" }}>
                   Cancel
                 </button>
-                <button type="submit" disabled={isCreatingAgent} style={{ flex: 1, background: "#7B2DFF", color: "#fff", border: "none", borderRadius: "12px", padding: "1rem", fontWeight: 600, cursor: isCreatingAgent ? "not-allowed" : "pointer", opacity: isCreatingAgent ? 0.7 : 1 }}>
-                  {isCreatingAgent ? "Deploying..." : "Deploy Agent"}
+                <button type="submit" disabled={isSubmittingAgent} style={{ flex: 1, background: "#7B2DFF", color: "#fff", border: "none", borderRadius: "12px", padding: "1rem", fontWeight: 600, cursor: isSubmittingAgent ? "not-allowed" : "pointer", opacity: isSubmittingAgent ? 0.7 : 1 }}>
+                  {isSubmittingAgent ? "Saving..." : (editingAgent ? "Save Changes" : "Deploy Agent")}
                 </button>
               </div>
             </form>

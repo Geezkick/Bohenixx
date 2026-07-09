@@ -13,7 +13,12 @@ export async function GET(req: NextRequest) {
 
     const agents = await db.flowAgent.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: { tasks: true },
+        },
+      },
     });
 
     return NextResponse.json({ success: true, agents });
@@ -31,7 +36,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, type, systemPrompt } = await req.json();
+    const { name, type, description, systemPrompt } = await req.json();
 
     if (!name || !type) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
@@ -42,8 +47,9 @@ export async function POST(req: NextRequest) {
         userId,
         name,
         type,
-        systemPrompt: systemPrompt || null
-      }
+        description: description || null,
+        systemPrompt: systemPrompt || null,
+      },
     });
 
     return NextResponse.json({ success: true, agent });

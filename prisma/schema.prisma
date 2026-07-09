@@ -392,9 +392,11 @@ model FlowAgent {
   userId          String
   name            String
   type            String     // "hr", "sales", "finance", "support", "operations", "marketing", "legal", "project", "executive", "analytics", "custom"
+  description     String?    @db.Text
   systemPrompt    String?    @db.Text
   status          String     @default("ACTIVE") // ACTIVE, PAUSED
   tasksCompleted  Int        @default(0)
+  lastActiveAt    DateTime?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
@@ -405,16 +407,20 @@ model FlowAgent {
 }
 
 model FlowTask {
-  id        String   @id @default(cuid())
-  agentId   String
-  userId    String
-  prompt    String   @db.Text
-  result    String?  @db.Text
-  status    String   @default("RUNNING") // RUNNING, COMPLETED, FAILED
-  createdAt DateTime @default(now())
+  id          String    @id @default(cuid())
+  agentId     String
+  userId      String
+  prompt      String    @db.Text
+  result      String?   @db.Text
+  error       String?   @db.Text
+  status      String    @default("RUNNING") // RUNNING, COMPLETED, FAILED
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
 
   agent FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
   @@index([agentId])
   @@index([userId])
+  @@index([status])
 }
