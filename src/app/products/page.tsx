@@ -6,17 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ArrowLeftIcon, ArrowRightIcon, Sprout, ScanLine } from 'lucide-react';
 import React from 'react';
 
-const ecosystem = [
-  { id: "bxpos", name: "BX POS", desc: "A highly advanced, multi-industry AI point-of-sale terminal. Fully customizable for retail, restaurants, medical, or any custom business type. Features dynamic AI insights, intelligent inventory forecasting, and seamless multi-payment billing.", icon: "/bohenixx.png", color: "#B14CFF", href: "/dashboard/pos", price: "Enterprise", status: "Active" },
-  { id: "bxbusiness", name: "BX Business Suite", desc: "A comprehensive AI-driven healthcare management suite. Automate patient medical billing, schedule intelligent AI-triaged appointments, and manage clinic reputation from a unified portal.", icon: "/bohenixx.png", color: "#B14CFF", href: "/dashboard/subscriptions", price: "Enterprise", status: "Active" },
-  { id: "njiasafe", name: "NjiaSafe", desc: "Road safety and smart mobility platform powering safer commutes with real-time alerts and incident mapping.", icon: "/njiasafee.png", color: "#E0E0E0", href: "https://njiasafe.six.vercel.app", price: "Free", status: "In Development" },
-  { id: "bxomni", name: "BX Omni", desc: "AI-powered Digital Operations Twin that mirrors your business processes and optimizes them autonomously.", icon: "/bohenixx.png", color: "#B14CFF", href: "https://bohenixx.vercel.app", price: "Enterprise", status: "In Development" },
-  { id: "fixxo", name: "Fixxo", desc: "Smart maintenance and service marketplace connecting technicians with clients through AI-driven scheduling.", icon: "/fixxo.png", color: "#2979FF", href: "https://fixxo.vercel.app", price: "Free", status: "In Development" },
-  { id: "mboka", name: "Mboka", desc: "AI-powered job matching platform built for skilled laborers and employers to find each other by nearest location. Mboka uses intelligent geo-matching, verified worker profiles, and community-driven reviews so the right worker meets the right employer — fast, local, and trusted.", icon: "/mboka.png", color: "#FF6D00", href: "https://mboka.vercel.app", price: "Free", status: "In Development" },
-  { id: "vuna", name: "Vuna", desc: "The platform where AI curates and distributes short-form farming videos to maximize reach for every farmer. Vuna creates a living marketplace where farmers, buyers, and communities engage, connect, and trade — with intelligent content allocation ensuring every harvest story finds its audience.", icon: <Sprout size={48} color="#76FF03" />, color: "#76FF03", href: "https://vunashorts.vercel.app", price: "Free", status: "In Development" },
-  { id: "kwelify", name: "Kwelify", desc: "Adaptive learning technology platform delivering personalized education through AI-curated curriculum.", icon: "/bohenixx.png", color: "#E0E0E0", href: "https://kwelify.vercel.app", price: "Pro", status: "In Development" },
-  { id: "safura", name: "Safura", desc: "An autonomous AI food scanner that analyzes any food item in real time — surfacing nutritional values, allergen warnings, and country of origin without any manual input. Safura empowers you to plan balanced meals, avoid potential allergies, request diet plans inspired by any cuisine worldwide, and maintain a healthy lifestyle with data-driven precision.", icon: <ScanLine size={48} color="#00E5FF" />, color: "#00E5FF", href: "https://safura-ai.vercel.app", price: "Free", status: "In Development" },
-];
+const ecosystem: any[] = [];
 
 export default function ProductsPage() {
   // Since we require auth via middleware for /products, we assume the user is signed in here.

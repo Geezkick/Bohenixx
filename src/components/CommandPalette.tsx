@@ -11,28 +11,11 @@ import {
 
 const MOCK_LINKS = [
   { name: "Dashboard Overview", href: "/dashboard", icon: <SignalIcon size={18} color="#00E5FF" />, category: "Dashboard" },
-  { name: "Products & Services", href: "/dashboard/subscriptions", icon: <ShoppingBagIcon size={18} color="#B14CFF" />, category: "Dashboard" },
-  { name: "BX Labs", href: "/dashboard/labs", icon: <ZapIcon size={18} color="#B14CFF" />, category: "Dashboard" },
-  { name: "Events", href: "/dashboard/events", icon: <FileTextIcon size={18} color="#B14CFF" />, category: "Dashboard" },
+  { name: "Events & Activity Log", href: "/dashboard/events", icon: <FileTextIcon size={18} color="#B14CFF" />, category: "Dashboard" },
   { name: "Developer Portal", href: "/dashboard/developer", icon: <SettingsIcon size={18} color="#00E5FF" />, category: "Dashboard" },
   { name: "Account Settings", href: "/dashboard/settings", icon: <SettingsIcon size={18} color="#22c55e" />, category: "Dashboard" },
-  { name: "BX POS Terminal", href: "/dashboard/pos", icon: <Image src="/bohenixx.png" alt="Logo" width={18} height={18} />, category: "Apps" },
-  { name: "Clinic Command Center", href: "/dashboard/subscriptions", icon: <ShoppingBagIcon size={18} color="#B14CFF" />, category: "Apps" },
-  { name: "BX Telemedicine Portal", href: "/dashboard/telemedicine", icon: <SignalIcon size={18} color="#00E5FF" />, category: "Apps" },
-  { name: "BX Ambient Scribe", href: "/dashboard/scribe", icon: <FileTextIcon size={18} color="#22c55e" />, category: "Apps" },
-  { name: "BX Medical Billing", href: "/dashboard/invoices", icon: <FileTextIcon size={18} color="#00E5FF" />, category: "Apps" },
-  { name: "BX Patient Scheduling", href: "/dashboard/appointments", icon: <FileTextIcon size={18} color="#f59e0b" />, category: "Apps" },
-  { name: "BX Patient Experience", href: "/dashboard/testimonials", icon: <FileTextIcon size={18} color="#22c55e" />, category: "Apps" },
-  { name: "BX Supply Chain (e-Rx)", href: "/dashboard/supply-chain", icon: <ShoppingBagIcon size={18} color="#B14CFF" />, category: "Apps" },
-  { name: "BX Vitals (IoT)", href: "/dashboard/vitals", icon: <SignalIcon size={18} color="#FF3366" />, category: "Apps" },
-  { name: "BX Care CRM", href: "/dashboard/crm", icon: <ShieldIcon size={18} color="#f59e0b" />, category: "Apps" },
-  { name: "BX Staffing Engine", href: "/dashboard/staffing", icon: <SettingsIcon size={18} color="#B14CFF" />, category: "Apps" },
-  { name: "NjiaSafe [In Development]", href: "https://njiasafe.six.vercel.app", icon: <ShieldIcon size={18} color="#00C853" />, category: "Labs" },
-  { name: "Mboka [In Development]", href: "https://mboka.vercel.app", icon: <ShoppingBagIcon size={18} color="#FF6D00" />, category: "Labs" },
-  { name: "Fixxo [In Development]", href: "https://fixxo.vercel.app", icon: <SettingsIcon size={18} color="#2979FF" />, category: "Labs" },
-  { name: "Vuna [In Development]", href: "https://vunashorts.vercel.app", icon: <SignalIcon size={18} color="#76FF03" />, category: "Labs" },
-  { name: "Safura [In Development]", href: "https://safura-ai.vercel.app", icon: <ZapIcon size={18} color="#00E5FF" />, category: "Labs" },
-  { name: "Developer Documentation", href: "/developers", icon: <BookOpenIcon size={18} color="#B14CFF" />, category: "System" },
+  { name: "Bohenix Flow AI", href: "/dashboard/flow-ai", icon: <Image src="/bohenixx.png" alt="Logo" width={18} height={18} />, category: "Apps" },
+  { name: "Developer Documentation", href: "/dashboard/developer", icon: <BookOpenIcon size={18} color="#B14CFF" />, category: "System" },
 ];
 
 export default function CommandPalette() {
