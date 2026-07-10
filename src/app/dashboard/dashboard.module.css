@@ -726,3 +726,303 @@
   color: #fff;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   MISSION CONTROL — Dashboard Redesign
+   ═══════════════════════════════════════════════════════════════ */
+
+.missionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.systemClock {
+  text-align: right;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+}
+
+.clockLabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted, #6E6E7D);
+  margin-bottom: 4px;
+}
+
+.clockValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.clockDate {
+  font-size: 0.75rem;
+  color: var(--text-muted, #6E6E7D);
+  margin-top: 2px;
+}
+
+/* ─── KPI Strip ─── */
+.kpiStrip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.kpiCard {
+  background: var(--bg-surface, #0D0B12);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 1.75rem;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.kpiCard:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--bg-elevated, #17141F);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.kpiTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.kpiLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted, #6E6E7D);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.kpiValue {
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 1rem;
+  font-family: var(--font-primary, 'Outfit', sans-serif);
+}
+
+.kpiFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted, #6E6E7D);
+}
+
+/* ─── Pulse Indicator ─── */
+.pulse {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.pulseRing {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  animation: pulseRing 2s ease-out infinite;
+}
+
+.pulseActive .pulseDot {
+  background: #22c55e;
+}
+
+.pulseActive .pulseRing {
+  border: 1.5px solid #22c55e;
+}
+
+.pulseInactive .pulseDot {
+  background: #6E6E7D;
+}
+
+.pulseInactive .pulseRing {
+  display: none;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ─── Quick Actions ─── */
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.actionCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  color: var(--text-secondary, #A7A7B5);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.actionCard span {
+  flex: 1;
+}
+
+.actionCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ─── System Log — Terminal ─── */
+.systemLog {
+  background: rgba(5, 5, 7, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.logHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.logHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #A7A7B5);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.logHeaderRight {
+  display: flex;
+  align-items: center;
+}
+
+.logLive {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #22c55e;
+}
+
+.logBody {
+  padding: 0.75rem 0;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.logLine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, #6E6E7D);
+  transition: background 0.15s;
+}
+
+.logLine:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.logTs {
+  color: rgba(255, 255, 255, 0.25);
+  font-variant-numeric: tabular-nums;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+
+.logLevel {
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  min-width: 50px;
+  flex-shrink: 0;
+}
+
+.logMsg {
+  flex: 1;
+  color: var(--text-secondary, #A7A7B5);
+}
+
+.logAgo {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+/* ─── Mission Control Responsive ─── */
+@media (max-width: 900px) {
+  .missionHeader {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .systemClock {
+    text-align: left;
+    width: 100%;
+  }
+  .kpiStrip {
+    grid-template-columns: 1fr;
+  }
+  .quickActions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .kpiValue {
+    font-size: 2rem;
+  }
+  .logBody {
+    font-size: 0.75rem;
+  }
+  .logLine {
+    padding: 0.5rem 1rem;
+    gap: 8px;
+  }
+}
+

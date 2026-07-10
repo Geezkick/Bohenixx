@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./dashboard.module.css";
-import { ArrowRight, Activity, ShieldCheck, BrainCircuit } from "lucide-react";
+import { ArrowRight, Activity, ShieldCheck, BrainCircuit, Zap, TrendingUp, Users, Terminal } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
@@ -36,10 +36,42 @@ function timeAgo(dateStr: string) {
   return `${days}d ago`;
 }
 
+function AnimatedKPI({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [displayed, setDisplayed] = useState(0);
+
+  useEffect(() => {
+    let frame: number;
+    const duration = 1200;
+    const start = performance.now();
+    const animate = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayed(Math.round(eased * value));
+      if (progress < 1) frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+
+  return <span ref={ref}>{displayed.toLocaleString()}{suffix}</span>;
+}
+
+function PulseIndicator({ active }: { active: boolean }) {
+  return (
+    <span className={`${styles.pulse} ${active ? styles.pulseActive : styles.pulseInactive}`}>
+      <span className={styles.pulseRing} />
+      <span className={styles.pulseDot} />
+    </span>
+  );
+}
+
 export default function DashboardOverview() {
   const { user } = useAuth();
   const [data, setData] = useState<OverviewData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     fetch("/api/dashboard/overview")
@@ -50,83 +82,139 @@ export default function DashboardOverview() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const greeting = (() => {
+    const h = currentTime.getHours();
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    return "Good evening";
+  })();
+
   return (
     <>
-      <h1 className={styles.pageTitle}>Mission Control</h1>
-      <p className={styles.pageDesc}>Welcome back, {user?.name?.split(" ")[0] || "User"}. Here's the live status of your autonomous operations.</p>
-
-      <div className={styles.grid}>
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <span className={styles.cardTitle}>Flow AI Tasks</span>
-            <BrainCircuit color="#B14CFF" size={24} />
-          </div>
-          <div className={styles.cardValue}>{loading ? "—" : data?.flowAi?.completedTasks ?? 0}</div>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-            {loading
-              ? "Loading task stats..."
-              : `${data?.flowAi?.completedTasks ?? 0} tasks completed autonomously by your AI agents.`}
+      {/* Mission Control Header */}
+      <div className={styles.missionHeader}>
+        <div>
+          <h1 className={styles.pageTitle}>Mission Control</h1>
+          <p className={styles.pageDesc}>
+            {greeting}, {user?.name?.split(" ")[0] || "Operator"}. All systems operational.
           </p>
-          <Link href="/dashboard/flow-ai" className={styles.btnPrimary} style={{ width: "100%", justifyContent: "center" }}>
-            View Tasks <ArrowRight size={16} />
-          </Link>
         </div>
-
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <span className={styles.cardTitle}>Account Security</span>
-            <ShieldCheck color="#22c55e" size={24} />
+        <div className={styles.systemClock}>
+          <div className={styles.clockLabel}>SYSTEM TIME</div>
+          <div className={styles.clockValue}>
+            {currentTime.toLocaleTimeString("en-US", { hour12: false })}
           </div>
-          <div className={styles.cardValue}>{loading ? "—" : data?.hasPassword ? "Protected" : "OAuth"}</div>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-            {loading
-              ? "Checking account security..."
-              : `Signed in via ${data?.signInMethod || "unknown"}. Account created ${data?.accountCreatedAt ? new Date(data.accountCreatedAt).toLocaleDateString() : "recently"}.`}
-          </p>
-          <Link href="/dashboard/settings" className={styles.btnSecondary} style={{ width: "100%", justifyContent: "center" }}>
-            Account Settings
-          </Link>
-        </div>
-
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <span className={styles.cardTitle}>AI Workforce</span>
-            <Activity color="#00E5FF" size={24} />
+          <div className={styles.clockDate}>
+            {currentTime.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
           </div>
-          <div className={styles.cardValue}>{loading ? "—" : data?.flowAi?.activeAgents ?? 0}</div>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-            {loading
-              ? "Loading AI stats..."
-              : `${data?.flowAi?.activeAgents ?? 0} active agents deployed. ${data?.flowAi?.completedTasks ?? 0} tasks completed autonomously.`}
-          </p>
-          <Link href="/dashboard/flow-ai" className={styles.btnSecondary} style={{ width: "100%", justifyContent: "center" }}>
-            Manage Agents
-          </Link>
         </div>
       </div>
 
+      {/* Live KPI Strip */}
+      <div className={styles.kpiStrip}>
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiTop}>
+            <BrainCircuit size={18} color="#A78BFA" />
+            <span className={styles.kpiLabel}>AI Agents Active</span>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? "—" : <AnimatedKPI value={data?.flowAi?.activeAgents ?? 0} />}
+          </div>
+          <div className={styles.kpiFooter}>
+            <PulseIndicator active={(data?.flowAi?.activeAgents ?? 0) > 0} />
+            <span>{(data?.flowAi?.activeAgents ?? 0) > 0 ? "Processing" : "Idle"}</span>
+          </div>
+        </div>
 
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiTop}>
+            <Zap size={18} color="#1DE9FF" />
+            <span className={styles.kpiLabel}>Tasks Completed</span>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? "—" : <AnimatedKPI value={data?.flowAi?.completedTasks ?? 0} />}
+          </div>
+          <div className={styles.kpiFooter}>
+            <TrendingUp size={14} color="#22c55e" />
+            <span>Autonomous execution</span>
+          </div>
+        </div>
 
-      <div style={{ marginTop: "4rem" }}>
-        <h2 style={{ fontSize: "1.25rem", marginBottom: "1.5rem", fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase", color: "var(--text-secondary)" }}>System Log</h2>
-        <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.05)", padding: "0 1.5rem" }}>
+        <div className={styles.kpiCard}>
+          <div className={styles.kpiTop}>
+            <ShieldCheck size={18} color="#22c55e" />
+            <span className={styles.kpiLabel}>Security Status</span>
+          </div>
+          <div className={styles.kpiValue} style={{ fontSize: "1.75rem" }}>
+            {loading ? "—" : data?.hasPassword ? "Protected" : "OAuth"}
+          </div>
+          <div className={styles.kpiFooter}>
+            <PulseIndicator active={true} />
+            <span>via {data?.signInMethod || "—"}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className={styles.quickActions}>
+        <Link href="/dashboard/flow-ai" className={styles.actionCard}>
+          <BrainCircuit size={20} />
+          <span>Manage AI Workforce</span>
+          <ArrowRight size={16} />
+        </Link>
+        <Link href="/dashboard/settings" className={styles.actionCard}>
+          <ShieldCheck size={20} />
+          <span>Account Settings</span>
+          <ArrowRight size={16} />
+        </Link>
+        <Link href="/dashboard/developer" className={styles.actionCard}>
+          <Terminal size={20} />
+          <span>Developer Console</span>
+          <ArrowRight size={16} />
+        </Link>
+      </div>
+
+      {/* System Log — Terminal Style */}
+      <div className={styles.systemLog}>
+        <div className={styles.logHeader}>
+          <div className={styles.logHeaderLeft}>
+            <Terminal size={16} color="#A78BFA" />
+            <span>System Log</span>
+          </div>
+          <div className={styles.logHeaderRight}>
+            <span className={styles.logLive}>
+              <PulseIndicator active={true} /> LIVE
+            </span>
+          </div>
+        </div>
+        <div className={styles.logBody}>
           {loading ? (
-            <div style={{ padding: "2rem", color: "rgba(255,255,255,0.4)", fontSize: "0.9rem" }}>Loading activity...</div>
+            <div className={styles.logLine}>
+              <span className={styles.logTs}>--:--:--</span>
+              <span className={styles.logMsg}>Loading system activity...</span>
+            </div>
           ) : !data?.recentActivity || data.recentActivity.length === 0 ? (
-            <div style={{ padding: "2rem", color: "rgba(255,255,255,0.4)", fontSize: "0.9rem" }}>
-              No activity yet. Actions like creating API keys or webhooks will show up here.
+            <div className={styles.logLine}>
+              <span className={styles.logTs}>{currentTime.toLocaleTimeString("en-US", { hour12: false })}</span>
+              <span className={styles.logLevel} style={{ color: "#6E6E7D" }}>INFO</span>
+              <span className={styles.logMsg}>No recorded events. Actions will appear here in real-time.</span>
             </div>
           ) : (
             data.recentActivity.map((activity) => (
-              <div key={activity.id} className={styles.listItem}>
-                <div className={styles.itemInfo}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: activity.color }} />
-                  <div>
-                    <div className={styles.itemTitle} style={{ fontSize: "1rem" }}>{activity.action}</div>
-                    <div className={styles.itemDesc}>{activity.app}</div>
-                  </div>
-                </div>
-                <span style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.4)" }}>{timeAgo(activity.createdAt)}</span>
+              <div key={activity.id} className={styles.logLine}>
+                <span className={styles.logTs}>
+                  {new Date(activity.createdAt).toLocaleTimeString("en-US", { hour12: false })}
+                </span>
+                <span className={styles.logLevel} style={{ color: activity.color }}>
+                  {activity.app.toUpperCase().slice(0, 6)}
+                </span>
+                <span className={styles.logMsg}>{activity.action}</span>
+                <span className={styles.logAgo}>{timeAgo(activity.createdAt)}</span>
               </div>
             ))
           )}
