@@ -7,7 +7,7 @@ import Link from "next/link";
 interface PremiumButtonProps {
   children: React.ReactNode;
   href?: string;
-  onClick?: () => void;
+  onClick?: (e?: any) => void;
   variant?: "primary" | "secondary";
   className?: string;
 }

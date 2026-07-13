@@ -171,7 +171,7 @@ export default function CorporateLandingPage() {
     }
   };
 
-  const springConfig = { type: "spring", stiffness: 100, damping: 20 };
+  const springConfig = { type: "spring" as const, stiffness: 100, damping: 20 };
 
   return (
     <div className={styles.container}>

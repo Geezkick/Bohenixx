@@ -116,7 +116,7 @@ export default function FlowAIPage() {
       {/* Hero */}
       <section id="overview" className={s.hero}>
         <motion.div className={s.heroInner} initial="hidden" animate="show" variants={{hidden:{opacity:0},show:{opacity:1,transition:{staggerChildren:0.15}}}}>
-          <motion.div variants={fade} className={s.heroBadge}><span className={s.heroBadgeDot}/> The World's First AI Workforce OS for Africa</motion.div>
+
           <motion.h1 variants={fade} className={s.heroTitle}>Build an <span className={s.heroGradient}>Autonomous Company</span></motion.h1>
           <motion.p variants={fade} className={s.heroSub}>Hire AI employees. Build AI departments. Run your company autonomously. Create an entire digital workforce that manages operations, sales, finance, customer support, HR, and projects—all working together like a real company.</motion.p>
           <motion.div variants={fade} className={s.heroCtas}>
