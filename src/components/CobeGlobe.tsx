@@ -31,14 +31,20 @@ export default function CobeGlobe() {
 
   useEffect(() => {
     setMounted(true);
-    
-    // Auto-rotate
-    if (globeEl.current) {
-      globeEl.current.controls().autoRotate = true;
-      globeEl.current.controls().autoRotateSpeed = 0.5;
-      globeEl.current.pointOfView({ lat: 0, lng: 20, altitude: 2 }, 1000);
-    }
   }, []);
+
+  const handleGlobeReady = () => {
+    if (globeEl.current) {
+      const controls = globeEl.current.controls();
+      if (controls) {
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+      }
+      try {
+        globeEl.current.pointOfView({ lat: 0, lng: 20, altitude: 2 }, 1000);
+      } catch(e) {}
+    }
+  };
 
   if (!mounted) return <div style={{ height: "400px", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading Globe...</div>;
 
@@ -46,6 +52,7 @@ export default function CobeGlobe() {
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "400px", cursor: "grab", overflow: "hidden", borderRadius: "50%", background: "radial-gradient(circle at center, rgba(123, 45, 255, 0.15) 0%, transparent 60%)" }}>
       <Globe
         ref={globeEl}
+        onGlobeReady={handleGlobeReady}
         width={450}
         height={450}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
