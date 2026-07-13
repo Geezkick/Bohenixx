@@ -85,6 +85,8 @@ export async function PATCH(
     const updateData: Record<string, any> = {};
     if (body.name !== undefined) updateData.name = body.name;
     if (body.type !== undefined) updateData.type = body.type;
+    if (body.avatar !== undefined) updateData.avatar = body.avatar;
+    if (body.voice !== undefined) updateData.voice = body.voice;
     if (body.description !== undefined) updateData.description = body.description;
     if (body.systemPrompt !== undefined) updateData.systemPrompt = body.systemPrompt;
     if (body.status !== undefined && ["ACTIVE", "PAUSED"].includes(body.status)) {

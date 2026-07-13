@@ -11,6 +11,8 @@ type FlowAgent = {
   id: string;
   name: string;
   type: string;
+  avatar: string | null;
+  voice: string | null;
   description: string | null;
   systemPrompt: string | null;
   status: string;
@@ -49,6 +51,9 @@ const AGENT_TYPES = [
   "Executive Assistant", "Custom"
 ];
 
+const AVATARS = ["🤖", "👨‍💻", "👩‍💼", "🧠", "⚡", "✨", "🎯", "📈", "🚀", "💡", "🛡️", "🔥"];
+const VOICES = ["Alloy (Neutral)", "Echo (Male)", "Fable (British)", "Onyx (Deep)", "Nova (Female)", "Shimmer (Bright)"];
+
 const TEMPLATES = [
   "Draft a cold email", "Analyze this data", "Write a project plan", 
   "Create an onboarding checklist", "Draft a weekly report"
@@ -63,7 +68,7 @@ export default function FlowAIDashboard() {
   // Modals & Forms
   const [showAgentModal, setShowAgentModal] = useState(false);
   const [editingAgent, setEditingAgent] = useState<FlowAgent | null>(null);
-  const [agentForm, setAgentForm] = useState({ name: "", type: "Sales", description: "", systemPrompt: "" });
+  const [agentForm, setAgentForm] = useState({ name: "", type: "Sales", avatar: "🤖", voice: "Alloy (Neutral)", description: "", systemPrompt: "" });
   const [isSubmittingAgent, setIsSubmittingAgent] = useState(false);
 
   // Chat & Tasks state
@@ -150,7 +155,7 @@ export default function FlowAIDashboard() {
       if (res.ok) {
         setShowAgentModal(false);
         setEditingAgent(null);
-        setAgentForm({ name: "", type: "Sales", description: "", systemPrompt: "" });
+        setAgentForm({ name: "", type: "Sales", avatar: "🤖", voice: "Alloy (Neutral)", description: "", systemPrompt: "" });
         loadData();
       }
     } catch (err) { console.error(err); }
@@ -187,6 +192,8 @@ export default function FlowAIDashboard() {
     setAgentForm({ 
       name: agent.name, 
       type: agent.type, 
+      avatar: agent.avatar || "🤖",
+      voice: agent.voice || "Alloy (Neutral)",
       description: agent.description || "", 
       systemPrompt: agent.systemPrompt || "" 
     });
@@ -255,7 +262,7 @@ export default function FlowAIDashboard() {
           </h1>
           <p className={styles.pageDesc} style={{ marginBottom: 0 }}>Manage your autonomous AI workforce.</p>
         </div>
-        <button onClick={() => { setEditingAgent(null); setAgentForm({ name: "", type: "Sales", description: "", systemPrompt: "" }); setShowAgentModal(true); }} className={styles.btnPrimary}>
+        <button onClick={() => { setEditingAgent(null); setAgentForm({ name: "", type: "Sales", avatar: "🤖", voice: "Alloy (Neutral)", description: "", systemPrompt: "" }); setShowAgentModal(true); }} className={styles.btnPrimary}>
           <Plus size={16} /> Hire AI Employee
         </button>
       </div>
@@ -318,7 +325,11 @@ export default function FlowAIDashboard() {
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <Bot size={20} color={agent.status === "ACTIVE" ? "#7B2DFF" : "#B3B3B8"} />
+                          {agent.avatar ? (
+                            <span style={{ fontSize: "24px", lineHeight: 1 }}>{agent.avatar}</span>
+                          ) : (
+                            <Bot size={20} color={agent.status === "ACTIVE" ? "#7B2DFF" : "#B3B3B8"} />
+                          )}
                           <h3 style={{ fontSize: "1.1rem", fontWeight: 600 }}>{agent.name}</h3>
                         </div>
                         <span style={{ fontSize: "0.75rem", background: agent.status === "ACTIVE" ? "rgba(34,197,94,0.1)" : "rgba(245,158,11,0.1)", color: agent.status === "ACTIVE" ? "#22c55e" : "#f59e0b", padding: "4px 8px", borderRadius: "99px", fontWeight: 700 }}>
@@ -326,7 +337,7 @@ export default function FlowAIDashboard() {
                         </span>
                       </div>
                       <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.5rem" }}>
-                        Role: {agent.type} Agent<br />
+                        Role: {agent.type} Agent | Voice: {agent.voice || "Default"}<br />
                         Tasks: {agent.tasksCompleted} | Last Active: {agent.lastActiveAt ? timeAgo(agent.lastActiveAt) : "Never"}
                       </div>
                       
@@ -354,7 +365,12 @@ export default function FlowAIDashboard() {
               {selectedAgent ? (
                 <>
                   <h2 style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "1rem", display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <MessageSquare size={18} color="#7B2DFF" /> Chat with {selectedAgent.name}
+                    {selectedAgent.avatar ? (
+                      <span style={{ fontSize: "20px", lineHeight: 1 }}>{selectedAgent.avatar}</span>
+                    ) : (
+                      <MessageSquare size={18} color="#7B2DFF" />
+                    )} 
+                    Chat with {selectedAgent.name}
                   </h2>
                   
                   <div className={styles.chatContainer}>
@@ -488,6 +504,33 @@ export default function FlowAIDashboard() {
                 <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Department / Role</label>
                 <select value={agentForm.type} onChange={e => setAgentForm({...agentForm, type: e.target.value})} style={{ width: "100%", padding: "1rem", background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }}>
                   {AGENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+
+              <div style={{ marginBottom: "1.25rem" }}>
+                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Profile Avatar</label>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  {AVATARS.map(a => (
+                    <button 
+                      key={a} 
+                      type="button"
+                      onClick={() => setAgentForm({...agentForm, avatar: a})}
+                      style={{ 
+                        fontSize: "24px", padding: "8px", background: agentForm.avatar === a ? "rgba(123,45,255,0.2)" : "rgba(255,255,255,0.03)", 
+                        border: agentForm.avatar === a ? "1px solid #7B2DFF" : "1px solid rgba(255,255,255,0.08)", 
+                        borderRadius: "12px", cursor: "pointer", transition: "all 0.2s"
+                      }}
+                    >
+                      {a}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "1.25rem" }}>
+                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "14px", color: "#B3B3B8" }}>Voice Personality</label>
+                <select value={agentForm.voice} onChange={e => setAgentForm({...agentForm, voice: e.target.value})} style={{ width: "100%", padding: "1rem", background: "#000", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", color: "#fff", outline: "none" }}>
+                  {VOICES.map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
               </div>
               <div style={{ marginBottom: "1.25rem" }}>

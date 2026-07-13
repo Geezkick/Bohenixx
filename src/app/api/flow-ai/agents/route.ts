@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, type, description, systemPrompt } = await req.json();
+    const { name, type, description, systemPrompt, avatar, voice } = await req.json();
 
     if (!name || !type) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
@@ -48,6 +48,8 @@ export async function POST(req: NextRequest) {
         userId,
         name,
         type,
+        avatar: avatar || null,
+        voice: voice || null,
         description: description || null,
         systemPrompt: systemPrompt || null,
       },

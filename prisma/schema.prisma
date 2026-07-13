@@ -187,6 +187,8 @@ model FlowAgent {
   userId          String
   name            String
   type            String     // "hr", "sales", "finance", "support", "operations", "marketing", "legal", "project", "executive", "analytics", "custom"
+  avatar          String?
+  voice           String?
   description     String?    @db.Text
   systemPrompt    String?    @db.Text
   status          String     @default("ACTIVE") // ACTIVE, PAUSED
