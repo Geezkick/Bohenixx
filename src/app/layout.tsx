@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import SessionWrapper from "@/components/SessionWrapper";
 import CommandPalette from "@/components/CommandPalette";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -103,13 +104,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
 
         <SessionWrapper>
-          <NotificationProvider>
-            <AuthProvider>
-              <PullToRefresh />
-              <CommandPalette />
-              {children}
-            </AuthProvider>
-          </NotificationProvider>
+          <LanguageProvider>
+            <NotificationProvider>
+              <AuthProvider>
+                <PullToRefresh />
+                <CommandPalette />
+                {children}
+              </AuthProvider>
+            </NotificationProvider>
+          </LanguageProvider>
         </SessionWrapper>
       </body>
     </html>

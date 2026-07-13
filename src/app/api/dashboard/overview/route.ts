@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const [activeKeyCount, activeWebhookCount, user, recentActivity, activeAgents, completedTasks] = await Promise.all([
+  const [activeKeyCount, activeWebhookCount, user, recentActivity, activeAgents, completedTasks, subscription] = await Promise.all([
     db.apiKey.count({ where: { userId, revokedAt: null } }),
     db.webhook.count({ where: { userId, isActive: true } }),
     db.user.findUnique({
@@ -24,6 +24,7 @@ export async function GET() {
     }),
     db.flowAgent.count({ where: { userId, status: "ACTIVE" } }),
     db.flowTask.count({ where: { userId, status: "COMPLETED" } }),
+    db.subscription.findUnique({ where: { userId } }),
   ]);
 
   const hasPassword = !!user?.password;
@@ -40,6 +41,12 @@ export async function GET() {
     flowAi: {
       activeAgents,
       completedTasks,
-    }
+    },
+    subscription: subscription ? {
+      active: subscription.status === "active",
+      plan: subscription.stripePriceId || "Starter",
+      status: subscription.status,
+      currentPeriodEnd: subscription.stripeCurrentPeriodEnd,
+    } : null,
   });
 }

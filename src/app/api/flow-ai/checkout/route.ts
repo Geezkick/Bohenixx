@@ -5,26 +5,19 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2024-04-10" as any,
 });
 
+const PLANS: Record<string, { usd: number; kes: number; name: string; interval: "month" | "year" }> = {
+  Starter: { usd: 1900, kes: 245000, name: "Flow AI Starter Plan", interval: "month" },
+  "Free Trial": { usd: 1900, kes: 245000, name: "Flow AI Starter Plan", interval: "month" },
+  Professional: { usd: 4900, kes: 635000, name: "Flow AI Professional Plan", interval: "month" },
+  Enterprise: { usd: 19900, kes: 1500000, name: "Flow AI Enterprise Plan", interval: "month" },
+};
+
 export async function POST(req: NextRequest) {
   try {
     const { plan, currency = "usd" } = await req.json();
 
-    let priceAmount = 0;
-    let productName = "Flow AI Subscription";
-
-    // Set mock pricing based on the plan
-    if (plan === "Starter" || plan === "Free Trial") {
-      priceAmount = currency === "kes" ? 245000 : 1900; // In cents/smallest unit
-      productName = "Flow AI Starter Plan";
-    } else if (plan === "Professional") {
-      priceAmount = currency === "kes" ? 635000 : 4900;
-      productName = "Flow AI Professional Plan";
-    } else if (plan === "Enterprise") {
-      priceAmount = currency === "kes" ? 1500000 : 19900;
-      productName = "Flow AI Enterprise Plan";
-    } else {
-      priceAmount = currency === "kes" ? 245000 : 1900;
-    }
+    const planConfig = PLANS[plan] || PLANS["Starter"];
+    const priceAmount = currency === "kes" ? planConfig.kes : planConfig.usd;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -33,17 +26,23 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency,
             product_data: {
-              name: productName,
-              description: "Autonomous AI Workforce deployment",
+              name: planConfig.name,
+              description: "Autonomous AI Workforce deployment — recurring subscription",
             },
             unit_amount: priceAmount,
+            recurring: {
+              interval: planConfig.interval,
+            },
           },
           quantity: 1,
         },
       ],
-      mode: "payment", // Using 'payment' for a simple one-off transaction test
+      mode: "subscription",
       success_url: `${process.env.NEXTAUTH_URL}/dashboard/flow-ai?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/flow-ai`,
+      metadata: {
+        plan: plan,
+      },
     });
 
     return NextResponse.json({ success: true, url: session.url });

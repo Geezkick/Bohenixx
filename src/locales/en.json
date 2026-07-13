@@ -1,0 +1,19 @@
+{
+  "dashboard.overview": "Overview",
+  "dashboard.flow_ai": "Flow AI",
+  "dashboard.developers": "Developers",
+  "dashboard.events": "Events",
+  "dashboard.settings": "Settings",
+  "dashboard.sign_out": "Sign out",
+  "dashboard.active_agents": "Active Agents",
+  "dashboard.tasks_completed": "Tasks Completed",
+  "dashboard.system_health": "System Health",
+  "dashboard.recent_activity": "Recent Activity",
+  "flow_ai.create_agent": "Create Agent",
+  "flow_ai.no_agents": "No agents deployed",
+  "flow_ai.no_agents_desc": "Deploy an autonomous AI agent to start automating your workflows.",
+  "settings.language": "Language",
+  "settings.language_desc": "Set your preferred language for the Bohenix platform interface.",
+  "settings.billing": "Billing & Subscription",
+  "settings.billing_desc": "Manage your subscription, billing details, and payment methods."
+}

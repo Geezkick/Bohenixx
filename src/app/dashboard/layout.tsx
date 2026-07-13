@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import styles from "./dashboard.module.css";
 import Image from "next/image";
 
@@ -35,6 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout, isLoading } = useAuth();
+  const { t } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
 
@@ -93,24 +95,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <nav className={styles.navLinks}>
-          <span className={styles.navLabel}>Overview</span>
+          <span className={styles.navLabel}>{t("dashboard.overview")}</span>
           {overviewItems.map((item) => {
             const isActive = pathname === item.href;
+            
+            // Map href to translation key
+            let tKey = "";
+            if (item.href === "/dashboard") tKey = "dashboard.overview";
+            if (item.href === "/dashboard/events") tKey = "dashboard.events";
+            if (item.href === "/dashboard/settings") tKey = "dashboard.settings";
+
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
                 {item.icon}
-                {item.name}
+                {tKey ? t(tKey) : item.name}
               </Link>
             );
           })}
 
-          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Flow AI</span>
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>{t("dashboard.flow_ai")}</span>
           {flagshipItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
                 {item.icon}
-                {item.name}
+                {item.href === "/dashboard/flow-ai" ? t("dashboard.flow_ai") : item.name}
               </Link>
             );
           })}
@@ -152,7 +161,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Link>
           <button onClick={handleLogout} className={styles.signOutBtn}>
             <LogOut size={18} />
-            Sign Out
+            {t("dashboard.sign_out")}
           </button>
         </div>
       </aside>

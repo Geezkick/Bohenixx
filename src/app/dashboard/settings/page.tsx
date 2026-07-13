@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "../dashboard.module.css";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage, Language } from "@/context/LanguageContext";
 import {
   User,
   Lock,
@@ -15,11 +16,18 @@ import {
   Moon,
   Monitor,
   Globe,
+  CreditCard,
 } from "lucide-react";
 
 type Toast = { id: number; message: string; kind: "success" | "error" };
 type ThemeMode = "dark" | "light" | "system";
-type Language = "en" | "sw";
+
+type SubData = {
+  active: boolean;
+  plan: string | null;
+  status: string | null;
+  currentPeriodEnd: string | null;
+};
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -46,18 +54,24 @@ export default function SettingsPage() {
   };
 
   // Language
-  const [language, setLanguage] = useState<Language>("en");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("bx_language") as Language | null;
-    if (saved) setLanguage(saved);
-  }, []);
+  const { language, setLanguage, t } = useLanguage();
 
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
-    localStorage.setItem("bx_language", lang);
     pushToast(`Language set to ${lang === "en" ? "English" : "Kiswahili"}`, "success");
   };
+
+  // Billing
+  const [subData, setSubData] = useState<SubData | null>(null);
+  const [loadingSub, setLoadingSub] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/account/subscription")
+      .then((res) => res.json())
+      .then((d) => { if (!d.error) setSubData(d); })
+      .catch(() => {})
+      .finally(() => setLoadingSub(false));
+  }, []);
 
   // Profile
   const [name, setName] = useState(user?.name || "");
@@ -500,14 +514,61 @@ export default function SettingsPage() {
           </div>
         </div>
 
+        {/* Billing & Subscription */}
+        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
+            <CreditCard size={24} color="#f59e0b" />
+            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>{t("settings.billing")}</h2>
+          </div>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem", maxWidth: "500px" }}>
+            {t("settings.billing_desc")}
+          </p>
+
+          {loadingSub ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "rgba(255,255,255,0.4)" }}>
+              <Loader2 size={18} /> Loading subscription...
+            </div>
+          ) : subData?.active ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "1rem", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: "12px", color: "#22c55e", fontWeight: 600 }}>
+                <CheckCircle2 size={20} />
+                Active Subscription — {subData.plan}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: "12px", padding: "1rem", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)", margin: "0 0 4px" }}>Status</p>
+                  <p style={{ fontSize: "1rem", fontWeight: 600, color: "#22c55e", margin: 0, textTransform: "capitalize" }}>{subData.status}</p>
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: "12px", padding: "1rem", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)", margin: "0 0 4px" }}>Renews On</p>
+                  <p style={{ fontSize: "1rem", fontWeight: 600, margin: 0 }}>
+                    {subData.currentPeriodEnd ? new Date(subData.currentPeriodEnd).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "1rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "12px", color: "rgba(255,255,255,0.6)" }}>
+                <CreditCard size={18} />
+                No active subscription
+              </div>
+              <a href="/flow-ai" style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "0.85rem 1.5rem", background: "#7B2DFF", color: "#fff", borderRadius: "12px", fontWeight: 600, fontSize: "0.95rem", textDecoration: "none", transition: "all 0.2s", width: "fit-content" }}>
+                <CreditCard size={16} />
+                Subscribe to Flow AI
+              </a>
+            </div>
+          )}
+        </div>
+
         {/* Language */}
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "20px", padding: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
             <Globe size={24} color="#00E5FF" />
-            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>Language</h2>
+            <h2 style={{ fontSize: "1.3rem", fontWeight: 600, margin: 0 }}>{t("settings.language")}</h2>
           </div>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", marginBottom: "1.5rem", maxWidth: "500px" }}>
-            Set your preferred language for the Bohenix platform interface.
+            {t("settings.language_desc")}
           </p>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             {([

@@ -1,0 +1,19 @@
+{
+  "dashboard.overview": "Muhtasari",
+  "dashboard.flow_ai": "Flow AI",
+  "dashboard.developers": "Wasanidi Programu",
+  "dashboard.events": "Matukio",
+  "dashboard.settings": "Mipangilio",
+  "dashboard.sign_out": "Toka",
+  "dashboard.active_agents": "Mawakala Amilifu",
+  "dashboard.tasks_completed": "Kazi Zilizokamilika",
+  "dashboard.system_health": "Afya ya Mfumo",
+  "dashboard.recent_activity": "Shughuli za Hivi Karibuni",
+  "flow_ai.create_agent": "Tengeneza Wakala",
+  "flow_ai.no_agents": "Hakuna mawakala waliotumwa",
+  "flow_ai.no_agents_desc": "Tuma wakala wa AI anayejitegemea ili kuanza kuhuisha kazi zako.",
+  "settings.language": "Lugha",
+  "settings.language_desc": "Weka lugha unayopendelea kwa kiolesura cha mfumo wa Bohenix.",
+  "settings.billing": "Malipo na Usajili",
+  "settings.billing_desc": "Dhibiti usajili wako, maelezo ya malipo, na njia za malipo."
+}

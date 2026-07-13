@@ -4,20 +4,20 @@ import React, { useEffect, useState, useRef } from "react";
 import Globe from "react-globe.gl";
 
 const CITIES = [
-  { name: "Nairobi", lat: -1.2921, lng: 36.8219, size: 0.1, color: "#7B2DFF" },
-  { name: "Lagos", lat: 6.5244, lng: 3.3792, size: 0.1, color: "#00E5FF" },
-  { name: "Johannesburg", lat: -26.2041, lng: 28.0473, size: 0.1, color: "#FF3366" },
-  { name: "Kigali", lat: -1.9403, lng: 30.0588, size: 0.05, color: "#7B2DFF" },
-  { name: "Cairo", lat: 30.0444, lng: 31.2357, size: 0.05, color: "#00E5FF" },
-  { name: "Dar es Salaam", lat: -6.7924, lng: 39.2083, size: 0.05, color: "#7B2DFF" },
-  { name: "Addis Ababa", lat: 9.0222, lng: 38.7468, size: 0.05, color: "#FF3366" },
-  { name: "Accra", lat: 5.6037, lng: -0.1870, size: 0.05, color: "#00E5FF" },
-  { name: "London", lat: 51.5074, lng: -0.1278, size: 0.05, color: "#fff" },
-  { name: "New York", lat: 40.7128, lng: -74.0060, size: 0.05, color: "#fff" },
-  { name: "Dubai", lat: 25.2048, lng: 55.2708, size: 0.05, color: "#fff" }
+  { name: "Nairobi, Kenya", lat: -1.2921, lng: 36.8219, size: 0.1, color: "#7B2DFF" },
+  { name: "Lagos, Nigeria", lat: 6.5244, lng: 3.3792, size: 0.1, color: "#00E5FF" },
+  { name: "Johannesburg, SA", lat: -26.2041, lng: 28.0473, size: 0.1, color: "#FF3366" },
+  { name: "Kigali, Rwanda", lat: -1.9403, lng: 30.0588, size: 0.05, color: "#7B2DFF" },
+  { name: "Cairo, Egypt", lat: 30.0444, lng: 31.2357, size: 0.05, color: "#00E5FF" },
+  { name: "Dar es Salaam, TZ", lat: -6.7924, lng: 39.2083, size: 0.05, color: "#7B2DFF" },
+  { name: "Addis Ababa, ETH", lat: 9.0222, lng: 38.7468, size: 0.05, color: "#FF3366" },
+  { name: "Accra, Ghana", lat: 5.6037, lng: -0.1870, size: 0.05, color: "#00E5FF" },
+  { name: "London, UK", lat: 51.5074, lng: -0.1278, size: 0.05, color: "#fff" },
+  { name: "New York, USA", lat: 40.7128, lng: -74.0060, size: 0.05, color: "#fff" },
+  { name: "Dubai, UAE", lat: 25.2048, lng: 55.2708, size: 0.05, color: "#fff" }
 ];
 
-const ARCS = CITIES.filter(c => c.name !== "Nairobi").map(city => ({
+const ARCS = CITIES.filter(c => c.name !== "Nairobi, Kenya").map(city => ({
   startLat: -1.2921,
   startLng: 36.8219,
   endLat: city.lat,
@@ -27,7 +27,7 @@ const ARCS = CITIES.filter(c => c.name !== "Nairobi").map(city => ({
 
 export default function CobeGlobe() {
   const [mounted, setMounted] = useState(false);
-  const globeEl = useRef<any>();
+  const globeEl = useRef<any>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -66,6 +66,16 @@ export default function CobeGlobe() {
         pointAltitude={0.01}
         pointRadius="size"
         pointsMerge={false}
+        
+        labelsData={CITIES}
+        labelLat="lat"
+        labelLng="lng"
+        labelText="name"
+        labelSize={1.5}
+        labelDotRadius={0.3}
+        labelColor={() => 'rgba(255, 255, 255, 0.9)'}
+        labelResolution={2}
+        labelAltitude={0.02}
         
         arcsData={ARCS}
         arcStartLat="startLat"
