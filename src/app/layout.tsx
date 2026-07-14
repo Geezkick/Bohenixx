@@ -85,7 +85,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               url: "https://www.bohenix.africa",
               logo: "https://www.bohenix.africa/bohenixx.png",
               description:
-                "Bohenix Technologies builds AI, mobility, fintech, productivity, business automation, and digital infrastructure solutions for Africa and beyond.",
+                "Bohenix is the AI Workforce Operating System. Hire autonomous AI agents that execute complete business workflows — from sales and marketing to finance and operations — so your business runs on autopilot.",
               founder: {
                 "@type": "Person",
                 name: "Brian Nyarienya",
