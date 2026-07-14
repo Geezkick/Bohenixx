@@ -110,7 +110,7 @@ export default function AuthScreen() {
   const adverts = [
     <>Architecting a <span className={styles.highlight}>Cognitive Tech-Ecosystem</span> to <span className={styles.highlightWarm}>autonomously scale</span> <span className={styles.highlight}>Africa&apos;s Digital Infrastructure</span>.</>,
     <><span className={styles.highlightWarm}>Engineering</span> <span className={styles.highlight}>Hyper-Converged Solutions</span> that seamlessly fuse <span className={styles.highlight}>Predictive AI</span> with <span className={styles.highlightWarm}>resilient enterprise</span> security.</>,
-    <>Bohenix ONE: The <span className={styles.highlightWarm}>centralized nexus</span> for <span className={styles.highlight}>Quantum-Resistant Networks</span> and <span className={styles.highlight}>Intelligent Automation</span>.</>,
+    <>Bohenix Flow AI: The <span className={styles.highlightWarm}>centralized nexus</span> for <span className={styles.highlight}>Intelligent Automation</span>.</>,
     <>Pioneering the <span className={styles.highlightWarm}>next epoch</span> of <span className={styles.highlight}>Cyber-Physical Systems</span> to drive <span className={styles.highlight}>Exponential Economic Velocity</span>.</>,
   ];
   const [adIndex, setAdIndex] = useState(0);
@@ -166,7 +166,7 @@ export default function AuthScreen() {
         <div className={styles.content}>
           <div className={styles.logoArea}>
             <Image src="/bohenixx.png" alt="Bohenix" width={90} height={90} className={styles.logo} />
-            <h1 className={styles.appName}>Bohenix ONE</h1>
+            <h1 className={styles.appName}>Bohenix</h1>
             <p className={styles.tagline}>{current.title}</p>
           </div>
 

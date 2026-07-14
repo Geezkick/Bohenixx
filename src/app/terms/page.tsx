@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
           <section style={{ marginBottom: "2.5rem" }}>
             <h2 style={{ fontSize: "1.5rem", color: "#B14CFF", marginBottom: "1rem" }}>1. Acceptance of Terms</h2>
             <p style={{ color: "rgba(255,255,255,0.8)", lineHeight: 1.7 }}>
-              By accessing or using the Bohenix ONE platform, developer portal, and related services (collectively, the "Services"), you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use our Services.
+              By accessing or using the Bohenix platform, developer portal, and related services (collectively, the "Services"), you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use our Services.
             </p>
           </section>
 

@@ -33,7 +33,7 @@ const ecosystemApps = [
   { name: "Mboka", desc: "AI-powered job matching platform.", Icon: Briefcase, href: "https://mboka.vercel.app", color: "#8B5CF6" },
   { name: "Vuna", desc: "AI-curated farming video platform.", Icon: Leaf, href: "https://vunashorts.vercel.app", color: "#22C55E" },
   { name: "Kwelify", desc: "Adaptive learning technology platform.", Icon: BookOpen, href: "https://kwelify.vercel.app", color: "#3B82F6" },
-  { name: "Safura", desc: "Autonomous AI food scanner.", Icon: Scan, href: "https://safura-ai.vercel.app", color: "#EC4899" },
+  { name: "Flow AI", desc: "Autonomous AI Workforce.", Icon: Scan, href: "https://www.bohenix.africa/flow-ai", color: "#EC4899" },
 ];
 
 export default function DeveloperPortal() {

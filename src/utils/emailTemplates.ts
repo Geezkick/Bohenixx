@@ -43,7 +43,7 @@ const wrapHTML = (content: string, preheader: string, title: string) => `
   
   <div class="container">
     <div class="header" style="background-color: #111111; border-radius: 12px 12px 0 0;">
-      <h1>BOHENIX<span style="font-weight:300; color: #fff;"> ONE</span></h1>
+      <h1>BOHENIX<span style="font-weight:300; color: #fff;"> Flow AI</span></h1>
     </div>
     
     <div class="content">
@@ -117,7 +117,7 @@ export const getInternalAlertTemplate = (eventContext: string, details: any) => 
     <h2 style="color: ${PRIMARY_COLOR}">System Alert / Notification</h2>
     <p><strong>Context:</strong> ${eventContext}</p>
     ${detailsHTML}
-    <p style="font-size: 13px; color: ${TEXT_MUTED}">Generated automatically by Bohenix ONE System Engine.</p>
+    <p style="font-size: 13px; color: ${TEXT_MUTED}">Generated automatically by Bohenix Flow AI System Engine.</p>
   `;
   return wrapHTML(content, `System Alert: ${eventContext}`, "Internal System Alert");
 };
@@ -134,16 +134,16 @@ export const getWelcomeEmailTemplate = (name: string) => {
   const content = `
     <h2>Welcome to the Bohenix Ecosystem</h2>
     <p>Hi ${name},</p>
-    <p>Your account has been successfully created. You now have access to the entire Bohenix ONE platform, including our suite of AI-powered applications built for Africa.</p>
+    <p>Your account has been successfully created. You now have access to the entire Bohenix Flow AI platform, including our suite of AI-powered applications built for Africa.</p>
     <table class="data-table">
-      <tr><td>Platform:</td><td>Bohenix ONE</td></tr>
+      <tr><td>Platform:</td><td>Bohenix Flow AI</td></tr>
       <tr><td>Status:</td><td><strong style="color: #00C853;">Active</strong></td></tr>
     </table>
     <p>Here's what you can explore:</p>
     <ul style="padding-left: 20px; color: ${TEXT_MUTED};">
       <li><strong style="color: #fff;">Mboka</strong> — AI Job Matching for Skilled Labour</li>
       <li><strong style="color: #fff;">Vuna</strong> — AI-Powered Agricultural Commerce</li>
-      <li><strong style="color: #fff;">Safura</strong> — Autonomous Food Scanner & Diet Planner</li>
+      <li><strong style="color: #fff;">Flow AI</strong> — Autonomous AI Workforce Platform</li>
       <li><strong style="color: #fff;">NjiaSafe</strong> — Road Safety Intelligence</li>
       <li><strong style="color: #fff;">Fixxo</strong> — On-Demand Repair Services</li>
     </ul>
@@ -151,7 +151,7 @@ export const getWelcomeEmailTemplate = (name: string) => {
     <br/><br/>
     <p>Best regards,<br/><strong>The Bohenix Team</strong></p>
   `;
-  return wrapHTML(content, `Welcome to Bohenix, ${name}!`, "Welcome to Bohenix ONE");
+  return wrapHTML(content, `Welcome to Bohenix, ${name}!`, "Welcome to Bohenix Flow AI");
 };
 
 export const getLoginAlertTemplate = (name: string, ip: string, timestamp: string) => {

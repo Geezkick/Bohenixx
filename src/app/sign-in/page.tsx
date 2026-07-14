@@ -36,7 +36,7 @@ const adverts = [
     end: "with resilient enterprise security.",
   },
   {
-    text: "Bohenix ONE: The",
+    text: "Bohenix Flow AI: The",
     warm: "centralized nexus",
     mid: "for",
     hl: "Quantum-Resistant Networks",
@@ -279,7 +279,7 @@ function SignInContent() {
                 priority
               />
             </div>
-            <h1 className={styles.brandName}>Bohenix ONE</h1>
+            <h1 className={styles.brandName}>Bohenix</h1>
             <p className={styles.brandTagline}>
               {mode === "reset"
                 ? "Enter your email to reset your password"

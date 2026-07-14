@@ -26,7 +26,7 @@ export default function ProductsPage() {
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#fff', marginBottom: '1rem' }}>Our Ecosystem</h1>
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
-              Explore the cutting-edge enterprise platforms powered by Bohenix ONE.
+              Explore the cutting-edge enterprise platforms powered by Bohenix Flow AI.
             </p>
           </div>
 

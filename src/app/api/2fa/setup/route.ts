@@ -19,7 +19,7 @@ export async function POST() {
   }
 
   const secret = authenticator.generateSecret();
-  const otpauthUrl = authenticator.keyuri(userEmail || "user", "Bohenix ONE", secret);
+  const otpauthUrl = authenticator.keyuri(userEmail || "user", "Bohenix", secret);
   const qrCodeDataUrl = await QRCode.toDataURL(otpauthUrl);
 
   // Store the pending secret (not yet enabled until verified)

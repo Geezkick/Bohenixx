@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     sendEmail({
       to: email,
       from: 'hello@bohenix.africa',
-      subject: `Welcome to Bohenix ONE, ${name}!`,
+      subject: `Welcome to Bohenix, ${name}!`,
       html: getWelcomeEmailTemplate(name),
       type: 'SYSTEM',
     }).catch((err) => console.error('Welcome email failed:', err));
