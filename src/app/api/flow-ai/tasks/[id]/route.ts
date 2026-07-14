@@ -93,32 +93,33 @@ export async function POST(
       data: { status: "RUNNING", result: null, error: null, startedAt: new Date(), completedAt: null },
     });
 
-    const execution = await AgentExecutor.executeTask({
-      agentId: agent.id,
-      userId,
-      messages: [{ role: "user", content: existing.prompt }],
-      taskId: id,
-    });
+    try {
+      const execution = await AgentExecutor.executeTask({
+        agentId: existing.agent.id,
+        userId,
+        messages: [{ role: "user", content: existing.prompt }],
+        taskId: id,
+      });
 
-    const completedTask = { ...existing, result: execution.text, status: "COMPLETED", toolCalls: JSON.stringify(execution.toolCalls) };
+      const completedTask = { ...existing, result: execution.text, status: "COMPLETED", toolCalls: JSON.stringify(execution.toolCalls) };
 
-    await triggerWebhooks(userId, "flow_ai.task.completed", {
-      task_id: completedTask.id,
-      agent_id: agent.id,
-      agent_type: agent.type,
-      prompt: existing.prompt,
-      result: execution.text,
-      status: "success"
-    });
+      await triggerWebhooks(userId, "flow_ai.task.completed", {
+        task_id: completedTask.id,
+        agent_id: existing.agent.id,
+        agent_type: existing.agent.type,
+        prompt: existing.prompt,
+        result: execution.text,
+        status: "success"
+      });
 
-    await logActivity({
-      userId,
-      app: "Flow AI",
-      action: `Task retried and completed by ${agent.name}`,
-      color: "#7B2DFF",
-    });
+      await logActivity({
+        userId,
+        app: "Flow AI",
+        action: `Task retried and completed by ${existing.agent.name}`,
+        color: "#7B2DFF",
+      });
 
-    return NextResponse.json({ success: true, task: completedTask });
+      return NextResponse.json({ success: true, task: completedTask });
     } catch (aiError: any) {
       await db.flowTask.update({
         where: { id },
@@ -131,8 +132,8 @@ export async function POST(
 
       await triggerWebhooks(userId, "flow_ai.task.failed", {
         task_id: id,
-        agent_id: agent.id,
-        agent_type: agent.type,
+        agent_id: existing.agent.id,
+        agent_type: existing.agent.type,
         prompt: existing.prompt,
         error: aiError.message || "AI execution failed",
         status: "failed"

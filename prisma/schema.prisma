@@ -61,6 +61,9 @@ model User {
 
   // Bohenix Flow AI Relations
   flowAgents    FlowAgent[]
+  invoices      Invoice[]
+  mpesaTransactions MpesaTransaction[]
+  documentScans DocumentScan[]
 
   // Billing and Subscriptions
   stripeCustomerId       String?   @unique
@@ -201,6 +204,70 @@ model EventRsvp {
 
 
 // ==========================================
+// AFRICAN FINANCIAL INFRASTRUCTURE
+// ==========================================
+
+model Invoice {
+  id            String   @id @default(cuid())
+  userId        String
+  invoiceNumber String   @unique
+  customerName  String
+  customerEmail String?
+  customerPhone String?
+  amountKes     Float
+  status        String   @default("DRAFT") // DRAFT, SENT, PARTIAL, PAID, CANCELLED
+  items         String   @db.Text // JSON array of items
+  dueDate       DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  reconciliations PaymentReconciliation[]
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model MpesaTransaction {
+  id              String   @id @default(cuid())
+  userId          String?
+  transactionType String   // STK_PUSH, C2B, B2C, B2B
+  mpesaReceipt    String?  @unique // e.g. OHT...
+  merchantReqId   String?  // For STK Push
+  checkoutReqId   String?  // For STK Push
+  phoneNumber     String
+  amount          Float
+  status          String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  resultDesc      String?  @db.Text
+  callbackData    String?  @db.Text // Full JSON from Daraja
+  transactionDate DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  reconciliations PaymentReconciliation[]
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([merchantReqId])
+  @@index([checkoutReqId])
+  @@index([status])
+}
+
+model PaymentReconciliation {
+  id            String   @id @default(cuid())
+  invoiceId     String
+  transactionId String
+  amountMatched Float
+  matchedBy     String?  // "agent:agent_id", "system", "user:user_id"
+  createdAt     DateTime @default(now())
+
+  invoice     Invoice          @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  transaction MpesaTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@unique([invoiceId, transactionId])
+}
+
+// ==========================================
 // BOHENIX FLOW AI INFRASTRUCTURE
 // ==========================================
 
@@ -226,6 +293,7 @@ model FlowAgent {
   tools    AgentTool[]
   messages AgentMessage[]
   memories AgentMemory[]
+  documentScans DocumentScan[]
   user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -361,4 +429,26 @@ model ApprovalRequest {
 
   @@index([userId])
   @@index([status])
+}
+
+// ==========================================
+// DOCUMENT INTELLIGENCE
+// ==========================================
+
+model DocumentScan {
+  id              String   @id @default(cuid())
+  userId          String
+  agentId         String?
+  fileUrl         String
+  documentType    String   // "receipt", "invoice", "contract", "unknown"
+  extractedData   String?  @db.Text // JSON blob of OCR results
+  confidenceScore Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agent           FlowAgent? @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([agentId])
 }

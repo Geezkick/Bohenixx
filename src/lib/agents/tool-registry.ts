@@ -1,4 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
+import { sendPaymentTool, checkPaymentStatusTool, createInvoiceTool, reconcilePaymentsTool } from "./tools/mpesa-tools";
+import { verifyKraPinTool, scanDocumentTool } from "./tools/document-tools";
 
 export type AgentToolContext = {
   userId: string;
@@ -52,33 +54,6 @@ export const sendEmailTool: ToolDefinition = {
   }
 };
 
-export const createInvoiceTool: ToolDefinition = {
-  name: "create_invoice",
-  description: "Create a new invoice for a customer.",
-  permissionsRequired: ["can_create_invoice"],
-  declaration: {
-    name: "create_invoice",
-    description: "Creates a new invoice.",
-    parameters: {
-      type: SchemaType.OBJECT,
-      properties: {
-        customerName: { type: SchemaType.STRING, description: "Name of the customer" },
-        customerEmail: { type: SchemaType.STRING, description: "Email of the customer" },
-        amountKes: { type: SchemaType.NUMBER, description: "Total amount in KES" },
-        items: { 
-            type: SchemaType.ARRAY, 
-            description: "List of items being invoiced",
-            items: { type: SchemaType.STRING }
-        },
-      },
-      required: ["customerName", "amountKes", "items"],
-    },
-  },
-  execute: async (args, context) => {
-    console.log(`[Tool: create_invoice] Agent ${context.agentId} created invoice for ${args.customerName} for ${args.amountKes} KES`);
-    return { success: true, data: { invoiceId: "INV-" + Math.floor(Math.random() * 10000), status: "draft" } };
-  }
-};
 
 export const searchWebTool: ToolDefinition = {
   name: "search_web",
@@ -109,6 +84,11 @@ export const registerTool = (tool: ToolDefinition) => {
 registerTool(sendEmailTool);
 registerTool(createInvoiceTool);
 registerTool(searchWebTool);
+registerTool(sendPaymentTool);
+registerTool(checkPaymentStatusTool);
+registerTool(reconcilePaymentsTool);
+registerTool(verifyKraPinTool);
+registerTool(scanDocumentTool);
 
 export const getTool = (name: string): ToolDefinition | undefined => {
   return tools.get(name);
