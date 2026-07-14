@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     const extractedData = await OcrEngine.extractDataFromImage(buffer, file.type);
 
     // Save to database
-    const documentScan = await db.documentScan.create({
+    const documentScan = await (db as any).documentScan.create({
       data: {
         userId,
         agentId: agentId || null,

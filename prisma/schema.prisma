@@ -64,6 +64,7 @@ model User {
   invoices      Invoice[]
   mpesaTransactions MpesaTransaction[]
   documentScans DocumentScan[]
+  workflows     Workflow[]
 
   // Billing and Subscriptions
   stripeCustomerId       String?   @unique
@@ -294,6 +295,7 @@ model FlowAgent {
   messages AgentMessage[]
   memories AgentMemory[]
   documentScans DocumentScan[]
+  workflowSteps WorkflowStep[]
   user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -450,5 +452,45 @@ model DocumentScan {
   agent           FlowAgent? @relation(fields: [agentId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([agentId])
+}
+
+// ==========================================
+// MULTI-AGENT WORKFLOWS
+// ==========================================
+
+model Workflow {
+  id          String         @id @default(cuid())
+  userId      String
+  name        String
+  description String?        @db.Text
+  status      String         @default("DRAFT") // DRAFT, RUNNING, COMPLETED, FAILED
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  steps       WorkflowStep[]
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model WorkflowStep {
+  id          String    @id @default(cuid())
+  workflowId  String
+  agentId     String
+  stepOrder   Int
+  prompt      String    @db.Text
+  status      String    @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED, SKIPPED
+  result      String?   @db.Text
+  error       String?   @db.Text
+  dependsOn   String?   // ID of the step this depends on (null = can run immediately)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  workflow    Workflow   @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  agent       FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId])
   @@index([agentId])
 }

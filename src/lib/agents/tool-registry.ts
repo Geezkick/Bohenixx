@@ -1,6 +1,7 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { sendPaymentTool, checkPaymentStatusTool, createInvoiceTool, reconcilePaymentsTool } from "./tools/mpesa-tools";
 import { verifyKraPinTool, scanDocumentTool } from "./tools/document-tools";
+import { delegateTaskTool, requestReviewTool, listWorkforceTool } from "./tools/collaboration-tools";
 
 export type AgentToolContext = {
   userId: string;
@@ -89,6 +90,9 @@ registerTool(checkPaymentStatusTool);
 registerTool(reconcilePaymentsTool);
 registerTool(verifyKraPinTool);
 registerTool(scanDocumentTool);
+registerTool(delegateTaskTool);
+registerTool(requestReviewTool);
+registerTool(listWorkforceTool);
 
 export const getTool = (name: string): ToolDefinition | undefined => {
   return tools.get(name);

@@ -65,7 +65,7 @@ export const scanDocumentTool: ToolDefinition = {
       const extractedData = await OcrEngine.extractDataFromImage(buffer, mimeType);
 
       // Save to database
-      const documentScan = await db.documentScan.create({
+      const documentScan = await (db as any).documentScan.create({
         data: {
           userId: context.userId,
           agentId: context.agentId,
