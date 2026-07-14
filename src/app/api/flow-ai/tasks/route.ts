@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { db } from "@/lib/db";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AgentExecutor } from "@/lib/agents/agent-executor";
 import { logActivity } from "@/lib/activityLogger";
 import { triggerWebhooks } from "@/lib/webhookEngine";
 
@@ -109,37 +109,17 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-
-      const basePrompt = AGENT_SYSTEM_PROMPTS[agent.type] || AGENT_SYSTEM_PROMPTS.Custom;
-      const systemPrompt = agent.systemPrompt
-        ? `${basePrompt}\n\nAdditional Instructions: ${agent.systemPrompt}`
-        : basePrompt;
-
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: `${systemPrompt}\n\nYour name is ${agent.name}. You are working within the Bohenix Flow AI platform. Execute tasks thoroughly and provide complete, ready-to-use results.`,
+      const execution = await AgentExecutor.executeTask({
+        agentId: agent.id,
+        userId,
+        messages: [{ role: "user", content: prompt }],
+        taskId: task.id,
       });
 
-      const result = await model.generateContent(prompt);
-      const responseText = result.response.text();
-      const completedAt = new Date();
-
-      // 3. Update task with result
-      const completedTask = await db.flowTask.update({
-        where: { id: task.id },
-        data: {
-          status: "COMPLETED",
-          result: responseText,
-          completedAt,
-        },
-        include: { agent: { select: { id: true, name: true, type: true } } },
-      });
-
-      // 4. Update agent stats
+      // Update agent stats
       await db.flowAgent.update({
         where: { id: agentId },
-        data: { tasksCompleted: { increment: 1 }, lastActiveAt: completedAt },
+        data: { tasksCompleted: { increment: 1 }, lastActiveAt: new Date() },
       });
 
       await triggerWebhooks(userId, "flow_ai.task.completed", {
@@ -147,7 +127,7 @@ export async function POST(req: NextRequest) {
         agent_id: agentId,
         agent_type: agent.type,
         prompt: prompt,
-        result: responseText,
+        result: execution.text,
         status: "success"
       });
 
@@ -156,6 +136,11 @@ export async function POST(req: NextRequest) {
         app: "Flow AI",
         action: `Task completed by ${agent.name}`,
         color: "#7B2DFF",
+      });
+
+      const completedTask = await db.flowTask.findUnique({
+        where: { id: task.id },
+        include: { agent: { select: { id: true, name: true, type: true } } },
       });
 
       return NextResponse.json({ success: true, task: completedTask });

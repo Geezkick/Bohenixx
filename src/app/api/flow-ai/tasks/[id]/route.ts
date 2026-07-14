@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { db } from "@/lib/db";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AgentExecutor } from "@/lib/agents/agent-executor";
 import { logActivity } from "@/lib/activityLogger";
 import { triggerWebhooks } from "@/lib/webhookEngine";
 
@@ -93,63 +93,32 @@ export async function POST(
       data: { status: "RUNNING", result: null, error: null, startedAt: new Date(), completedAt: null },
     });
 
-    // Re-execute with Gemini
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      await db.flowTask.update({
-        where: { id },
-        data: { status: "FAILED", error: "Gemini API key not configured", completedAt: new Date() },
-      });
-      return NextResponse.json({ success: false, error: "Gemini API key not configured" }, { status: 500 });
-    }
+    const execution = await AgentExecutor.executeTask({
+      agentId: agent.id,
+      userId,
+      messages: [{ role: "user", content: existing.prompt }],
+      taskId: id,
+    });
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const agent = existing.agent;
-    const systemPrompt = agent.systemPrompt || `You are an expert ${agent.type} AI agent named ${agent.name}. Execute the user's task professionally and autonomously. Provide the final result of your work. Do not ask follow-up questions, just do the work to the best of your ability.`;
+    const completedTask = { ...existing, result: execution.text, status: "COMPLETED", toolCalls: JSON.stringify(execution.toolCalls) };
 
-    try {
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: systemPrompt,
-      });
+    await triggerWebhooks(userId, "flow_ai.task.completed", {
+      task_id: completedTask.id,
+      agent_id: agent.id,
+      agent_type: agent.type,
+      prompt: existing.prompt,
+      result: execution.text,
+      status: "success"
+    });
 
-      const result = await model.generateContent(existing.prompt);
-      const responseText = result.response.text();
+    await logActivity({
+      userId,
+      app: "Flow AI",
+      action: `Task retried and completed by ${agent.name}`,
+      color: "#7B2DFF",
+    });
 
-      const completedTask = await db.flowTask.update({
-        where: { id },
-        data: {
-          status: "COMPLETED",
-          result: responseText,
-          error: null,
-          completedAt: new Date(),
-        },
-        include: { agent: true },
-      });
-
-      // Update agent stats
-      await db.flowAgent.update({
-        where: { id: agent.id },
-        data: { tasksCompleted: { increment: 1 }, lastActiveAt: new Date() },
-      });
-
-      await triggerWebhooks(userId, "flow_ai.task.completed", {
-        task_id: completedTask.id,
-        agent_id: agent.id,
-        agent_type: agent.type,
-        prompt: existing.prompt,
-        result: responseText,
-        status: "success"
-      });
-
-      await logActivity({
-        userId,
-        app: "Flow AI",
-        action: `Task retried and completed by ${agent.name}`,
-        color: "#7B2DFF",
-      });
-
-      return NextResponse.json({ success: true, task: completedTask });
+    return NextResponse.json({ success: true, task: completedTask });
     } catch (aiError: any) {
       await db.flowTask.update({
         where: { id },

@@ -32,6 +32,7 @@ type FlowTask = {
   startedAt: string;
   completedAt: string | null;
   createdAt: string;
+  toolCalls?: string | null;
   agent?: { id: string; name: string; type: string };
 };
 
@@ -75,7 +76,7 @@ export default function FlowAIDashboard() {
   const [selectedAgent, setSelectedAgent] = useState<FlowAgent | null>(null);
   const [chatInput, setChatInput] = useState("");
   const [isChatting, setIsChatting] = useState(false);
-  const [messages, setMessages] = useState<{ role: string; content: string; taskId?: string }[]>([]);
+  const [messages, setMessages] = useState<{ role: string; content: string; taskId?: string; toolCalls?: any[] }[]>([]);
   const [taskFilter, setTaskFilter] = useState("ALL");
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
@@ -221,7 +222,7 @@ export default function FlowAIDashboard() {
       
       const data = await res.json();
       if (data.success) {
-        setMessages(prev => [...prev, { role: "model", content: data.response, taskId: data.taskId }]);
+        setMessages(prev => [...prev, { role: "model", content: data.response, taskId: data.taskId, toolCalls: data.toolCalls }]);
         loadTasks();
         loadStats();
       } else {
@@ -390,6 +391,17 @@ export default function FlowAIDashboard() {
                       {messages.map((msg, i) => (
                         <div key={i} className={`${styles.chatMessage} ${msg.role === "user" ? styles.chatMessageUser : styles.chatMessageAgent}`}>
                           {msg.content}
+                          {msg.role === "model" && msg.toolCalls && msg.toolCalls.length > 0 && (
+                            <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.8rem' }}>
+                              <div style={{ color: '#B3B3B8', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.75rem' }}>TOOLS USED:</div>
+                              {msg.toolCalls.map((tc: any, idx: number) => (
+                                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: idx < msg.toolCalls.length - 1 ? '0.5rem' : 0 }}>
+                                  <div style={{ color: '#00E5FF', fontFamily: 'monospace' }}>{tc.tool}()</div>
+                                  {tc.result?.success && <CheckCircle2 size={12} color="#22c55e" style={{ marginTop: '2px' }} />}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                           {msg.role === "model" && msg.taskId && (
                             <button onClick={() => copyToClipboard(msg.content)} style={{ marginTop: '0.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <Copy size={12} /> Copy Result
@@ -463,6 +475,17 @@ export default function FlowAIDashboard() {
                           </div>
                           {task.status === "COMPLETED" && task.result && (
                             <div style={{ padding: "1.25rem 1.5rem", fontSize: "0.9rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, background: "rgba(255,255,255,0.01)", whiteSpace: "pre-wrap" }}>
+                              {task.toolCalls && JSON.parse(task.toolCalls).length > 0 && (
+                                <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.8rem' }}>
+                                  <div style={{ color: '#B3B3B8', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.75rem' }}>TOOLS EXECUTED:</div>
+                                  {JSON.parse(task.toolCalls).map((tc: any, idx: number) => (
+                                    <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: idx < JSON.parse(task.toolCalls).length - 1 ? '0.5rem' : 0 }}>
+                                      <div style={{ color: '#00E5FF', fontFamily: 'monospace' }}>{tc.tool}()</div>
+                                      {tc.result?.success && <CheckCircle2 size={12} color="#22c55e" style={{ marginTop: '2px' }} />}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                               {task.result}
                             </div>
                           )}

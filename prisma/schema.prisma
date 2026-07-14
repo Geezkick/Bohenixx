@@ -216,30 +216,149 @@ model FlowAgent {
   status          String     @default("ACTIVE") // ACTIVE, PAUSED
   tasksCompleted  Int        @default(0)
   lastActiveAt    DateTime?
+  department      String?    // Organizational department
+  permissions     String?    @db.Text // JSON array of permission strings
+  maxBudgetKes    Float?     // Maximum transaction budget in KES before approval required
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
-  tasks FlowTask[]
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks    FlowTask[]
+  tools    AgentTool[]
+  messages AgentMessage[]
+  memories AgentMemory[]
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model FlowTask {
-  id          String    @id @default(cuid())
-  agentId     String
-  userId      String
-  prompt      String    @db.Text
-  result      String?   @db.Text
-  error       String?   @db.Text
-  status      String    @default("RUNNING") // RUNNING, COMPLETED, FAILED
-  startedAt   DateTime  @default(now())
-  completedAt DateTime?
-  createdAt   DateTime  @default(now())
+  id              String    @id @default(cuid())
+  agentId         String
+  userId          String
+  prompt          String    @db.Text
+  result          String?   @db.Text
+  error           String?   @db.Text
+  status          String    @default("RUNNING") // RUNNING, COMPLETED, FAILED, PENDING_APPROVAL
+  toolCalls       String?   @db.Text // JSON array of tool calls made during execution
+  approvalRequired Boolean  @default(false)
+  parentTaskId    String?   // For sub-tasks spawned by workflows
+  workflowStepId  String?   // Links to workflow step if part of a workflow
+  startedAt       DateTime  @default(now())
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  agent      FlowAgent       @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  parentTask FlowTask?       @relation("SubTasks", fields: [parentTaskId], references: [id])
+  subTasks   FlowTask[]      @relation("SubTasks")
+  approval   ApprovalRequest?
+
+  @@index([agentId])
+  @@index([userId])
+  @@index([status])
+  @@index([parentTaskId])
+}
+
+// Persistent agent memory — what agents remember across conversations
+model AgentMemory {
+  id        String   @id @default(cuid())
+  agentId   String
+  category  String   // "customer", "project", "preference", "fact", "decision"
+  key       String   // Short label e.g. "client_jane_doe_preferences"
+  value     String   @db.Text // The actual memory content
+  importance Float   @default(0.5) // 0-1 relevance score for retrieval
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   agent FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
   @@index([agentId])
+  @@index([agentId, category])
+}
+
+// Full conversation history per agent (not just task snapshots)
+model AgentMessage {
+  id             String   @id @default(cuid())
+  agentId        String
+  conversationId String   // Groups messages into conversations
+  role           String   // "user", "model", "tool", "system"
+  content        String   @db.Text
+  toolCallId     String?  // If this message is a tool call result
+  toolName       String?  // Name of the tool called
+  metadata       String?  @db.Text // JSON metadata (tokens used, latency, etc.)
+  createdAt      DateTime @default(now())
+
+  agent FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId])
+  @@index([conversationId])
+  @@index([agentId, conversationId])
+}
+
+// Tools available to agents
+model AgentTool {
+  id          String  @id @default(cuid())
+  agentId     String
+  toolName    String  // Must match a registered tool in the registry
+  isEnabled   Boolean @default(true)
+  config      String? @db.Text // JSON config overrides for this agent's tool instance
+  createdAt   DateTime @default(now())
+
+  agent FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@unique([agentId, toolName])
+  @@index([agentId])
+}
+
+// Multi-agent workflow definitions
+model WorkflowDefinition {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?  @db.Text
+  trigger     String   // "manual", "event:refund_requested", "schedule:daily"
+  steps       String   @db.Text // JSON array of workflow step definitions
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  executions WorkflowExecution[]
+
+  @@index([userId])
+}
+
+// Running instance of a workflow
+model WorkflowExecution {
+  id           String   @id @default(cuid())
+  workflowId   String
+  userId       String
+  status       String   @default("RUNNING") // RUNNING, COMPLETED, FAILED, PAUSED
+  currentStep  Int      @default(0)
+  context      String?  @db.Text // JSON shared context between steps
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+
+  workflow WorkflowDefinition @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId])
+  @@index([userId])
+}
+
+// Human-in-the-loop approval requests
+model ApprovalRequest {
+  id          String    @id @default(cuid())
+  taskId      String    @unique
+  userId      String    // The user who must approve
+  agentId     String    // The agent requesting approval
+  action      String    // Description of what needs approval
+  details     String?   @db.Text // JSON details of the pending action
+  amountKes   Float?    // Amount involved if financial
+  status      String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  decidedAt   DateTime?
+  decidedBy   String?   // User ID of approver
+  createdAt   DateTime  @default(now())
+
+  task FlowTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([status])
 }
