@@ -12,6 +12,7 @@ import {
   Home,
   Activity,
   ChevronRight,
+  TrendingUp,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -20,6 +21,7 @@ import Image from "next/image";
 
 const overviewItems = [
   { name: "Command Center", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
+  { name: "Analytics", href: "/dashboard/analytics", icon: <TrendingUp size={18} /> },
   { name: "Activity Log", href: "/dashboard/events", icon: <Activity size={18} /> },
   { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
 ];
@@ -102,6 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             // Map href to translation key
             let tKey = "";
             if (item.href === "/dashboard") tKey = "dashboard.overview";
+            if (item.href === "/dashboard/analytics") tKey = "dashboard.analytics";
             if (item.href === "/dashboard/events") tKey = "dashboard.events";
             if (item.href === "/dashboard/settings") tKey = "dashboard.settings";
 
