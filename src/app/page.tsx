@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, animate, useSpring } from "framer-motion";
@@ -358,7 +358,9 @@ export default function CorporateLandingPage() {
             </p>
           </div>
           <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center', opacity: 0.8 }}>
-            <CobeGlobe />
+            <Suspense fallback={<div style={{ height: '400px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF' }}>Loading Globe...</div>}>
+              <CobeGlobe />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -413,14 +415,20 @@ export default function CorporateLandingPage() {
       </section>
 
       {/* Ask Bohenix AI */}
-      <AskBohenix />
+      <Suspense fallback={null}>
+        <AskBohenix />
+      </Suspense>
 
       {/* Testimonials */}
       <section className={styles.section} style={{ padding: '80px 2rem' }}>
-        <TestimonialWall />
+        <Suspense fallback={<div style={{ textAlign: 'center', color: '#9CA3AF', padding: '40px' }}>Loading testimonials...</div>}>
+          <TestimonialWall />
+        </Suspense>
       </section>
 
-      <LaunchTimer />
+      <Suspense fallback={null}>
+        <LaunchTimer />
+      </Suspense>
 
       {/* Footer */}
       <footer className={styles.footer}>
