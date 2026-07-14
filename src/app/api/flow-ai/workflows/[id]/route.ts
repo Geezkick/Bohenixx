@@ -38,7 +38,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     // Execute asynchronously — kick off and return immediately
     const result = await WorkflowEngine.executeWorkflow(id, userId);
-    return NextResponse.json({ success: true, ...result });
+    return NextResponse.json({ ...result });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
