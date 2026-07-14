@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import fs from "fs/promises";
 import path from "path";
 
+const prisma = db as any;
+
 export const verifyKraPinTool: ToolDefinition = {
   name: "verify_kra_pin",
   description: "Verify if a string matches the standard Kenya Revenue Authority (KRA) PIN format.",
@@ -46,10 +48,9 @@ export const scanDocumentTool: ToolDefinition = {
   },
   execute: async (args, context) => {
     try {
-      // For local development/testing, we map the url back to the public directory
       let buffer: Buffer;
       let mimeType = "image/jpeg";
-      
+
       if (args.fileUrl.startsWith("http")) {
         const response = await fetch(args.fileUrl);
         const arrayBuffer = await response.arrayBuffer();
@@ -64,8 +65,7 @@ export const scanDocumentTool: ToolDefinition = {
 
       const extractedData = await OcrEngine.extractDataFromImage(buffer, mimeType);
 
-      // Save to database
-      const documentScan = await (db as any).documentScan.create({
+      const documentScan = await prisma.documentScan.create({
         data: {
           userId: context.userId,
           agentId: context.agentId,
