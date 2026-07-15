@@ -10,7 +10,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.bohenix.africa"),
   title: { default: "Bohenix | Your Business on Autopilot", template: "%s | Bohenix" },
-  description: "Bohenix develops Bohenix Flow AI, enabling businesses to delegate complete workflows to autonomous AI agents, alongside enterprise software and digital infrastructure solutions.",
+  description: "Bohenix is the AI Workforce Operating System. Hire autonomous AI agents that execute complete business workflows — from sales and marketing to finance and operations — so your business runs on autopilot.",
   authors: [{ name: "Brian Nyarienya", url: "https://www.bohenix.africa" }],
   creator: "Brian Nyarienya",
   publisher: "Bohenix Technologies",
