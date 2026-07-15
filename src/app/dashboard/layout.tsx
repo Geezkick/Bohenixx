@@ -13,21 +13,31 @@ import {
   Activity,
   ChevronRight,
   TrendingUp,
+  Layers,
+  BrainCircuit,
+  Workflow,
+  FileText,
+  Network,
+  Search,
+  Bell
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import styles from "./dashboard.module.css";
 import Image from "next/image";
 
-const overviewItems = [
-  { name: "Command Center", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
+const osNavigation = [
+  { name: "Mission Control", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
+  { name: "Departments", href: "/dashboard/departments", icon: <Layers size={18} /> },
+  { name: "AI Workforce", href: "/dashboard/ai-employees", icon: <BrainCircuit size={18} /> },
+  { name: "Workflows", href: "/dashboard/workflows", icon: <Workflow size={18} /> },
+  { name: "Documents", href: "/dashboard/documents", icon: <FileText size={18} /> },
+  { name: "Knowledge", href: "/dashboard/knowledge", icon: <Network size={18} /> },
   { name: "Analytics", href: "/dashboard/analytics", icon: <TrendingUp size={18} /> },
-  { name: "Activity Log", href: "/dashboard/events", icon: <Activity size={18} /> },
-  { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
 ];
 
-const flagshipItems = [
-  { name: "Bohenix Flow AI", href: "/dashboard/flow-ai", icon: <Image src="/bohenixx.png" alt="Flow AI" width={18} height={18} /> },
+const systemNavigation = [
+  { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
 ];
 
 const siteLinks = [
@@ -97,32 +107,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <nav className={styles.navLinks}>
-          <span className={styles.navLabel}>{t("dashboard.overview")}</span>
-          {overviewItems.map((item) => {
-            const isActive = pathname === item.href;
-            
-            // Map href to translation key
-            let tKey = "";
-            if (item.href === "/dashboard") tKey = "dashboard.overview";
-            if (item.href === "/dashboard/analytics") tKey = "dashboard.analytics";
-            if (item.href === "/dashboard/events") tKey = "dashboard.events";
-            if (item.href === "/dashboard/settings") tKey = "dashboard.settings";
-
+          <span className={styles.navLabel}>BOHENIX OS</span>
+          {osNavigation.map((item) => {
+            const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
                 {item.icon}
-                {tKey ? t(tKey) : item.name}
+                {item.name}
               </Link>
             );
           })}
 
-          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>{t("dashboard.flow_ai")}</span>
-          {flagshipItems.map((item) => {
+          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>SYSTEM</span>
+          {systemNavigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
                 {item.icon}
-                {item.href === "/dashboard/flow-ai" ? t("dashboard.flow_ai") : item.name}
+                {item.name}
               </Link>
             );
           })}
@@ -177,6 +179,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
 
           <div className={styles.headerRight}>
+            <button className={styles.headerIconButton} aria-label="Search">
+              <Search size={18} />
+              <span className={styles.searchHint}>⌘K</span>
+            </button>
+            
+            <button className={styles.headerIconButton} aria-label="Notifications">
+              <Bell size={18} />
+            </button>
+
             <Link href="/dashboard/settings" className={styles.userProfile}>
               <span className={styles.userNameHeader}>
                 {user?.name || user?.email || "User"}

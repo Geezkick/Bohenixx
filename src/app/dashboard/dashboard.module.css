@@ -190,6 +190,33 @@
   gap: 1rem;
 }
 
+.headerIconButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.headerIconButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.searchHint {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 .userProfile {
   display: flex;
   align-items: center;
@@ -1026,3 +1053,214 @@
   }
 }
 
+
+/* ─── Bohenix OS Additions ─── */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 3rem 0 1.5rem;
+}
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.sectionLink {
+  font-size: 0.85rem;
+  color: #A78BFA;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.sectionLink:hover {
+  opacity: 0.8;
+}
+
+/* Agent Strip */
+.agentStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.agentCardOS {
+  background: var(--bg-surface, #0D0B12);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.agentCardOS:hover {
+  background: var(--bg-elevated, #17141F);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+.agentCardTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.agentAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: rgba(255,255,255,0.02);
+}
+.agentInfo {
+  flex: 1;
+  min-width: 0;
+}
+.agentName {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+}
+.agentRole {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 2px;
+}
+.agentStatusBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agentCardBody {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+.agentTaskLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.agentTaskText {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agentCardFooter {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1rem;
+}
+.agentMetric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.metricLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+}
+.metricValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* OS Grid */
+.osGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+.osGridCol1 {
+  display: flex;
+  flex-direction: column;
+}
+.osGridCol2 {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Action Required Card */
+.actionRequiredCard {
+  background: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.actionHeader {
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+  font-weight: 600;
+  color: #F59E0B;
+}
+.actionList {
+  display: flex;
+  flex-direction: column;
+}
+.actionItem {
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.actionItem:last-child {
+  border-bottom: none;
+}
+.actionItemText {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+.actionBtn {
+  align-self: flex-start;
+  background: #F59E0B;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.actionBtn:hover {
+  transform: translateY(-2px);
+}
+@media (max-width: 1024px) {
+  .osGrid {
+    grid-template-columns: 1fr;
+  }
+}
