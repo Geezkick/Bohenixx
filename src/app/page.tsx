@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import CinematicBackground from "@/components/CinematicBackground";
 import PremiumCard from "@/components/PremiumCard";
 import PremiumButton from "@/components/PremiumButton";
+import WebGLErrorBoundary from "@/components/WebGLErrorBoundary";
 
 const TestimonialWall = dynamic(() => import("@/components/TestimonialWall"), { ssr: false });
 const LaunchTimer = dynamic(() => import("@/components/LaunchTimer"), { ssr: false });
@@ -65,9 +66,10 @@ export default function CorporateLandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   
   useEffect(() => {
-    return scrollY.onChange((latest) => {
+    const unsubscribe = scrollY.on("change", (latest) => {
       setIsScrolled(latest > 50);
     });
+    return () => unsubscribe();
   }, [scrollY]);
 
   // Scroll animations for sections
@@ -359,7 +361,9 @@ export default function CorporateLandingPage() {
           </div>
           <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center', opacity: 0.8 }}>
             <Suspense fallback={<div style={{ height: '400px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF' }}>Loading Globe...</div>}>
-              <CobeGlobe />
+              <WebGLErrorBoundary>
+                <CobeGlobe />
+              </WebGLErrorBoundary>
             </Suspense>
           </div>
         </div>

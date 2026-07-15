@@ -25,12 +25,26 @@ const ARCS = CITIES.filter(c => c.name !== "Nairobi, Kenya").map(city => ({
   color: [city.color, "#7B2DFF"]
 }));
 
+function isWebGLAvailable(): boolean {
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export default function CobeGlobe() {
   const [mounted, setMounted] = useState(false);
+  const [webglSupported, setWebglSupported] = useState(true);
   const globeEl = useRef<any>(null);
 
   useEffect(() => {
     setMounted(true);
+    setWebglSupported(isWebGLAvailable());
   }, []);
 
   const handleGlobeReady = () => {
@@ -46,7 +60,15 @@ export default function CobeGlobe() {
     }
   };
 
-  if (!mounted) return <div style={{ height: "400px", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading Globe...</div>;
+  if (!mounted) return <div style={{ height: "400px", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.3)" }}>Loading Globe...</div>;
+
+  if (!webglSupported) {
+    return (
+      <div style={{ height: "400px", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.3)", fontSize: "0.85rem", background: "radial-gradient(circle at center, rgba(123, 45, 255, 0.08) 0%, transparent 60%)", borderRadius: "50%" }}>
+        🌍 Globe visualization requires WebGL
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "400px", cursor: "grab", overflow: "hidden", borderRadius: "50%", background: "radial-gradient(circle at center, rgba(123, 45, 255, 0.15) 0%, transparent 60%)" }}>
