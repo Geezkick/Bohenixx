@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, Transition } from "framer-motion";
 
-export const osTransition = {
+export const osTransition: Transition = {
   type: "spring",
   stiffness: 260,
   damping: 30,
