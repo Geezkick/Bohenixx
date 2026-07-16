@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
         password,
         redirect: false,
-        callbackUrl: redirectTo || "/dashboard",
+        callbackUrl: redirectTo || "/pricing",
       });
 
       if (signInRes?.error) {
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (signInRes?.ok) {
-        window.location.href = redirectTo || "/dashboard";
+        window.location.href = redirectTo || "/pricing";
         return { success: true };
       }
 
