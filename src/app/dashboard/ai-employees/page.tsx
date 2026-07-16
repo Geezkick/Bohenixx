@@ -4,12 +4,24 @@ import React, { useEffect, useState } from "react";
 import styles from "../dashboard.module.css";
 import { Plus, Users } from "lucide-react";
 import AIEmployeeCard, { AIEmployee } from "@/components/os/AIEmployeeCard";
+import { SubscriptionModal } from "@/components/os/SubscriptionModal";
 
 export default function AIEmployeesPage() {
   const [agents, setAgents] = useState<AIEmployee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasSubscription, setHasSubscription] = useState(false);
 
   useEffect(() => {
+    // Check subscription status
+    fetch("/api/account/subscription")
+      .then(res => res.json())
+      .then(data => {
+        if (data.active) {
+          setHasSubscription(true);
+        }
+      })
+      .catch(console.error);
     fetch("/api/flow-ai/agents")
       .then(res => res.json())
       .then(data => {
@@ -45,7 +57,18 @@ export default function AIEmployeesPage() {
           <h1 className={styles.pageTitle}>AI Workforce</h1>
           <p className={styles.pageDesc}>Manage your autonomous agents and digital employees.</p>
         </div>
-        <button className={styles.actionBtn} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <button 
+          className={styles.actionBtn} 
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          onClick={() => {
+            if (!hasSubscription) {
+              setIsModalOpen(true);
+            } else {
+              // Future deployment logic here
+              alert("Deploy agent flow coming soon!");
+            }
+          }}
+        >
           <Plus size={16} /> Deploy Agent
         </button>
       </div>
@@ -66,6 +89,8 @@ export default function AIEmployeesPage() {
           </div>
         )}
       </div>
+
+      <SubscriptionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }
