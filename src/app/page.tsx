@@ -188,6 +188,7 @@ export default function CorporateLandingPage() {
           </Link>
           <div className={styles.navLinks}>
             <Link href="/flow-ai" className={styles.navLink}>Flow AI</Link>
+            <Link href="/pricing" className={styles.navLink}>Pricing</Link>
             <Link href="#company" className={styles.navLink}>Company</Link>
             <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.navLink} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>Contact</button>
           </div>
@@ -449,7 +450,7 @@ export default function CorporateLandingPage() {
             <ul>
               <li><Link href="/flow-ai">Flow AI</Link></li>
               <li><Link href="/flow-ai#agents">Neural Core</Link></li>
-              <li><Link href="/flow-ai#pricing">Pricing</Link></li>
+              <li><Link href="/pricing">Pricing</Link></li>
             </ul>
           </div>
           <div className={styles.footerCol}>

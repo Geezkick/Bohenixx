@@ -38,7 +38,7 @@ const osNavigation = [
 ];
 
 const systemNavigation = [
-  { name: "Subscription", href: "/dashboard/subscription", icon: <CreditCard size={18} /> },
+  { name: "Subscription", href: "/pricing", icon: <CreditCard size={18} /> },
   { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
 ];
 
@@ -67,8 +67,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       fetch("/api/account/subscription")
         .then(res => res.json())
         .then(data => {
-          if (!data.active && pathname !== "/dashboard/subscription") {
-            router.replace("/dashboard/subscription");
+          if (!data.active && pathname !== "/pricing") {
+            router.replace("/pricing");
           }
         })
         .catch(console.error);

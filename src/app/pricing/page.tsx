@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import {
   Check,
   Zap,
@@ -111,12 +113,16 @@ export default function SubscriptionPage() {
   const [loadingPlan, setLoadingPlan] = useState<PlanKey | null>(null);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [currency, setCurrency] = useState<"USD" | "KES">("USD");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Fetch current subscription status
   useEffect(() => {
     fetch("/api/account/subscription")
       .then((res) => res.json())
       .then((data) => {
+        if (data.active !== undefined && data.status !== 401 && data.error !== "Unauthorized") {
+          setIsAuthenticated(true);
+        }
         if (data.active && data.plan) {
           setCurrentPlan(data.plan);
         }
@@ -135,6 +141,11 @@ export default function SubscriptionPage() {
   const handleSelectPlan = async (planKey: PlanKey) => {
     if (planKey === "Enterprise") {
       window.location.href = "mailto:sales@bohenix.com?subject=Enterprise%20Plan%20Inquiry";
+      return;
+    }
+
+    if (!isAuthenticated) {
+      router.push("/sign-in?callbackUrl=/pricing");
       return;
     }
 
@@ -165,8 +176,24 @@ export default function SubscriptionPage() {
   const planKeys: PlanKey[] = ["Starter", "Professional", "Enterprise"];
 
   return (
-    <div className={s.planPage}>
-      {/* Header */}
+    <div style={{ background: '#050505', minHeight: '100vh', color: '#fff', fontFamily: "'Outfit', 'Inter', sans-serif" }}>
+      {/* Navigation */}
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(5,5,5,0.9)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#fff' }}>
+          <Image src="/bohenixx.png" alt="Bohenix" width={28} height={28} />
+          <span style={{ fontSize: '1.2rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Bohenix</span>
+        </Link>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {isAuthenticated ? (
+            <Link href="/dashboard" style={{ padding: '0.5rem 1rem', background: '#7B2DFF', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Dashboard</Link>
+          ) : (
+            <Link href="/sign-in" style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>Sign In</Link>
+          )}
+        </div>
+      </nav>
+
+      <div className={s.planPage}>
+        {/* Header */}
       <div className={s.planHeader}>
         <span className={s.planHeaderLabel}>
           <Sparkles size={14} />
@@ -346,6 +373,7 @@ export default function SubscriptionPage() {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }

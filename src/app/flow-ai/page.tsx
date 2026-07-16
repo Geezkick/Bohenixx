@@ -50,7 +50,7 @@ export default function FlowAIPage() {
   const router = useRouter();
 
   const goToPlans = () => {
-    router.push("/dashboard/subscription");
+    router.push("/pricing");
   };
 
   return (
