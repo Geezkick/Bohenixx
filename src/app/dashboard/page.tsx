@@ -66,7 +66,7 @@ export default function MissionControl() {
 
   // Real-time state updates driven by SSE
   const [liveActivities, setLiveActivities] = useState<OverviewData["recentActivity"]>([]);
-  const [liveApprovals, setLiveApprovals] = useState<OverviewData["flowAi"]["pendingApprovals"]>([]);
+  const [liveApprovals, setLiveApprovals] = useState<NonNullable<OverviewData["flowAi"]>["pendingApprovals"]>([]);
 
   useEffect(() => {
     fetch("/api/dashboard/overview")
@@ -89,14 +89,14 @@ export default function MissionControl() {
       try {
         const parsed = JSON.parse(event.data);
         if (parsed.type === "activities") {
-          setLiveActivities((prev) => {
+          setLiveActivities((prev: OverviewData["recentActivity"]) => {
             const combined = [...parsed.payload, ...prev];
             // keep latest 10
             return combined.slice(0, 10);
           });
         }
         if (parsed.type === "approvals") {
-          setLiveApprovals((prev) => {
+          setLiveApprovals((prev: NonNullable<OverviewData["flowAi"]>["pendingApprovals"]) => {
             const combined = [...parsed.payload, ...prev];
             return combined;
           });
@@ -300,7 +300,7 @@ export default function MissionControl() {
                   <div className={styles.actionItemText} style={{ color: "rgba(255,255,255,0.4)" }}>No approvals required at this time.</div>
                 </div>
               ) : (
-                liveApprovals.map(approval => (
+                liveApprovals.map((approval: NonNullable<OverviewData["flowAi"]>["pendingApprovals"][number]) => (
                   <div key={approval.id} className={styles.actionItem}>
                     <div className={styles.actionItemText}>
                       <strong style={{ color: "#fff" }}>{approval.agentName}</strong> requires approval: {approval.action}
