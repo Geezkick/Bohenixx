@@ -19,7 +19,8 @@ import {
   FileText,
   Network,
   Search,
-  Bell
+  Bell,
+  CreditCard
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -37,6 +38,7 @@ const osNavigation = [
 ];
 
 const systemNavigation = [
+  { name: "Subscription", href: "/dashboard/subscription", icon: <CreditCard size={18} /> },
   { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
 ];
 
