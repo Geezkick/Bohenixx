@@ -62,6 +62,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     // Client-side redirect if not authenticated (safety net for proxy)
     if (!isLoading && !user) {
       router.replace("/sign-in?callbackUrl=" + encodeURIComponent(pathname));
+    } else if (!isLoading && user) {
+      // Check subscription status and enforce plan selection
+      fetch("/api/account/subscription")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.active && pathname !== "/dashboard/subscription") {
+            router.replace("/dashboard/subscription");
+          }
+        })
+        .catch(console.error);
     }
   }, [user, isLoading, router, pathname]);
 
