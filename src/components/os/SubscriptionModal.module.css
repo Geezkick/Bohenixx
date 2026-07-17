@@ -1,125 +1,253 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(10px);
+  background: rgba(5, 3, 10, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to { opacity: 1; backdrop-filter: blur(24px); }
 }
 
 .modalContent {
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
+  background: rgba(15, 12, 25, 0.7);
+  border: 1px solid rgba(123, 45, 255, 0.2);
+  border-radius: 32px;
   width: 100%;
-  max-width: 1000px;
-  padding: 2.5rem;
+  max-width: 1100px;
+  padding: 3rem;
   position: relative;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   max-height: 90vh;
   overflow-y: auto;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .closeButton {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: 2rem;
+  right: 2rem;
   background: rgba(255, 255, 255, 0.05);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 10;
 }
 
 .closeButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 51, 102, 0.1);
+  color: #FF3366;
+  border-color: rgba(255, 51, 102, 0.2);
+  transform: rotate(90deg);
 }
 
 .modalHeader {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.modalLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(123, 45, 255, 0.15);
+  color: #B14CFF;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(123, 45, 255, 0.3);
 }
 
 .modalTitle {
-  font-size: 1.75rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.03em;
 }
 
 .modalDesc {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.billingToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.toggleLabel {
   font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.3s;
+}
+
+.toggleLabelActive {
+  color: #fff;
+}
+
+.toggleSwitch {
+  width: 52px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggleSwitch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggleSwitchActive {
+  background: #7B2DFF;
+}
+
+.toggleSwitchActive::after {
+  transform: translateX(24px);
+}
+
+.saveBadge {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: -0.5rem;
 }
 
 .plansGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
 .planCard {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  padding: 2rem;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
   position: relative;
-  transition: transform 0.3s, border-color 0.3s;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.planCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .planCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+}
+
+.planCard:hover::before {
+  opacity: 1;
 }
 
 .planCardPopular {
-  border-color: rgba(123, 45, 255, 0.5);
+  border-color: rgba(123, 45, 255, 0.4);
   background: linear-gradient(180deg, rgba(123, 45, 255, 0.05) 0%, rgba(0,0,0,0) 100%);
+  box-shadow: 0 16px 48px rgba(123, 45, 255, 0.1);
+}
+
+.planCardPopular::before {
+  background: linear-gradient(90deg, transparent, #7B2DFF, transparent);
+  opacity: 1;
 }
 
 .popularBadge {
   position: absolute;
-  top: -12px;
+  top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   background: #7B2DFF;
   color: #fff;
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(123, 45, 255, 0.4);
 }
 
 .planHeader {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 0.75rem;
+  gap: 12px;
+  margin-bottom: 1rem;
 }
 
 .planName {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: #fff;
+  letter-spacing: -0.02em;
 }
 
 .planDesc {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   line-height: 1.5;
 }
 
@@ -127,112 +255,146 @@
   display: flex;
   align-items: flex-end;
   gap: 4px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .priceCurrency {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
 }
 
 .priceAmount {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
   color: #fff;
   line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .pricePeriod {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.4);
-  padding-bottom: 6px;
+  padding-bottom: 8px;
+}
+
+.priceSubtext {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 1.5rem;
 }
 
 .divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.05);
-  margin: 1.5rem 0;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0 0 2rem 0;
 }
 
 .featureList {
   list-style: none;
   padding: 0;
-  margin: 0 0 2rem 0;
+  margin: 0 0 2.5rem 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   flex: 1;
 }
 
 .featureItem {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
+  gap: 12px;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
 }
 
 .featureCheck {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: rgba(255,255,255,0.8);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .featureCheckGreen {
-  background: rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.15);
   color: #22c55e;
 }
 
 .planBtn {
   width: 100%;
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 0.95rem;
+  padding: 1.1rem;
+  border-radius: 14px;
+  font-size: 1rem;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
-  transition: all 0.2s;
-  border: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid transparent;
 }
 
 .btnPrimary {
   background: #7B2DFF;
   color: #fff;
+  box-shadow: 0 8px 24px rgba(123, 45, 255, 0.3);
 }
 
 .btnPrimary:hover {
-  background: #6020D0;
+  background: #8B40FF;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(123, 45, 255, 0.4);
 }
 
 .btnSecondary {
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .btnSecondary:hover {
   background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.btnEnterprise {
+  background: transparent;
+  color: #00E5FF;
+  border-color: rgba(0, 229, 255, 0.3);
+}
+
+.btnEnterprise:hover {
+  background: rgba(0, 229, 255, 0.1);
+  border-color: rgba(0, 229, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 .btnDisabled {
   opacity: 0.6;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
   .modalContent {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+  }
+  .modalTitle {
+    font-size: 2rem;
+  }
+  .planCard {
+    padding: 2rem 1.5rem;
   }
 }
+

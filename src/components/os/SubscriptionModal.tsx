@@ -11,6 +11,7 @@ interface PlanConfig {
   features: string[];
   highlighted?: boolean;
   cta: string;
+  btnStyle: "btnPrimary" | "btnSecondary" | "btnEnterprise";
 }
 
 const PLANS: Record<string, PlanConfig> = {
@@ -25,6 +26,7 @@ const PLANS: Record<string, PlanConfig> = {
       "Standard integrations",
     ],
     cta: "Select Starter",
+    btnStyle: "btnSecondary",
   },
   Professional: {
     name: "Professional",
@@ -38,6 +40,7 @@ const PLANS: Record<string, PlanConfig> = {
     ],
     highlighted: true,
     cta: "Start Free Trial",
+    btnStyle: "btnPrimary",
   },
   Enterprise: {
     name: "Enterprise",
@@ -50,6 +53,7 @@ const PLANS: Record<string, PlanConfig> = {
       "Custom SLA & uptime",
     ],
     cta: "Contact Sales",
+    btnStyle: "btnEnterprise",
   },
 };
 
@@ -60,6 +64,7 @@ interface SubscriptionModalProps {
 
 export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [isAnnual, setIsAnnual] = useState(false);
 
   if (!isOpen) return null;
 
@@ -98,28 +103,48 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <button className={styles.closeButton} onClick={onClose}>
+        <button className={styles.closeButton} onClick={onClose} aria-label="Close">
           <X size={20} />
         </button>
 
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Choose a Plan to Deploy</h2>
+          <div className={styles.modalLabel}>
+            <Zap size={14} /> Subscription Required
+          </div>
+          <h2 className={styles.modalTitle}>Deploy Your AI Workforce</h2>
           <p className={styles.modalDesc}>
-            You need an active subscription to deploy an AI agent. Choose a plan that fits your business needs.
+            To hire and deploy autonomous agents, you need an active OS plan. Choose the capacity that fits your scale.
           </p>
+        </div>
+
+        <div className={styles.billingToggle}>
+          <span className={`${styles.toggleLabel} ${!isAnnual ? styles.toggleLabelActive : ""}`}>
+            Monthly
+          </span>
+          <button
+            className={`${styles.toggleSwitch} ${isAnnual ? styles.toggleSwitchActive : ""}`}
+            onClick={() => setIsAnnual(!isAnnual)}
+            aria-label="Toggle annual billing"
+          />
+          <span className={`${styles.toggleLabel} ${isAnnual ? styles.toggleLabelActive : ""}`}>
+            Annual
+          </span>
+          {isAnnual && <span className={styles.saveBadge}>Save 17%</span>}
         </div>
 
         <div className={styles.plansGrid}>
           {planKeys.map((key) => {
             const plan = PLANS[key];
             const isLoading = loadingPlan === key;
+            const price = isAnnual && key !== "Enterprise" ? Math.round(plan.monthlyUsd * 10) : plan.monthlyUsd;
+            
             const icon =
               key === "Starter" ? (
-                <Zap size={20} color="#7B2DFF" />
+                <Zap size={22} color="#7B2DFF" />
               ) : key === "Professional" ? (
-                <Crown size={20} color="#7B2DFF" />
+                <Crown size={22} color="#7B2DFF" />
               ) : (
-                <Building2 size={20} color="#00E5FF" />
+                <Building2 size={22} color="#00E5FF" />
               );
 
             return (
@@ -138,10 +163,20 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
                 <div className={styles.priceRow}>
                   <span className={styles.priceCurrency}>$</span>
                   <span className={styles.priceAmount}>
-                    {key === "Enterprise" ? "Custom" : plan.monthlyUsd}
+                    {key === "Enterprise" ? "Custom" : price}
                   </span>
-                  {key !== "Enterprise" && <span className={styles.pricePeriod}>/mo</span>}
+                  {key !== "Enterprise" && (
+                    <span className={styles.pricePeriod}>/{isAnnual ? "yr" : "mo"}</span>
+                  )}
                 </div>
+                {key !== "Enterprise" && (
+                  <p className={styles.priceSubtext}>
+                    {isAnnual ? `Billed $${price} annually` : "Billed monthly, cancel anytime"}
+                  </p>
+                )}
+                {key === "Enterprise" && (
+                  <p className={styles.priceSubtext}>Tailored for your organization</p>
+                )}
 
                 <div className={styles.divider} />
 
@@ -151,7 +186,7 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
                       <span
                         className={`${styles.featureCheck} ${plan.highlighted ? styles.featureCheckGreen : ""}`}
                       >
-                        <Check size={11} strokeWidth={3} />
+                        <Check size={12} strokeWidth={3} />
                       </span>
                       {feature}
                     </li>
@@ -159,7 +194,7 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
                 </ul>
 
                 <button
-                  className={`${styles.planBtn} ${plan.highlighted ? styles.btnPrimary : styles.btnSecondary} ${isLoading ? styles.btnDisabled : ""}`}
+                  className={`${styles.planBtn} ${styles[plan.btnStyle]} ${isLoading ? styles.btnDisabled : ""}`}
                   onClick={() => handleSelectPlan(key)}
                   disabled={isLoading}
                 >
