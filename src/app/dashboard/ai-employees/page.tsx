@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../dashboard.module.css";
 import { Plus, Users, Briefcase, Code, BarChart, ShieldAlert } from "lucide-react";
 import AIEmployeeCard, { AIEmployee } from "@/components/os/AIEmployeeCard";
-import { SubscriptionModal } from "@/components/os/SubscriptionModal";
+import { useSubscription } from "../layout";
 
 const AGENT_TEMPLATES = [
   { id: "tmpl_finance", name: "FinQA", role: "Finance Assistant", icon: <BarChart size={24} color="#22c55e" />, color: "#22c55e", desc: "Automates invoicing, M-Pesa reconciliation, and financial reports." },
@@ -17,21 +17,9 @@ const AGENT_TEMPLATES = [
 export default function AIEmployeesPage() {
   const [agents, setAgents] = useState<AIEmployee[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [hasSubscription, setHasSubscription] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const { hasSubscription, openSubscriptionModal } = useSubscription();
 
   useEffect(() => {
-    // Check subscription status
-    fetch("/api/account/subscription")
-      .then(res => res.json())
-      .then(data => {
-        if (data.active) {
-          setHasSubscription(true);
-        }
-      })
-      .catch(console.error);
-
     fetch("/api/flow-ai/agents")
       .then(res => res.json())
       .then(data => {
@@ -60,11 +48,9 @@ export default function AIEmployeesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleHireClick = (templateId?: string) => {
-    if (templateId) setSelectedTemplate(templateId);
-    
+  const handleHireClick = () => {
     if (!hasSubscription) {
-      setIsModalOpen(true);
+      openSubscriptionModal();
     } else {
       alert("Deploy agent flow coming soon!");
     }
@@ -77,9 +63,9 @@ export default function AIEmployeesPage() {
           <h1 className={styles.pageTitle}>AI Workforce</h1>
           <p className={styles.pageDesc}>Manage your autonomous agents and digital employees.</p>
         </div>
-        <button 
-          className={styles.btnPrimary} 
-          onClick={() => handleHireClick()}
+        <button
+          className={styles.btnPrimary}
+          onClick={handleHireClick}
         >
           <Plus size={16} /> Deploy Custom Agent
         </button>
@@ -95,7 +81,7 @@ export default function AIEmployeesPage() {
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
                 You haven't deployed any agents yet. Select a specialist below to add to your workforce.
               </p>
-              
+
               <div className={styles.agentStrip} style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
                 {AGENT_TEMPLATES.map((tmpl) => (
                   <div key={tmpl.id} className={styles.agentCardOS} style={{ gap: '1rem' }}>
@@ -111,22 +97,10 @@ export default function AIEmployeesPage() {
                     <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.5, minHeight: "40px" }}>
                       {tmpl.desc}
                     </div>
-                    <button 
-                      onClick={() => handleHireClick(tmpl.id)}
-                      style={{ 
-                        width: '100%', padding: '0.75rem', borderRadius: '12px',
-                        background: 'rgba(255,255,255,0.05)', color: '#fff', 
-                        border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer',
-                        fontWeight: 600, transition: 'all 0.2s', marginTop: 'auto'
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.background = 'rgba(123, 45, 255, 0.2)';
-                        e.currentTarget.style.borderColor = '#7B2DFF';
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                      }}
+                    <button
+                      onClick={handleHireClick}
+                      className={styles.btnSecondary}
+                      style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}
                     >
                       Hire Agent
                     </button>
@@ -143,8 +117,7 @@ export default function AIEmployeesPage() {
           </div>
         )}
       </div>
-
-      <SubscriptionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }
+

@@ -38,8 +38,8 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: "subscription",
-      success_url: `${process.env.NEXTAUTH_URL}/dashboard/flow-ai?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/flow-ai`,
+      success_url: `${process.env.NEXTAUTH_URL}/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/dashboard?subscription=cancelled`,
       metadata: {
         plan: plan,
       },

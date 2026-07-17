@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   Home,
-  Activity,
   ChevronRight,
   TrendingUp,
   Layers,
@@ -20,13 +19,33 @@ import {
   Network,
   Search,
   Bell,
-  CreditCard
+  CreditCard,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { SubscriptionModal } from "@/components/os/SubscriptionModal";
 import styles from "./dashboard.module.css";
 import Image from "next/image";
 
+/* ── Subscription Context ── */
+interface SubscriptionContextType {
+  hasSubscription: boolean;
+  subscriptionPlan: string | null;
+  openSubscriptionModal: () => void;
+  refreshSubscription: () => void;
+}
+
+const SubscriptionContext = createContext<SubscriptionContextType>({
+  hasSubscription: false,
+  subscriptionPlan: null,
+  openSubscriptionModal: () => {},
+  refreshSubscription: () => {},
+});
+
+export const useSubscription = () => useContext(SubscriptionContext);
+
+/* ── Navigation Config ── */
 const osNavigation = [
   { name: "Mission Control", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
   { name: "Departments", href: "/dashboard/departments", icon: <Layers size={18} /> },
@@ -35,11 +54,6 @@ const osNavigation = [
   { name: "Documents", href: "/dashboard/documents", icon: <FileText size={18} /> },
   { name: "Knowledge", href: "/dashboard/knowledge", icon: <Network size={18} /> },
   { name: "Analytics", href: "/dashboard/analytics", icon: <TrendingUp size={18} /> },
-];
-
-const systemNavigation = [
-  { name: "Subscription", href: "/pricing", icon: <CreditCard size={18} /> },
-  { name: "Settings", href: "/dashboard/settings", icon: <Settings size={18} /> },
 ];
 
 const siteLinks = [
@@ -53,13 +67,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { t } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [isSubModalOpen, setIsSubModalOpen] = useState(false);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null);
+
+  const fetchSubscription = () => {
+    fetch("/api/account/subscription")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.active) {
+          setHasSubscription(true);
+          setSubscriptionPlan(data.plan || "Active");
+        } else {
+          setHasSubscription(false);
+          setSubscriptionPlan(null);
+        }
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    if (user) fetchSubscription();
+  }, [user]);
 
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    // Client-side redirect if not authenticated (safety net for proxy)
     if (!isLoading && !user) {
       router.replace("/sign-in?callbackUrl=" + encodeURIComponent(pathname));
     }
@@ -71,135 +106,99 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (isLoading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#050505" }}>
-        <div style={{ width: 32, height: 32, border: "3px solid rgba(177,76,255,0.2)", borderTopColor: "#B14CFF", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+      <div className={styles.loaderScreen}>
+        <div className={styles.loaderSpinner} />
       </div>
     );
   }
 
   if (!user) {
-    // Show loading state while redirect happens
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#050505" }}>
-        <div style={{ width: 32, height: 32, border: "3px solid rgba(177,76,255,0.2)", borderTopColor: "#B14CFF", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+      <div className={styles.loaderScreen}>
+        <div className={styles.loaderSpinner} />
       </div>
     );
   }
 
   return (
-    <div className={styles.dashboardContainer}>
-      {/* Sidebar overlay for mobile */}
-      {isSidebarOpen && (
-        <div
-          className={styles.sidebarOverlay}
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+    <SubscriptionContext.Provider
+      value={{
+        hasSubscription,
+        subscriptionPlan,
+        openSubscriptionModal: () => setIsSubModalOpen(true),
+        refreshSubscription: fetchSubscription,
+      }}
+    >
+      <div className={styles.dashboardContainer}>
+        {/* Sidebar overlay for mobile */}
+        {isSidebarOpen && (
+          <div
+            className={styles.sidebarOverlay}
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
-      {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ""}`}>
-        <div className={styles.sidebarTop}>
-          <Link href="/" className={styles.sidebarLogo}>
-            <Image src="/bohenixx.png" alt="Bohenix Logo" width={28} height={28} />
-            <span className={styles.brandName}>Bohenix</span>
-          </Link>
-          <button className={styles.sidebarClose} onClick={() => setIsSidebarOpen(false)}>
-            <X size={20} />
-          </button>
-        </div>
-
-        <nav className={styles.navLinks}>
-          <span className={styles.navLabel}>BOHENIX OS</span>
-          {osNavigation.map((item) => {
-            const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
-            return (
-              <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
-                {item.icon}
-                {item.name}
-              </Link>
-            );
-          })}
-
-          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>SYSTEM</span>
-          {systemNavigation.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
-                {item.icon}
-                {item.name}
-              </Link>
-            );
-          })}
-
-          <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Bohenix</span>
-          {siteLinks.map((item) => (
-            <Link key={item.name} href={item.href} className={styles.navLink}>
-              {item.icon}
-              {item.name}
-              <ChevronRight size={14} style={{ marginLeft: "auto", opacity: 0.4 }} />
+        {/* Sidebar */}
+        <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ""}`}>
+          <div className={styles.sidebarTop}>
+            <Link href="/" className={styles.sidebarLogo}>
+              <Image src="/bohenixx.png" alt="Bohenix Logo" width={28} height={28} />
+              <span className={styles.brandName}>Bohenix</span>
             </Link>
-          ))}
-        </nav>
-
-        <div className={styles.sidebarFooter}>
-          <Link href="/dashboard/settings" className={styles.userCard}>
-            {user?.avatar && !imgError ? (
-              <Image
-                src={user.avatar}
-                alt="Profile"
-                width={32}
-                height={32}
-                style={{ borderRadius: "50%", objectFit: "cover" }}
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              <div className={styles.avatarSmall}>
-                {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: 600, fontSize: "0.85rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {user?.name || "User"}
-              </div>
-              <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {user?.email || ""}
-              </div>
-            </div>
-          </Link>
-          <button onClick={handleLogout} className={styles.signOutBtn}>
-            <LogOut size={18} />
-            {t("dashboard.sign_out")}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main content area */}
-      <main className={styles.mainContent}>
-        <header className={styles.header}>
-          <button className={styles.mobileToggle} onClick={() => setIsSidebarOpen(true)} aria-label="Open Menu">
-            <Menu size={22} />
-          </button>
-
-          <div className={styles.headerRight}>
-            <button className={styles.headerIconButton} aria-label="Search">
-              <Search size={18} />
-              <span className={styles.searchHint}>⌘K</span>
+            <button className={styles.sidebarClose} onClick={() => setIsSidebarOpen(false)}>
+              <X size={20} />
             </button>
-            
-            <button className={styles.headerIconButton} aria-label="Notifications">
-              <Bell size={18} />
-            </button>
+          </div>
 
-            <Link href="/dashboard/settings" className={styles.userProfile}>
-              <span className={styles.userNameHeader}>
-                {user?.name || user?.email || "User"}
-              </span>
+          <nav className={styles.navLinks}>
+            <span className={styles.navLabel}>BOHENIX OS</span>
+            {osNavigation.map((item) => {
+              const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
+              return (
+                <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}>
+                  {item.icon}
+                  {item.name}
+                </Link>
+              );
+            })}
+
+            <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>SYSTEM</span>
+            <button
+              className={styles.navLink}
+              onClick={() => setIsSubModalOpen(true)}
+              style={{ border: "none", background: "none", width: "100%", textAlign: "left", cursor: "pointer", fontFamily: "inherit" }}
+            >
+              <CreditCard size={18} />
+              Subscription
+              {hasSubscription && (
+                <span className={styles.subBadge}>
+                  <Sparkles size={10} /> Active
+                </span>
+              )}
+            </button>
+            <Link href="/dashboard/settings" className={`${styles.navLink} ${pathname === "/dashboard/settings" ? styles.navLinkActive : ""}`}>
+              <Settings size={18} />
+              Settings
+            </Link>
+
+            <span className={styles.navLabel} style={{ marginTop: "1.5rem" }}>Bohenix</span>
+            {siteLinks.map((item) => (
+              <Link key={item.name} href={item.href} className={styles.navLink}>
+                {item.icon}
+                {item.name}
+                <ChevronRight size={14} style={{ marginLeft: "auto", opacity: 0.4 }} />
+              </Link>
+            ))}
+          </nav>
+
+          <div className={styles.sidebarFooter}>
+            <Link href="/dashboard/settings" className={styles.userCard}>
               {user?.avatar && !imgError ? (
                 <Image
                   src={user.avatar}
                   alt="Profile"
-                  width={34}
-                  height={34}
+                  width={32}
+                  height={32}
                   style={{ borderRadius: "50%", objectFit: "cover" }}
                   onError={() => setImgError(true)}
                 />
@@ -208,14 +207,79 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
                 </div>
               )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 600, fontSize: "0.85rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {user?.name || "User"}
+                </div>
+                <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {user?.email || ""}
+                </div>
+              </div>
             </Link>
+            <button onClick={handleLogout} className={styles.signOutBtn}>
+              <LogOut size={18} />
+              {t("dashboard.sign_out")}
+            </button>
           </div>
-        </header>
+        </aside>
 
-        <div className={styles.pageContainer}>
-          {children}
-        </div>
-      </main>
-    </div>
+        {/* Main content area */}
+        <main className={styles.mainContent}>
+          <header className={styles.header}>
+            <button className={styles.mobileToggle} onClick={() => setIsSidebarOpen(true)} aria-label="Open Menu">
+              <Menu size={22} />
+            </button>
+
+            <div className={styles.headerRight}>
+              <button className={styles.headerIconButton} aria-label="Search">
+                <Search size={18} />
+                <span className={styles.searchHint}>⌘K</span>
+              </button>
+
+              <button className={styles.headerIconButton} aria-label="Notifications">
+                <Bell size={18} />
+              </button>
+
+              {!hasSubscription && (
+                <button
+                  className={styles.upgradeBtn}
+                  onClick={() => setIsSubModalOpen(true)}
+                >
+                  <Sparkles size={14} />
+                  Upgrade
+                </button>
+              )}
+
+              <Link href="/dashboard/settings" className={styles.userProfile}>
+                <span className={styles.userNameHeader}>
+                  {user?.name || user?.email || "User"}
+                </span>
+                {user?.avatar && !imgError ? (
+                  <Image
+                    src={user.avatar}
+                    alt="Profile"
+                    width={34}
+                    height={34}
+                    style={{ borderRadius: "50%", objectFit: "cover" }}
+                    onError={() => setImgError(true)}
+                  />
+                ) : (
+                  <div className={styles.avatarSmall}>
+                    {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </Link>
+            </div>
+          </header>
+
+          <div className={styles.pageContainer}>
+            {children}
+          </div>
+        </main>
+
+        {/* Subscription Modal — globally available in dashboard */}
+        <SubscriptionModal isOpen={isSubModalOpen} onClose={() => setIsSubModalOpen(false)} />
+      </div>
+    </SubscriptionContext.Provider>
   );
 }
