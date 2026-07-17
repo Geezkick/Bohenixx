@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2024-04-10" as any,
@@ -14,6 +16,13 @@ const PLANS: Record<string, { usd: number; kes: number; name: string; interval: 
 
 export async function POST(req: NextRequest) {
   try {
+    const authSession = await getServerSession(authOptions);
+    const userEmail = authSession?.user?.email;
+
+    if (!userEmail) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const { plan, currency = "usd" } = await req.json();
 
     const planConfig = PLANS[plan] || PLANS["Starter"];
@@ -21,6 +30,7 @@ export async function POST(req: NextRequest) {
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
+      customer_email: userEmail,
       line_items: [
         {
           price_data: {
@@ -38,8 +48,8 @@ export async function POST(req: NextRequest) {
         },
       ],
       mode: "subscription",
-      success_url: `${process.env.NEXTAUTH_URL}/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/dashboard?subscription=cancelled`,
+      success_url: `${process.env.NEXTAUTH_URL || "https://www.bohenix.africa"}/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXTAUTH_URL || "https://www.bohenix.africa"}/dashboard?subscription=cancelled`,
       metadata: {
         plan: plan,
       },
