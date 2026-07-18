@@ -1,281 +1,460 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
 import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
-  BarChart, Bar, AreaChart, Area, Cell
+  AreaChart, Area, BarChart, Bar, LineChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, defs
 } from "recharts";
-import { 
-  TrendingUp, Clock, Target, AlertTriangle, ShieldCheck, Zap, Activity, BarChart3
-} from "lucide-react";
 
-// Helper for large numbers
-const formatCurrency = (val: number) => {
-  if (val >= 1000000) return `KES ${(val / 1000000).toFixed(2)}M`;
-  if (val >= 1000) return `KES ${(val / 1000).toFixed(1)}k`;
-  return `KES ${val}`;
+/* ─── Design Tokens ─── */
+const T = {
+  bg: "#05030A",
+  bgCard: "rgba(255,255,255,0.025)",
+  bgCardHover: "rgba(255,255,255,0.04)",
+  border: "rgba(255,255,255,0.06)",
+  borderHover: "rgba(255,255,255,0.12)",
+  purple: "#7B2DFF",
+  cyan: "#00E5FF",
+  emerald: "#10B981",
+  amber: "#F59E0B",
+  red: "#EF4444",
+  textPrimary: "#FFFFFF",
+  textSecondary: "rgba(255,255,255,0.5)",
+  textMuted: "rgba(255,255,255,0.3)",
+  font: "'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 };
 
-export default function AnalyticsClient({ 
-  platformRoi, 
-  agentPerformance, 
-  timeSeries, 
-  cashFlowForecast, 
-  anomalies 
+/* ─── Helper: animated counter ─── */
+function useCountUp(target: number, duration: number = 1500) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (target === 0) return;
+    let start = 0;
+    const increment = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) { setCount(target); clearInterval(timer); }
+      else setCount(Math.round(start));
+    }, 16);
+    return () => clearInterval(timer);
+  }, [target, duration]);
+  return count;
+}
+
+/* ─── KPI Card ─── */
+function KpiCard({ icon, label, value, sub, accentColor, delay }: any) {
+  const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setVisible(true), delay); return () => clearTimeout(t); }, [delay]);
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered ? T.bgCardHover : T.bgCard,
+        border: `1px solid ${hovered ? accentColor + "50" : T.border}`,
+        borderRadius: "24px",
+        padding: "2rem",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        position: "relative",
+        overflow: "hidden",
+        transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(16px)",
+        cursor: "default",
+      }}
+    >
+      {/* Glow */}
+      <div style={{
+        position: "absolute", top: -30, right: -30, width: 120, height: 120,
+        background: accentColor, borderRadius: "50%", filter: "blur(60px)",
+        opacity: hovered ? 0.18 : 0.08, transition: "opacity 0.4s",
+      }} />
+
+      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
+        <div style={{
+          padding: "10px", borderRadius: "12px",
+          background: accentColor + "15", border: `1px solid ${accentColor}30`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          {icon}
+        </div>
+        <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: accentColor + "CC" }}>
+          {label}
+        </span>
+      </div>
+
+      <div style={{ marginBottom: "0.5rem" }}>{value}</div>
+      <p style={{ fontSize: "13px", color: T.textMuted, margin: 0, fontFamily: T.font }}>{sub}</p>
+    </div>
+  );
+}
+
+/* ─── Section Card ─── */
+function ChartCard({ title, subtitle, children, style = {} }: any) {
+  return (
+    <div style={{
+      background: T.bgCard,
+      border: `1px solid ${T.border}`,
+      borderRadius: "24px",
+      padding: "2rem",
+      backdropFilter: "blur(20px)",
+      WebkitBackdropFilter: "blur(20px)",
+      transition: "border-color 0.3s",
+      ...style
+    }}>
+      <div style={{ marginBottom: "1.75rem" }}>
+        <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 500, color: T.textPrimary, fontFamily: T.font }}>{title}</h3>
+        {subtitle && <p style={{ margin: "6px 0 0", fontSize: "13px", color: T.textSecondary, fontFamily: T.font }}>{subtitle}</p>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/* ─── Custom Tooltip ─── */
+function CustomTooltip({ active, payload, label, format }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{
+      background: "rgba(8,6,18,0.96)", border: "1px solid rgba(255,255,255,0.12)",
+      borderRadius: "12px", padding: "12px 16px", backdropFilter: "blur(20px)",
+      boxShadow: "0 16px 48px rgba(0,0,0,0.5)", fontFamily: T.font,
+    }}>
+      <p style={{ margin: "0 0 8px", fontSize: "12px", color: T.textSecondary }}>{label}</p>
+      {payload.map((p: any, i: number) => (
+        <p key={i} style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: p.color || T.cyan }}>
+          {format ? format(p.value) : p.value.toLocaleString()}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Anomaly Badge ─── */
+function AnomalyCard({ anomaly, delay }: any) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setVisible(true), delay); return () => clearTimeout(t); }, [delay]);
+
+  const isHigh = anomaly.severity === "HIGH";
+  const isMedium = anomaly.severity === "MEDIUM";
+  const color = isHigh ? T.red : isMedium ? T.amber : T.emerald;
+
+  return (
+    <div style={{
+      background: color + "08", border: `1px solid ${color}25`,
+      borderRadius: "16px", padding: "1.25rem",
+      opacity: visible ? 1 : 0, transform: visible ? "translateX(0)" : "translateX(16px)",
+      transition: "all 0.5s cubic-bezier(0.16,1,0.3,1)",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+        <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, boxShadow: `0 0 8px ${color}` }} />
+        <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color, fontFamily: T.font }}>
+          {anomaly.type.replace(/_/g, " ")}
+        </span>
+        <span style={{ marginLeft: "auto", fontSize: "10px", background: color + "20", color, padding: "2px 8px", borderRadius: "100px", fontWeight: 600 }}>
+          {anomaly.severity}
+        </span>
+      </div>
+      <p style={{ margin: "0 0 10px", fontSize: "13px", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, fontFamily: T.font }}>{anomaly.message}</p>
+      {anomaly.suggestedAction !== "None" && (
+        <div style={{ paddingTop: "10px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "8px", alignItems: "flex-start" }}>
+          <span style={{ color: T.textMuted, fontSize: "13px" }}>→</span>
+          <p style={{ margin: 0, fontSize: "12px", color: T.textMuted, fontFamily: T.font }}>
+            {anomaly.suggestedAction}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── SVG Icons ─── */
+const IconTrend = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+const IconClock = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const IconTarget = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B2DFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const IconActivity = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+const IconZap = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+
+/* ─── Circular Progress Ring ─── */
+function RingProgress({ value, color, size = 80 }: { value: number; color: string; size?: number }) {
+  const radius = (size - 10) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const filled = (value / 100) * circumference;
+
+  return (
+    <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+      <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={8} />
+      <circle
+        cx={size/2} cy={size/2} r={radius} fill="none"
+        stroke={color} strokeWidth={8}
+        strokeDasharray={`${filled} ${circumference - filled}`}
+        strokeLinecap="round"
+        style={{ transition: "stroke-dasharray 1s cubic-bezier(0.16,1,0.3,1)" }}
+      />
+    </svg>
+  );
+}
+
+/* ─── Agent Row ─── */
+function AgentRow({ agent, maxTasks, index }: any) {
+  const [visible, setVisible] = useState(false);
+  const pct = maxTasks > 0 ? (agent.tasksCompleted / maxTasks) * 100 : 0;
+  useEffect(() => { const t = setTimeout(() => setVisible(true), 400 + index * 80); return () => clearTimeout(t); }, [index]);
+
+  return (
+    <div style={{ marginBottom: "1.25rem", opacity: visible ? 1 : 0, transform: visible ? "translateX(0)" : "translateX(-12px)", transition: "all 0.5s cubic-bezier(0.16,1,0.3,1)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+        <div>
+          <span style={{ fontSize: "14px", fontWeight: 500, color: T.textPrimary, fontFamily: T.font }}>{agent.name}</span>
+          <span style={{ marginLeft: "8px", fontSize: "11px", color: T.textMuted, background: "rgba(255,255,255,0.06)", padding: "2px 8px", borderRadius: "100px" }}>{agent.department}</span>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <span style={{ fontSize: "14px", fontWeight: 600, color: T.cyan }}>{agent.tasksCompleted}</span>
+          <span style={{ fontSize: "12px", color: T.textMuted }}> tasks</span>
+        </div>
+      </div>
+      <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "100px", height: "6px", overflow: "hidden" }}>
+        <div style={{
+          height: "100%", width: visible ? `${pct}%` : "0%",
+          background: `linear-gradient(90deg, ${T.purple}, ${T.cyan})`,
+          borderRadius: "100px", transition: "width 1s cubic-bezier(0.16,1,0.3,1)",
+        }} />
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN COMPONENT
+   ═══════════════════════════════════════════════════════════════ */
+export default function AnalyticsClient({
+  platformRoi, agentPerformance, timeSeries, cashFlowForecast, anomalies
 }: any) {
   
-  return (
-    <div className="relative min-h-screen pb-20 w-full overflow-hidden bg-[#05030A]">
-      {/* Background Glow Effects */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#7B2DFF]/20 rounded-full blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#00E5FF]/10 rounded-full blur-[150px] pointer-events-none" />
+  const [headerVisible, setHeaderVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setHeaderVisible(true), 50); return () => clearTimeout(t); }, []);
 
-      <div className="relative p-6 md:p-10 max-w-[1400px] mx-auto space-y-10 z-10">
-        
-        {/* Header Section */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
+  const netSavingsCount = useCountUp(platformRoi.netSavingsKes, 2000);
+  const hoursSavedCount = platformRoi.totalHoursSaved;
+  const automationCount = platformRoi.automationRate;
+
+  const maxAgentTasks = agentPerformance.length > 0 ? Math.max(...agentPerformance.map((a: any) => a.tasksCompleted)) : 1;
+
+  return (
+    <div style={{
+      minHeight: "100vh", background: T.bg, color: T.textPrimary,
+      fontFamily: T.font, WebkitFontSmoothing: "antialiased",
+      position: "relative", overflow: "hidden", paddingBottom: "4rem"
+    }}>
+      {/* Ambient background glows */}
+      <div style={{ position: "absolute", top: "-15%", left: "-10%", width: "50%", height: "50%", background: `radial-gradient(ellipse, ${T.purple}18 0%, transparent 70%)`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "-15%", right: "-10%", width: "45%", height: "45%", background: `radial-gradient(ellipse, ${T.cyan}0D 0%, transparent 70%)`, pointerEvents: "none" }} />
+
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "1300px", margin: "0 auto", padding: "2.5rem 2rem" }}>
+
+        {/* ── Header ── */}
+        <header style={{
+          display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "flex-end",
+          justifyContent: "space-between", paddingBottom: "2.5rem",
+          borderBottom: "1px solid rgba(255,255,255,0.05)", marginBottom: "2.5rem",
+          opacity: headerVisible ? 1 : 0, transform: headerVisible ? "translateY(0)" : "translateY(-12px)",
+          transition: "all 0.7s cubic-bezier(0.16,1,0.3,1)",
+        }}>
           <div>
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-white/60 tracking-widest uppercase mb-4"
-            >
-              <Activity size={12} className="text-[#00E5FF]" /> Telemetry Active
-            </motion.div>
-            <motion.h1 
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl md:text-5xl font-light tracking-tight text-white mb-2"
-            >
-              Mission <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#7B2DFF] to-[#00E5FF]">Analytics</span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-white/50 text-base max-w-xl"
-            >
-              Real-time intelligence mapping autonomous operational output against projected human equivalents.
-            </motion.p>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: "8px",
+              padding: "6px 14px", borderRadius: "100px",
+              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+              fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
+              color: T.cyan, marginBottom: "1.25rem",
+            }}>
+              <span style={{ display: "flex" }}><IconActivity /></span>
+              Telemetry Active
+            </div>
+            <h1 style={{ margin: "0 0 0.5rem", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 300, letterSpacing: "-0.03em", lineHeight: 1.1 }}>
+              Mission{" "}
+              <span style={{ fontWeight: 700, background: `linear-gradient(135deg, ${T.purple}, ${T.cyan})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                Analytics
+              </span>
+            </h1>
+            <p style={{ margin: 0, fontSize: "15px", color: T.textSecondary, maxWidth: "480px", lineHeight: 1.6 }}>
+              Autonomous workforce intelligence — mapping AI output against projected human-equivalent operational cost.
+            </p>
           </div>
-          
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex items-center gap-4 bg-white/[0.03] border border-white/10 px-6 py-4 rounded-2xl backdrop-blur-md"
-          >
-            <div className="text-right">
-              <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Total Agents</p>
-              <p className="text-2xl font-semibold text-white">{agentPerformance.length}</p>
+
+          {/* Live stat pill */}
+          <div style={{
+            display: "flex", gap: "1.5rem", padding: "1.25rem 1.75rem",
+            background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "20px", backdropFilter: "blur(20px)",
+          }}>
+            <div>
+              <p style={{ margin: "0 0 4px", fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMuted }}>Active Agents</p>
+              <p style={{ margin: 0, fontSize: "1.75rem", fontWeight: 600, color: T.textPrimary }}>{agentPerformance.length}</p>
             </div>
-            <div className="h-10 w-[1px] bg-white/10 mx-2" />
-            <div className="text-left">
-              <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Tasks Handled</p>
-              <p className="text-2xl font-semibold text-[#00E5FF]">{platformRoi.completedTasks.toLocaleString()}</p>
+            <div style={{ width: "1px", background: "rgba(255,255,255,0.08)" }} />
+            <div>
+              <p style={{ margin: "0 0 4px", fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMuted }}>Tasks Executed</p>
+              <p style={{ margin: 0, fontSize: "1.75rem", fontWeight: 600, color: T.cyan }}>{platformRoi.completedTasks.toLocaleString()}</p>
             </div>
-          </motion.div>
+          </div>
         </header>
 
-        {/* Top KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
-            className="group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl overflow-hidden hover:bg-white/[0.04] hover:border-emerald-500/30 transition-all duration-500"
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-[50px] -mr-10 -mt-10 transition-opacity opacity-50 group-hover:opacity-100" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20"><TrendingUp className="w-5 h-5 text-emerald-400" /></div>
-                <h3 className="text-sm font-semibold uppercase tracking-widest text-emerald-400/80">Net Savings</h3>
+        {/* ── KPI Row ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.25rem", marginBottom: "1.5rem" }}>
+          <KpiCard
+            icon={<IconTrend />}
+            label="Net Savings"
+            accentColor={T.emerald}
+            delay={200}
+            value={
+              <div>
+                <span style={{ fontSize: "12px", fontWeight: 500, color: T.textMuted, verticalAlign: "super", marginRight: "4px", fontFamily: T.font }}>KES</span>
+                <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.75rem)", fontWeight: 200, letterSpacing: "-0.04em", color: T.textPrimary, fontFamily: T.font }}>
+                  {netSavingsCount.toLocaleString()}
+                </span>
               </div>
-              <p className="text-4xl md:text-5xl font-light text-white mb-2 tracking-tight">
-                <span className="text-2xl text-white/40 align-top mr-1">KES</span>
-                {platformRoi.netSavingsKes.toLocaleString()}
-              </p>
-              <p className="text-sm text-white/40">vs. estimated human labor equivalent</p>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
-            className="group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl overflow-hidden hover:bg-white/[0.04] hover:border-[#00E5FF]/30 transition-all duration-500"
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00E5FF]/10 rounded-full blur-[50px] -mr-10 -mt-10 transition-opacity opacity-50 group-hover:opacity-100" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-[#00E5FF]/10 rounded-xl border border-[#00E5FF]/20"><Clock className="w-5 h-5 text-[#00E5FF]" /></div>
-                <h3 className="text-sm font-semibold uppercase tracking-widest text-[#00E5FF]/80">Hours Reclaimed</h3>
+            }
+            sub="vs. estimated human labour equivalent"
+          />
+          <KpiCard
+            icon={<IconClock />}
+            label="Hours Reclaimed"
+            accentColor={T.cyan}
+            delay={350}
+            value={
+              <div>
+                <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.75rem)", fontWeight: 200, letterSpacing: "-0.04em", color: T.textPrimary, fontFamily: T.font }}>
+                  {hoursSavedCount.toFixed(1)}
+                </span>
+                <span style={{ fontSize: "1.2rem", color: T.textMuted, fontWeight: 400, marginLeft: "8px" }}>hrs</span>
               </div>
-              <p className="text-4xl md:text-5xl font-light text-white mb-2 tracking-tight">
-                {platformRoi.totalHoursSaved.toFixed(1)} <span className="text-2xl text-white/40 font-normal">hrs</span>
-              </p>
-              <p className="text-sm text-white/40">Time freed for strategic execution</p>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
-            className="group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl overflow-hidden hover:bg-white/[0.04] hover:border-[#7B2DFF]/30 transition-all duration-500"
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#7B2DFF]/10 rounded-full blur-[50px] -mr-10 -mt-10 transition-opacity opacity-50 group-hover:opacity-100" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-[#7B2DFF]/10 rounded-xl border border-[#7B2DFF]/20"><Target className="w-5 h-5 text-[#7B2DFF]" /></div>
-                <h3 className="text-sm font-semibold uppercase tracking-widest text-[#7B2DFF]/80">Automation Index</h3>
+            }
+            sub="Freed for strategic executive decisions"
+          />
+          <KpiCard
+            icon={<IconTarget />}
+            label="Automation Index"
+            accentColor={T.purple}
+            delay={500}
+            value={
+              <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <RingProgress value={automationCount} color={T.purple} size={72} />
+                <div>
+                  <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.75rem)", fontWeight: 200, letterSpacing: "-0.04em", color: T.textPrimary, fontFamily: T.font }}>
+                    {automationCount.toFixed(1)}
+                  </span>
+                  <span style={{ fontSize: "1.5rem", color: T.purple, fontWeight: 500 }}>%</span>
+                </div>
               </div>
-              <p className="text-4xl md:text-5xl font-light text-white mb-2 tracking-tight">
-                {platformRoi.automationRate.toFixed(1)}<span className="text-3xl text-[#7B2DFF] font-normal">%</span>
-              </p>
-              <p className="text-sm text-white/40">Of requested tasks executed autonomously</p>
-            </div>
-          </motion.div>
+            }
+            sub="Of all tasks handled autonomously"
+          />
         </div>
 
-        {/* Main Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ── Charts Row 1 ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1.25rem", marginBottom: "1.25rem" }}>
           
-          {/* ROI Trend */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.6 }}
-            className="lg:col-span-2 bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl"
-          >
-            <div className="flex justify-between items-start mb-8">
-              <div>
-                <h3 className="text-xl font-medium text-white mb-1">Value Generation Trend</h3>
-                <p className="text-sm text-white/40">30-day trailing savings analysis</p>
-              </div>
-              <div className="p-2 bg-white/5 rounded-lg border border-white/10"><BarChart3 size={18} className="text-white/60" /></div>
-            </div>
-            
-            <div className="h-[320px] w-full">
+          {/* ROI Trend Chart */}
+          <ChartCard title="Value Generation Trend" subtitle="30-day trailing savings analysis">
+            <div style={{ height: "300px" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={timeSeries} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
-                    <linearGradient id="colorSavings" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#7B2DFF" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="#00E5FF" stopOpacity={0}/>
+                    <linearGradient id="gradientSavings" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={T.purple} stopOpacity={0.4} />
+                      <stop offset="95%" stopColor={T.cyan} stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" vertical={false} />
-                  <XAxis dataKey="date" stroke="#ffffff40" fontSize={12} tickLine={false} axisLine={false} tickMargin={12} minTickGap={20} />
-                  <YAxis stroke="#ffffff40" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `KES ${val/1000}k`} />
-                  <RechartsTooltip 
-                    contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', backdropFilter: 'blur(10px)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
-                    itemStyle={{ color: '#fff', fontWeight: 600 }}
-                    labelStyle={{ color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}
-                  />
-                  <Area type="monotone" dataKey="savings" stroke="#7B2DFF" strokeWidth={3} fillOpacity={1} fill="url(#colorSavings)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} minTickGap={20} fontFamily={T.font} />
+                  <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} fontFamily={T.font} tickFormatter={(v) => `KES ${(v / 1000).toFixed(0)}k`} />
+                  <Tooltip content={<CustomTooltip format={(v: number) => `KES ${v.toLocaleString()}`} />} />
+                  <Area type="monotone" dataKey="savings" stroke={T.purple} strokeWidth={2.5} fillOpacity={1} fill="url(#gradientSavings)" dot={false} activeDot={{ r: 5, fill: T.purple, strokeWidth: 2, stroke: "rgba(255,255,255,0.3)" }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-          </motion.div>
+          </ChartCard>
 
-          {/* Predictive Anomalies */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6, duration: 0.6 }}
-            className="bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl flex flex-col"
-          >
-            <div className="flex justify-between items-start mb-8">
-              <div>
-                <h3 className="text-xl font-medium text-white mb-1">System Anomalies</h3>
-                <p className="text-sm text-white/40">AI-driven pattern detection</p>
-              </div>
+          {/* Anomalies */}
+          <ChartCard title="System Anomalies" subtitle="AI-driven pattern detection">
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto" }}>
+              {anomalies.map((anomaly: any, i: number) => (
+                <AnomalyCard key={i} anomaly={anomaly} delay={600 + i * 100} />
+              ))}
             </div>
-            
-            <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
-              {anomalies.map((anomaly: any, i: number) => {
-                const isHigh = anomaly.severity === 'HIGH';
-                const isMedium = anomaly.severity === 'MEDIUM';
-                const colorClass = isHigh ? 'text-red-400' : isMedium ? 'text-amber-400' : 'text-emerald-400';
-                const bgClass = isHigh ? 'bg-red-500/5 border-red-500/20' : isMedium ? 'bg-amber-500/5 border-amber-500/20' : 'bg-emerald-500/5 border-emerald-500/20';
-                
-                return (
-                  <div key={i} className={`p-5 rounded-2xl border ${bgClass} transition-all duration-300 hover:bg-opacity-10`}>
-                    <div className="flex items-center gap-3 mb-3">
-                      {isHigh ? <AlertTriangle className={`w-4 h-4 ${colorClass}`} /> : <ShieldCheck className={`w-4 h-4 ${colorClass}`} />}
-                      <span className={`font-semibold text-xs tracking-wider uppercase ${colorClass}`}>{anomaly.type.replace(/_/g, ' ')}</span>
-                    </div>
-                    <p className="text-sm text-white/80 leading-relaxed mb-3">{anomaly.message}</p>
-                    {anomaly.suggestedAction !== "None" && (
-                      <div className="mt-2 pt-3 border-t border-white/5 flex items-start gap-2">
-                        <Zap size={14} className="text-white/40 mt-0.5 flex-shrink-0" />
-                        <p className="text-xs text-white/60">Action: {anomaly.suggestedAction}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
+          </ChartCard>
         </div>
 
-        {/* Lower Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* ── Charts Row 2 ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
           
           {/* Agent Performance */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.6 }}
-            className="bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl"
-          >
-            <div className="mb-8">
-              <h3 className="text-xl font-medium text-white mb-1">Workforce Output</h3>
-              <p className="text-sm text-white/40">Completed tasks per AI Agent</p>
-            </div>
-            <div className="h-[280px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={agentPerformance} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" horizontal={true} vertical={false} />
-                  <XAxis type="number" stroke="#ffffff40" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis dataKey="name" type="category" stroke="#ffffff90" fontSize={12} tickLine={false} axisLine={false} width={120} />
-                  <RechartsTooltip 
-                    cursor={{ fill: 'rgba(255,255,255,0.02)' }}
-                    contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', backdropFilter: 'blur(10px)' }}
-                    itemStyle={{ color: '#00E5FF', fontWeight: 600 }}
-                  />
-                  <Bar dataKey="tasksCompleted" radius={[0, 6, 6, 0]} barSize={24}>
-                    {agentPerformance.map((entry: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={`url(#colorBar${index})`} />
-                    ))}
-                  </Bar>
-                  <defs>
-                    {agentPerformance.map((entry: any, index: number) => (
-                      <linearGradient key={`gradient-${index}`} id={`colorBar${index}`} x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#7B2DFF" />
-                        <stop offset="100%" stopColor="#00E5FF" />
-                      </linearGradient>
-                    ))}
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </motion.div>
+          <ChartCard title="Workforce Output" subtitle="Tasks completed per deployed AI agent">
+            {agentPerformance.length === 0 ? (
+              <EmptyState label="No agents deployed yet" cta="Visit AI Workforce to deploy your first agent →" />
+            ) : (
+              <div style={{ paddingTop: "0.5rem" }}>
+                {agentPerformance.map((agent: any, i: number) => (
+                  <AgentRow key={agent.agentId} agent={agent} maxTasks={maxAgentTasks} index={i} />
+                ))}
+              </div>
+            )}
+          </ChartCard>
 
           {/* Cash Flow Forecast */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.6 }}
-            className="bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl"
-          >
-            <div className="mb-8">
-              <h3 className="text-xl font-medium text-white mb-1">Revenue Forecast</h3>
-              <p className="text-sm text-white/40">7-day machine learning projection</p>
-            </div>
-            <div className="h-[280px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={cashFlowForecast} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" vertical={false} />
-                  <XAxis dataKey="date" stroke="#ffffff40" fontSize={12} tickLine={false} axisLine={false} 
-                         tickFormatter={(tick) => {
-                           const parts = tick.split('-');
-                           return `${parts[1]}/${parts[2]}`;
-                         }} />
-                  <YAxis stroke="#ffffff40" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `K ${val/1000}k`} />
-                  <RechartsTooltip 
-                    contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', backdropFilter: 'blur(10px)' }}
-                    itemStyle={{ color: '#00E5FF', fontWeight: 600 }}
-                  />
-                  <Line type="monotone" dataKey="projectedRevenueKes" stroke="#00E5FF" strokeWidth={3} dot={{ fill: '#00E5FF', r: 4, strokeWidth: 0, strokeOpacity: 0.8 }} activeDot={{ r: 6, fill: '#fff' }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </motion.div>
-
+          <ChartCard title="Revenue Forecast" subtitle="7-day machine learning projection (KES)">
+            {cashFlowForecast.every((d: any) => d.projectedRevenueKes === 0) ? (
+              <EmptyState label="No invoice data to forecast" cta="Create invoices to enable revenue projection →" />
+            ) : (
+              <div style={{ height: "260px" }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={cashFlowForecast} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} fontFamily={T.font}
+                      tickFormatter={(t) => { const p = t.split("-"); return `${p[1]}/${p[2]}`; }}
+                    />
+                    <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} fontFamily={T.font} tickFormatter={(v) => `${v/1000}k`} />
+                    <Tooltip content={<CustomTooltip format={(v: number) => `KES ${v.toLocaleString()}`} />} />
+                    <Line type="monotone" dataKey="projectedRevenueKes" stroke={T.cyan} strokeWidth={2.5}
+                      dot={{ fill: T.cyan, r: 4, strokeWidth: 0 }}
+                      activeDot={{ r: 6, fill: "#fff", stroke: T.cyan, strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </ChartCard>
         </div>
+
       </div>
+    </div>
+  );
+}
+
+/* ─── Empty State ─── */
+function EmptyState({ label, cta }: { label: string; cta: string }) {
+  return (
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      height: "260px", textAlign: "center",
+    }}>
+      <div style={{
+        width: "56px", height: "56px", borderRadius: "16px",
+        background: "rgba(123,45,255,0.1)", border: "1px solid rgba(123,45,255,0.2)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        marginBottom: "1rem", color: "#7B2DFF",
+      }}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <p style={{ margin: "0 0 8px", fontSize: "15px", fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>{label}</p>
+      <p style={{ margin: 0, fontSize: "13px", color: "rgba(255,255,255,0.3)", maxWidth: "240px", lineHeight: 1.6 }}>{cta}</p>
     </div>
   );
 }
