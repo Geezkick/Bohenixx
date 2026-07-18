@@ -30,9 +30,9 @@ export async function POST(req: NextRequest) {
           const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id || "";
 
           // Retrieve the full subscription to get period end
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
           const priceId = subscription.items.data[0]?.price?.id || "";
-          const currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+          const currentPeriodEnd = new Date((subscription.current_period_end as number) * 1000);
 
           // Find the user by email
           const user = await db.user.findUnique({
@@ -86,12 +86,12 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.payment_succeeded": {
-        const invoice = event.data.object as Stripe.Invoice;
-        const subscriptionId = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription?.id;
+        const invoice = event.data.object as any;
+        const subscriptionId: string | undefined = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription?.id;
 
         if (subscriptionId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-          const currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
+          const currentPeriodEnd = new Date((subscription.current_period_end as number) * 1000);
 
           await db.subscription.updateMany({
             where: { stripeSubscriptionId: subscriptionId },
@@ -112,8 +112,8 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
-        const subscriptionId = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription?.id;
+        const invoice2 = event.data.object as any;
+        const subscriptionId = typeof invoice2.subscription === "string" ? invoice2.subscription : invoice2.subscription?.id;
 
         if (subscriptionId) {
           await db.subscription.updateMany({
@@ -145,10 +145,10 @@ export async function POST(req: NextRequest) {
       }
 
       case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription;
-        const subscriptionId = subscription.id;
-        const priceId = subscription.items.data[0]?.price?.id || "";
-        const currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+        const subscription = event.data.object as any;
+        const subscriptionId = subscription.id as string;
+        const priceId = subscription.items?.data[0]?.price?.id || "";
+        const currentPeriodEnd = new Date((subscription.current_period_end as number) * 1000);
         const status = subscription.status === "active" ? "active" : subscription.status === "past_due" ? "past_due" : "canceled";
 
         await db.subscription.updateMany({

@@ -394,8 +394,8 @@ export default function FlowAIDashboard() {
                           {msg.role === "model" && msg.toolCalls && msg.toolCalls.length > 0 && (
                             <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.8rem' }}>
                               <div style={{ color: '#B3B3B8', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.75rem' }}>TOOLS USED:</div>
-                              {msg.toolCalls.map((tc: any, idx: number) => (
-                                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: idx < msg.toolCalls.length - 1 ? '0.5rem' : 0 }}>
+                              {(msg.toolCalls || []).map((tc: any, idx: number) => (
+                                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: idx < (msg.toolCalls?.length ?? 0) - 1 ? '0.5rem' : 0 }}>
                                   <div style={{ color: '#00E5FF', fontFamily: 'monospace' }}>{tc.tool}()</div>
                                   {tc.result?.success && <CheckCircle2 size={12} color="#22c55e" style={{ marginTop: '2px' }} />}
                                 </div>
@@ -475,11 +475,11 @@ export default function FlowAIDashboard() {
                           </div>
                           {task.status === "COMPLETED" && task.result && (
                             <div style={{ padding: "1.25rem 1.5rem", fontSize: "0.9rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, background: "rgba(255,255,255,0.01)", whiteSpace: "pre-wrap" }}>
-                              {task.toolCalls && JSON.parse(task.toolCalls).length > 0 && (
+                              {task.toolCalls && (JSON.parse(task.toolCalls) as any[]).length > 0 && (
                                 <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.8rem' }}>
                                   <div style={{ color: '#B3B3B8', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.75rem' }}>TOOLS EXECUTED:</div>
-                                  {JSON.parse(task.toolCalls).map((tc: any, idx: number) => (
-                                    <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: idx < JSON.parse(task.toolCalls).length - 1 ? '0.5rem' : 0 }}>
+                                  {(JSON.parse(task.toolCalls) as any[]).map((tc: any, idx: number) => (
+                                    <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: idx < (JSON.parse(task.toolCalls as string) as any[]).length - 1 ? '0.5rem' : 0 }}>
                                       <div style={{ color: '#00E5FF', fontFamily: 'monospace' }}>{tc.tool}()</div>
                                       {tc.result?.success && <CheckCircle2 size={12} color="#22c55e" style={{ marginTop: '2px' }} />}
                                     </div>
