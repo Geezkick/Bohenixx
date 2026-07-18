@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 import { RoiCalculator } from "@/lib/analytics/roi-calculator";
 import { ForecastingEngine } from "@/lib/predictions/forecasting-engine";
-import AnalyticsClient from "./AnalyticsClient";
+import AnalyticsClientWrapper from "./AnalyticsClientWrapper";
 
 export const metadata = {
   title: "Executive Analytics - Bohenix Flow AI",
@@ -29,8 +29,8 @@ export default async function AnalyticsPage() {
   ]);
 
   return (
-    <div className="flex-1 w-full bg-[#030303] text-white min-h-screen">
-      <AnalyticsClient 
+    <div className="flex-1 w-full bg-[#05030A] text-white min-h-screen">
+      <AnalyticsClientWrapper 
         platformRoi={platformRoi}
         agentPerformance={agentPerformance}
         timeSeries={timeSeries}
