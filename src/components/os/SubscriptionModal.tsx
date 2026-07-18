@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Check, Zap, Crown, Building2, ArrowRight } from "lucide-react";
+import { X, Check, Zap, Crown, Building2, ArrowRight, ExternalLink } from "lucide-react";
 import styles from "./SubscriptionModal.module.css";
+import { useSubscription } from "@/app/dashboard/layout";
 
 interface PlanConfig {
   name: string;
@@ -65,8 +66,26 @@ interface SubscriptionModalProps {
 export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [isAnnual, setIsAnnual] = useState(false);
+  const { hasSubscription, subscriptionPlan } = useSubscription();
 
   if (!isOpen) return null;
+
+  const handleManageBilling = async () => {
+    setLoadingPlan("billing");
+    try {
+      const res = await fetch("/api/flow-ai/billing-portal", { method: "POST" });
+      const data = await res.json();
+      if (data.success && data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to access billing portal.");
+        setLoadingPlan(null);
+      }
+    } catch {
+      alert("An error occurred.");
+      setLoadingPlan(null);
+    }
+  };
 
   const handleSelectPlan = async (planKey: string) => {
     if (planKey === "Enterprise") {
@@ -109,105 +128,134 @@ export function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
 
         <div className={styles.modalHeader}>
           <div className={styles.modalLabel}>
-            <Zap size={14} /> Subscription Required
+            <Zap size={14} /> {hasSubscription ? "Active Plan" : "Subscription Required"}
           </div>
-          <h2 className={styles.modalTitle}>Deploy Your AI Workforce</h2>
+          <h2 className={styles.modalTitle}>
+            {hasSubscription ? "Manage Your AI Workforce" : "Deploy Your AI Workforce"}
+          </h2>
           <p className={styles.modalDesc}>
-            To hire and deploy autonomous agents, you need an active OS plan. Choose the capacity that fits your scale.
+            {hasSubscription
+              ? `You are currently on the ${subscriptionPlan} plan. You can update your payment method, view invoices, or change your plan below.`
+              : "To hire and deploy autonomous agents, you need an active OS plan. Choose the capacity that fits your scale."}
           </p>
         </div>
 
-        <div className={styles.billingToggle}>
-          <span className={`${styles.toggleLabel} ${!isAnnual ? styles.toggleLabelActive : ""}`}>
-            Monthly
-          </span>
-          <button
-            className={`${styles.toggleSwitch} ${isAnnual ? styles.toggleSwitchActive : ""}`}
-            onClick={() => setIsAnnual(!isAnnual)}
-            aria-label="Toggle annual billing"
-          />
-          <span className={`${styles.toggleLabel} ${isAnnual ? styles.toggleLabelActive : ""}`}>
-            Annual
-          </span>
-          {isAnnual && <span className={styles.saveBadge}>Save 17%</span>}
-        </div>
-
-        <div className={styles.plansGrid}>
-          {planKeys.map((key) => {
-            const plan = PLANS[key];
-            const isLoading = loadingPlan === key;
-            const price = isAnnual && key !== "Enterprise" ? Math.round(plan.monthlyUsd * 10) : plan.monthlyUsd;
-            
-            const icon =
-              key === "Starter" ? (
-                <Zap size={22} color="#7B2DFF" />
-              ) : key === "Professional" ? (
-                <Crown size={22} color="#7B2DFF" />
-              ) : (
-                <Building2 size={22} color="#00E5FF" />
-              );
-
-            return (
-              <div
-                key={key}
-                className={`${styles.planCard} ${plan.highlighted ? styles.planCardPopular : ""}`}
+        {hasSubscription ? (
+          <div style={{ textAlign: "center", padding: "2rem 0" }}>
+            <div style={{ marginBottom: "2rem", display: "inline-flex", alignItems: "center", gap: "10px", background: "rgba(123, 45, 255, 0.1)", padding: "10px 20px", borderRadius: "100px", color: "#A78BFA", fontWeight: 600 }}>
+              <Crown size={20} />
+              Current Plan: {subscriptionPlan}
+            </div>
+            <div>
+              <button
+                className={`${styles.planBtn} ${styles.btnPrimary}`}
+                onClick={handleManageBilling}
+                disabled={loadingPlan === "billing"}
+                style={{ maxWidth: "300px", margin: "0 auto" }}
               >
-                {plan.highlighted && <div className={styles.popularBadge}>Most Popular</div>}
-
-                <div className={styles.planHeader}>
-                  {icon}
-                  <h3 className={styles.planName}>{plan.name}</h3>
-                </div>
-                <p className={styles.planDesc}>{plan.desc}</p>
-
-                <div className={styles.priceRow}>
-                  <span className={styles.priceCurrency}>$</span>
-                  <span className={styles.priceAmount}>
-                    {key === "Enterprise" ? "Custom" : price}
-                  </span>
-                  {key !== "Enterprise" && (
-                    <span className={styles.pricePeriod}>/{isAnnual ? "yr" : "mo"}</span>
-                  )}
-                </div>
-                {key !== "Enterprise" && (
-                  <p className={styles.priceSubtext}>
-                    {isAnnual ? `Billed $${price} annually` : "Billed monthly, cancel anytime"}
-                  </p>
+                {loadingPlan === "billing" ? "Processing..." : (
+                  <>
+                    Manage Billing & Invoices <ExternalLink size={16} />
+                  </>
                 )}
-                {key === "Enterprise" && (
-                  <p className={styles.priceSubtext}>Tailored for your organization</p>
-                )}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className={styles.billingToggle}>
+              <span className={`${styles.toggleLabel} ${!isAnnual ? styles.toggleLabelActive : ""}`}>
+                Monthly
+              </span>
+              <button
+                className={`${styles.toggleSwitch} ${isAnnual ? styles.toggleSwitchActive : ""}`}
+                onClick={() => setIsAnnual(!isAnnual)}
+                aria-label="Toggle annual billing"
+              />
+              <span className={`${styles.toggleLabel} ${isAnnual ? styles.toggleLabelActive : ""}`}>
+                Annual
+              </span>
+              {isAnnual && <span className={styles.saveBadge}>Save 17%</span>}
+            </div>
 
-                <div className={styles.divider} />
+            <div className={styles.plansGrid}>
+              {planKeys.map((key) => {
+                const plan = PLANS[key];
+                const isLoading = loadingPlan === key;
+                const price = isAnnual && key !== "Enterprise" ? Math.round(plan.monthlyUsd * 10) : plan.monthlyUsd;
+                
+                const icon =
+                  key === "Starter" ? (
+                    <Zap size={22} color="#7B2DFF" />
+                  ) : key === "Professional" ? (
+                    <Crown size={22} color="#7B2DFF" />
+                  ) : (
+                    <Building2 size={22} color="#00E5FF" />
+                  );
 
-                <ul className={styles.featureList}>
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className={styles.featureItem}>
-                      <span
-                        className={`${styles.featureCheck} ${plan.highlighted ? styles.featureCheckGreen : ""}`}
-                      >
-                        <Check size={12} strokeWidth={3} />
+                return (
+                  <div
+                    key={key}
+                    className={`${styles.planCard} ${plan.highlighted ? styles.planCardPopular : ""}`}
+                  >
+                    {plan.highlighted && <div className={styles.popularBadge}>Most Popular</div>}
+
+                    <div className={styles.planHeader}>
+                      {icon}
+                      <h3 className={styles.planName}>{plan.name}</h3>
+                    </div>
+                    <p className={styles.planDesc}>{plan.desc}</p>
+
+                    <div className={styles.priceRow}>
+                      <span className={styles.priceCurrency}>$</span>
+                      <span className={styles.priceAmount}>
+                        {key === "Enterprise" ? "Custom" : price}
                       </span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                      {key !== "Enterprise" && (
+                        <span className={styles.pricePeriod}>/{isAnnual ? "yr" : "mo"}</span>
+                      )}
+                    </div>
+                    {key !== "Enterprise" && (
+                      <p className={styles.priceSubtext}>
+                        {isAnnual ? `Billed $${price} annually` : "Billed monthly, cancel anytime"}
+                      </p>
+                    )}
+                    {key === "Enterprise" && (
+                      <p className={styles.priceSubtext}>Tailored for your organization</p>
+                    )}
 
-                <button
-                  className={`${styles.planBtn} ${styles[plan.btnStyle]} ${isLoading ? styles.btnDisabled : ""}`}
-                  onClick={() => handleSelectPlan(key)}
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Processing..." : (
-                    <>
-                      {plan.cta} <ArrowRight size={16} />
-                    </>
-                  )}
-                </button>
-              </div>
-            );
-          })}
-        </div>
+                    <div className={styles.divider} />
+
+                    <ul className={styles.featureList}>
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className={styles.featureItem}>
+                          <span
+                            className={`${styles.featureCheck} ${plan.highlighted ? styles.featureCheckGreen : ""}`}
+                          >
+                            <Check size={12} strokeWidth={3} />
+                          </span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button
+                      className={`${styles.planBtn} ${styles[plan.btnStyle]} ${isLoading ? styles.btnDisabled : ""}`}
+                      onClick={() => handleSelectPlan(key)}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Processing..." : (
+                        <>
+                          {plan.cta} <ArrowRight size={16} />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, createContext, useContext } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   LayoutDashboard,
   Settings,
@@ -24,9 +24,41 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useNotification } from "@/context/NotificationContext";
 import { SubscriptionModal } from "@/components/os/SubscriptionModal";
 import styles from "./dashboard.module.css";
 import Image from "next/image";
+import { Suspense } from "react";
+
+/* ── Subscription Feedback ── */
+function SubscriptionFeedback() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { showNotification } = useNotification();
+
+  useEffect(() => {
+    const status = searchParams.get("subscription");
+    if (status === "success") {
+      showNotification({
+        title: "Subscription Confirmed",
+        message: "Welcome to Bohenix Flow AI! Your autonomous agents are ready.",
+        type: "success",
+        duration: 6000,
+      });
+      // Clean up URL
+      router.replace("/dashboard");
+    } else if (status === "cancelled") {
+      showNotification({
+        title: "Checkout Cancelled",
+        message: "Your subscription process was cancelled.",
+        type: "info",
+      });
+      router.replace("/dashboard");
+    }
+  }, [searchParams, router, showNotification]);
+
+  return null;
+}
 
 /* ── Subscription Context ── */
 interface SubscriptionContextType {
@@ -279,6 +311,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Subscription Modal — globally available in dashboard */}
         <SubscriptionModal isOpen={isSubModalOpen} onClose={() => setIsSubModalOpen(false)} />
+        
+        <Suspense fallback={null}>
+          <SubscriptionFeedback />
+        </Suspense>
       </div>
     </SubscriptionContext.Provider>
   );
