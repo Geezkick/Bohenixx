@@ -48,21 +48,21 @@ export default async function AnalyticsPage() {
 
   const mergedAgents = agentPerformance.length > 0 ? agentPerformance : DEMO_AGENTS;
 
-  // Build realistic 30-day time series if no real data
+  // Build realistic 30-day time series if no real data (deterministic — no Math.random to avoid hydration mismatch)
   const isEmptyTimeSeries = timeSeries.every((d: any) => d.savings === 0);
   const mergedTimeSeries = isEmptyTimeSeries 
     ? timeSeries.map((d: any, i: number) => ({
         ...d,
-        savings: Math.round(1200 + Math.sin(i * 0.5) * 600 + i * 80 + Math.random() * 400)
+        savings: Math.round(1200 + Math.sin(i * 0.5) * 600 + i * 80 + Math.cos(i * 0.8) * 200)
       }))
     : timeSeries;
 
-  // Build realistic cash flow forecast if no real data
+  // Build realistic cash flow forecast if no real data (deterministic)
   const isEmptyForecast = cashFlowForecast.every((d: any) => d.projectedRevenueKes === 0);
   const mergedForecast = isEmptyForecast
     ? cashFlowForecast.map((d: any, i: number) => ({
         ...d,
-        projectedRevenueKes: Math.round(14000 + Math.sin(i * 1.2) * 3000 + i * 500)
+        projectedRevenueKes: Math.round(14000 + Math.sin(i * 1.2) * 3000 + i * 500 + Math.cos(i * 0.9) * 800)
       }))
     : cashFlowForecast;
 
