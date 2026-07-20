@@ -302,6 +302,66 @@
   font-weight: 600;
 }
 
+/* Terminal Animation */
+.terminalBox {
+  background: #0a0a0c;
+  border: 1px solid rgba(123, 45, 255, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+  min-height: 300px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.8);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  text-align: left;
+  animation: scaleIn 0.5s ease-out forwards;
+}
+
+.terminalHeader {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.terminalDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminalDot.red { background: #ff5f56; }
+.terminalDot.yellow { background: #ffbd2e; }
+.terminalDot.green { background: #27c93f; }
+
+.terminalLine {
+  color: #a3a3a8;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.terminalSuccess {
+  color: #22c55e;
+}
+
+.terminalHighlight {
+  color: #7B2DFF;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(123, 45, 255, 0.3);
+  border-top-color: #7B2DFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-30px); }
   to { opacity: 1; transform: translateY(0); }
@@ -315,4 +375,13 @@
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

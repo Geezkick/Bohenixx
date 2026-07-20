@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./onboarding.module.css";
-import { Briefcase, Building2, UserCog, TrendingUp, Headphones, Scale, ArrowLeft, Loader2, Crown } from "lucide-react";
+import { Briefcase, Building2, UserCog, TrendingUp, Headphones, Scale, ArrowLeft, Loader2, Crown, Check } from "lucide-react";
 import ParticlesBackground from "@/components/ParticlesBackground";
 
-type Step = "select_company_type" | "new_company_hire" | "existing_company_gap";
+type Step = "select_company_type" | "new_company_hire" | "existing_company_gap" | "provisioning";
 type CompanyType = "new" | "existing" | null;
 type Department = "finance" | "sales" | "support" | "legal" | null;
 
@@ -18,6 +18,10 @@ export default function OnboardingPage() {
   const [agentName, setAgentName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Terminal animation state
+  const [terminalLines, setTerminalLines] = useState<string[]>([]);
+  const [terminalComplete, setTerminalComplete] = useState(false);
+
   const handleSelectType = (type: "new" | "existing") => {
     setCompanyType(type);
     if (type === "new") {
@@ -27,35 +31,73 @@ export default function OnboardingPage() {
     }
   };
 
+  const runProvisioningAnimation = (type: string, finalName: string) => {
+    setStep("provisioning");
+    setTerminalLines(["[SYSTEM] Initiating Bohenix Flow Provisioning Sequence..."]);
+    
+    const lines = type === "executive" ? [
+      "Authenticating executive clearance...",
+      "Allocating Neural Core resources for Executive CEO...",
+      `Equipping ${finalName} with [workflow_orchestrator] tool...`,
+      `Equipping ${finalName} with [financial_dashboard_access] tool...`,
+      "Injecting foundational corporate directives into Agent Memory...",
+      "Generating automated workflow: 'CEO Daily Briefing'...",
+      "Syncing with Bohenix Cloud datastores...",
+      "Provisioning complete. Executive systems online."
+    ] : [
+      `Authenticating department clearance for ${type.toUpperCase()}...`,
+      `Allocating Neural Core resources for Specialist Agent...`,
+      `Equipping ${finalName} with specialized department tools...`,
+      "Injecting departmental gap parameters into Agent Memory...",
+      `Generating automated operational workflow for ${type}...`,
+      "Syncing with existing corporate infrastructure...",
+      "Provisioning complete. Specialist systems online."
+    ];
+
+    let delay = 800;
+    lines.forEach((line, index) => {
+      setTimeout(() => {
+        setTerminalLines(prev => [...prev, line]);
+        if (index === lines.length - 1) {
+          setTimeout(() => setTerminalComplete(true), 1500);
+        }
+      }, delay);
+      delay += Math.random() * 800 + 400; // random delay between 400ms and 1200ms
+    });
+  };
+
   const handleHireAgent = async (type: string, presetName?: string) => {
     setIsSubmitting(true);
+    const finalName = presetName || agentName || (type === "executive" ? "Alex (CEO)" : `Agent (${type})`);
+    
+    // Start visual animation immediately
+    runProvisioningAnimation(type, finalName);
+
     try {
-      const finalName = presetName || agentName || (type === "executive" ? "Alex (CEO)" : `Agent (${type})`);
-      
-      const res = await fetch("/api/flow-ai/agents", {
+      const res = await fetch("/api/onboarding/provision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: finalName,
           type: type,
-          description: type === "executive" 
-            ? "Chief Executive Officer. Responsible for overall strategy, growth, and orchestrating the AI workforce." 
-            : `Specialized agent for ${type} operations.`,
+          companyType: companyType
         }),
       });
 
-      if (res.ok) {
-        // Successfully created agent, redirect to dashboard
-        router.push("/dashboard");
-      } else {
-        console.error("Failed to create agent");
-        setIsSubmitting(false);
+      if (!res.ok) {
+        console.error("Failed to provision ecosystem");
       }
+      // We don't redirect immediately, we wait for the animation to finish
     } catch (err) {
       console.error(err);
-      setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (terminalComplete) {
+      router.push("/dashboard");
+    }
+  }, [terminalComplete, router]);
 
   return (
     <>
@@ -63,11 +105,13 @@ export default function OnboardingPage() {
       <div className={styles.container}>
         
         {/* Progress Step Indicator */}
-        <div className={styles.stepIndicator}>
-          <div className={`${styles.stepDot} ${styles.active}`} title="Step 1: Corporate Structure"></div>
-          <div className={styles.stepLine}></div>
-          <div className={`${styles.stepDot} ${step !== "select_company_type" ? styles.active : ""}`} title="Step 2: Appoint Agent"></div>
-        </div>
+        {step !== "provisioning" && (
+          <div className={styles.stepIndicator}>
+            <div className={`${styles.stepDot} ${styles.active}`} title="Step 1: Corporate Structure"></div>
+            <div className={styles.stepLine}></div>
+            <div className={`${styles.stepDot} ${step !== "select_company_type" ? styles.active : ""}`} title="Step 2: Appoint Agent"></div>
+          </div>
+        )}
 
         {step === "select_company_type" && (
           <>
@@ -139,6 +183,7 @@ export default function OnboardingPage() {
             <button 
               className={styles.btnSecondary} 
               onClick={() => { setStep("select_company_type"); setAgentName(""); }}
+              disabled={isSubmitting}
             >
               <ArrowLeft size={18} style={{ marginRight: '6px' }} /> Go Back
             </button>
@@ -208,9 +253,41 @@ export default function OnboardingPage() {
             <button 
               className={styles.btnSecondary} 
               onClick={() => { setStep("select_company_type"); setDepartment(null); setAgentName(""); }}
+              disabled={isSubmitting}
             >
               <ArrowLeft size={18} style={{ marginRight: '6px' }} /> Go Back
             </button>
+          </div>
+        )}
+
+        {step === "provisioning" && (
+          <div className={styles.terminalBox}>
+            <div className={styles.terminalHeader}>
+              <div className={`${styles.terminalDot} ${styles.red}`}></div>
+              <div className={`${styles.terminalDot} ${styles.yellow}`}></div>
+              <div className={`${styles.terminalDot} ${styles.green}`}></div>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {terminalLines.map((line, i) => (
+                <div key={i} className={styles.terminalLine}>
+                  <span style={{ color: '#7B2DFF' }}>&gt;</span> 
+                  <span className={
+                    line.includes("complete") ? styles.terminalSuccess : 
+                    line.includes("Equipping") ? styles.terminalHighlight : ""
+                  }>
+                    {line}
+                  </span>
+                  {line.includes("complete") && <Check size={14} color="#22c55e" style={{ marginLeft: 'auto' }} />}
+                </div>
+              ))}
+              {!terminalComplete && (
+                <div className={styles.terminalLine}>
+                  <span style={{ color: '#7B2DFF' }}>&gt;</span>
+                  <div className={styles.spinner}></div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
