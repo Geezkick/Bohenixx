@@ -66,6 +66,11 @@ model User {
   documentScans DocumentScan[]
   workflows     Workflow[]
 
+  // Neural Core Relations
+  companyDNA    CompanyDNA?
+  knowledgeNodes KnowledgeNode[]
+  knowledgeEdges KnowledgeEdge[]
+
   // Billing and Subscriptions
   stripeCustomerId       String?   @unique
   stripeSubscriptionId   String?   @unique
@@ -296,6 +301,8 @@ model FlowAgent {
   memories AgentMemory[]
   documentScans DocumentScan[]
   workflowSteps WorkflowStep[]
+  simulationRecords SimulationRecord[]
+  decisionLogs      DecisionLog[]
   user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -321,6 +328,8 @@ model FlowTask {
   parentTask FlowTask?       @relation("SubTasks", fields: [parentTaskId], references: [id])
   subTasks   FlowTask[]      @relation("SubTasks")
   approval   ApprovalRequest?
+  simulationRecords SimulationRecord[]
+  decisionLogs      DecisionLog[]
 
   @@index([agentId])
   @@index([userId])
@@ -422,6 +431,7 @@ model ApprovalRequest {
   action      String    // Description of what needs approval
   details     String?   @db.Text // JSON details of the pending action
   amountKes   Float?    // Amount involved if financial
+  riskLevel   String    @default("LOW") // LOW, MEDIUM, HIGH, CRITICAL
   status      String    @default("PENDING") // PENDING, APPROVED, REJECTED
   decidedAt   DateTime?
   decidedBy   String?   // User ID of approver
@@ -494,3 +504,94 @@ model WorkflowStep {
   @@index([workflowId])
   @@index([agentId])
 }
+
+// ==========================================
+// BOHENIX NEURAL CORE - CENTRAL INTELLIGENCE
+// ==========================================
+
+model CompanyDNA {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  mission          String?  @db.Text
+  vision           String?  @db.Text
+  operatingRules   String?  @db.Text // JSON array of core principles
+  riskAppetite     String   @default("MODERATE") // CONSERVATIVE, MODERATE, AGGRESSIVE
+  budgetLimitsKes  Float?   // Global AI budget limit
+  complianceRules  String?  @db.Text // JSON array
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KnowledgeNode {
+  id          String   @id @default(cuid())
+  userId      String
+  nodeType    String   // "CUSTOMER", "INVOICE", "EMPLOYEE", "TASK", "DOCUMENT", "CONCEPT"
+  label       String   // e.g. "Invoice #INV-001"
+  properties  String?  @db.Text // JSON blob of data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sourceEdges KnowledgeEdge[] @relation("SourceNode")
+  targetEdges KnowledgeEdge[] @relation("TargetNode")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([nodeType])
+}
+
+model KnowledgeEdge {
+  id           String   @id @default(cuid())
+  userId       String
+  sourceNodeId String
+  targetNodeId String
+  relationType String   // "BELONGS_TO", "GENERATED_BY", "DEPENDS_ON", "RELATES_TO"
+  weight       Float    @default(1.0)
+  createdAt    DateTime @default(now())
+
+  sourceNode   KnowledgeNode @relation("SourceNode", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode   KnowledgeNode @relation("TargetNode", fields: [targetNodeId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceNodeId, targetNodeId, relationType])
+  @@index([userId])
+}
+
+model SimulationRecord {
+  id                 String   @id @default(cuid())
+  taskId             String
+  agentId            String
+  proposedAction     String   @db.Text
+  successProbability Float
+  financialImpactKes Float    @default(0)
+  riskScore          Float    @default(0) // 0 to 1
+  predictedOutcome   String   @db.Text
+  status             String   @default("PENDING_EXECUTION") // PENDING_EXECUTION, EXECUTED, REJECTED
+  createdAt          DateTime @default(now())
+
+  task               FlowTask  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  agent              FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([agentId])
+}
+
+model DecisionLog {
+  id              String   @id @default(cuid())
+  taskId          String
+  agentId         String
+  actionTaken     String
+  reasoning       String   @db.Text
+  confidenceScore Float
+  alternatives    String?  @db.Text // JSON array of discarded options
+  expectedRoi     String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  task            FlowTask  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  agent           FlowAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([agentId])
+}
+
