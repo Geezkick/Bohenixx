@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styles from "./dashboard.module.css";
 import { ArrowRight, Activity, BrainCircuit, Zap, TrendingUp, Terminal, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { PulseIndicator } from "@/components/os/PulseIndicator";
 import AIEmployeeCard, { AIEmployee } from "@/components/os/AIEmployeeCard";
@@ -92,6 +93,7 @@ function AnimatedKPI({ value, suffix = "", prefix = "" }: { value: number; suffi
 
 export default function MissionControl() {
   const { user } = useAuth();
+  const router = useRouter();
   const [data, setData] = useState<OverviewData | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -105,6 +107,10 @@ export default function MissionControl() {
       .then((res) => res.json())
       .then((d) => {
         if (!d.error) {
+          if (d.flowAi?.activeAgentsCount === 0) {
+            router.push("/dashboard/onboarding");
+            return;
+          }
           setData(d);
           setLiveActivities(d.recentActivity || []);
           setLiveApprovals(d.flowAi?.pendingApprovals || []);
