@@ -9,7 +9,7 @@ import {
   Users, DollarSign, Calculator, Headphones, Cog, Megaphone, Scale, ClipboardList, Calendar, TrendingUp,
   MessageSquare, BrainCircuit, ListChecks, Zap, BarChart, Bell, LayoutDashboard, FileText, Blocks, UsersRound, Wrench, LineChart,
   Truck, HeartPulse, Landmark, GraduationCap, ShoppingCart, Factory, HardHat, Hotel, Building2, Globe, Briefcase, Laptop,
-  Cloud, MessageCircle, Mail, Paperclip, GitBranch, Video, CreditCard, Bot, Settings, ChevronRight, Mic, Users2
+  Cloud, MessageCircle, Mail, Paperclip, GitBranch, Video, CreditCard, Bot, Settings, ChevronRight, Mic, Users2, Check as CheckIcon
 } from "lucide-react";
 import s from "./flowai.module.css";
 
@@ -77,13 +77,54 @@ export default function FlowAIPage() {
       <section id="overview" className={s.hero}>
         <motion.div className={s.heroInner} initial="hidden" animate="show" variants={{hidden:{opacity:0},show:{opacity:1,transition:{staggerChildren:0.15}}}}>
 
-          <motion.h1 variants={fade} className={s.heroTitle}>Build an <span className={s.heroGradient}>Autonomous Company</span></motion.h1>
-          <motion.p variants={fade} className={s.heroSub}>Hire AI employees. Build AI departments. Run your company autonomously. Create an entire digital workforce that manages operations, sales, finance, customer support, HR, and projects—all working together like a real company.</motion.p>
+          <motion.h1 variants={fade} className={s.heroTitle}>Build a <span className={s.heroGradient}>Systematic AI Workforce</span></motion.h1>
+          <motion.p variants={fade} className={s.heroSub}>Whether you are starting from scratch by appointing an AI Executive or expanding an existing enterprise, build a structured, hierarchical digital workforce that manages operations, sales, finance, and customer support autonomously.</motion.p>
           <motion.div variants={fade} className={s.heroCtas}>
             <button onClick={goToPlans} className={s.ctaPrimary} style={{ cursor: "pointer" }}>Hire AI Workforce <ArrowRightIcon size={18}/></button>
             <Link href="#demo" className={s.ctaSecondary}>Watch Demo</Link>
           </motion.div>
         </motion.div>
+      </section>
+
+      {/* Corporate Hierarchy Onboarding */}
+      <section id="onboarding" className={s.section} style={{background:'rgba(255,255,255,0.01)'}}>
+        <div className={s.contentWrap}>
+          <motion.div initial="hidden" whileInView="show" viewport={{once:true}} variants={fade} style={{textAlign: 'center', marginBottom: '4rem'}}>
+            <div className={s.sectionLabel} style={{justifyContent: 'center'}}>Systematic Onboarding</div>
+            <h2 className={s.sectionTitle}>Built on Corporate Hierarchy</h2>
+            <p className={s.sectionDesc} style={{margin: '0 auto'}}>Our precise onboarding flow ensures your AI workforce is structured logically, depending on your current business stage.</p>
+          </motion.div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+            <motion.div style={{ background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '24px', padding: '3rem 2.5rem', boxShadow: '0 4px 24px -4px rgba(0, 0, 0, 0.4)' }} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
+              <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(123,45,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', border: '1px solid rgba(123,45,255,0.3)' }}>
+                <Briefcase size={32} color="#7B2DFF" />
+              </div>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', color: '#fff' }}>Starting a New Company</h3>
+              <p style={{ color: '#B3B3B8', fontSize: '1rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+                Building from scratch? The system requires you to establish the top of the corporate hierarchy first. You'll appoint an <strong>Executive CEO Agent</strong> whose primary role is to set the vision and orchestrate all subsequent specialist hires.
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '0.9rem', marginBottom: '0.5rem' }}><CheckIcon color="#22c55e" size={16} /> Establish Foundation First</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '0.9rem' }}><CheckIcon color="#22c55e" size={16} /> Top-Down Orchestration</li>
+              </ul>
+            </motion.div>
+
+            <motion.div style={{ background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '24px', padding: '3rem 2.5rem', boxShadow: '0 4px 24px -4px rgba(0, 0, 0, 0.4)' }} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
+              <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(34,197,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', border: '1px solid rgba(34,197,94,0.3)' }}>
+                <Building2 size={32} color="#22c55e" />
+              </div>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', color: '#fff' }}>Existing Business</h3>
+              <p style={{ color: '#B3B3B8', fontSize: '1rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+                Already operating? The system uses a targeted <strong>Gap Analysis</strong> approach. You'll identify which existing department (Finance, Sales, Support, Legal) needs immediate reinforcement and deploy a specialist agent directly into that workflow.
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '0.9rem', marginBottom: '0.5rem' }}><CheckIcon color="#22c55e" size={16} /> Targeted Gap Analysis</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', fontSize: '0.9rem' }}><CheckIcon color="#22c55e" size={16} /> Department-Specific Deployment</li>
+              </ul>
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* AI Employees */}
