@@ -109,6 +109,58 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      // Phase 2: Onboarding Override (Neural Core Initialization)
+      if (companyType === "new") {
+        // 1. Initialize Company DNA
+        // Upsert so if a user already has one, we don't crash, but typically this is their first.
+        await prisma.companyDNA.upsert({
+          where: { userId },
+          update: {}, // Don't override if it already exists
+          create: {
+            userId,
+            mission: "To operate efficiently, scale autonomously, and maximize ROI.",
+            vision: "A fully autonomous enterprise.",
+            operatingRules: JSON.stringify([
+              "Always optimize for capital efficiency.",
+              "Require human approval for high-risk actions.",
+              "Maintain complete audit logs for financial transactions."
+            ]),
+            riskAppetite: "MODERATE",
+            budgetLimitsKes: 100000
+          }
+        });
+
+        // 2. Seed Initial Knowledge Graph Node
+        const execNode = await prisma.knowledgeNode.create({
+          data: {
+            userId,
+            nodeType: "DEPARTMENT",
+            label: "Executive Office",
+            properties: JSON.stringify({ establishedAt: new Date().toISOString() })
+          }
+        });
+
+        const agentNode = await prisma.knowledgeNode.create({
+          data: {
+            userId,
+            nodeType: "AGENT",
+            label: `Agent: ${agent.name}`,
+            properties: JSON.stringify({ role: agent.type })
+          }
+        });
+
+        // 3. Connect them via Knowledge Edge
+        await prisma.knowledgeEdge.create({
+          data: {
+            userId,
+            sourceNodeId: agentNode.id,
+            targetNodeId: execNode.id,
+            relationType: "BELONGS_TO",
+            weight: 1.0
+          }
+        });
+      }
+
       // Setup Workflow
       if (workflow.name) {
         const wfDef = await prisma.workflowDefinition.create({
