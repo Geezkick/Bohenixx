@@ -1,18 +1,78 @@
 import { db } from "@/lib/db";
-import { FlowAgent, FlowTask } from "@prisma/client";
+import { FlowAgent, FlowTask, CompanyDNA } from "@prisma/client";
 import { ExecutionEngine } from "./execution-engine";
+import { SimulationEngine } from "./simulation-engine";
 
 /**
  * BOHENIX NEURAL CORE ORCHESTRATOR
  * The central intelligence engine that governs the AI Workforce.
- * Follows the Consciousness Loop: Observe -> Understand -> Plan -> Simulate -> Risk Analysis -> Approval -> Execute -> Verify -> Learn
+ * 
+ * CONSCIOUSNESS LOOP:
+ * Observe -> Understand -> Remember -> Reason -> Plan -> Predict -> Simulate -> 
+ * Evaluate Risk -> Request Approval (if required) -> Execute -> Verify -> Reflect -> Learn -> Optimize
+ * 
+ * NOTHING BYPASSES THIS PIPELINE.
  */
 
 export class NeuralCoreOrchestrator {
   
   /**
+   * MASTER PIPELINE
+   * The single entry point for all agent operations.
+   * Enforces the full consciousness loop from observation to learning.
+   */
+  static async processRequest(userId: string, agentId: string, prompt: string) {
+    console.log(`\n========================================`);
+    console.log(`[NEURAL CORE] Processing request from user ${userId}`);
+    console.log(`========================================\n`);
+
+    // === PHASE 1: OBSERVE & UNDERSTAND ===
+    const { task, agent, dna } = await this.ingestRequest(userId, agentId, prompt);
+    console.log(`[OBSERVE] Task ${task.id} registered for Agent ${agent.name}`);
+
+    // === PHASE 2: REMEMBER (Context Retrieval) ===
+    const context = await this.retrieveContextWindow(userId, prompt);
+    console.log(`[REMEMBER] Context window built: "${context.substring(0, 60)}..."`);
+
+    // === PHASE 3: REASON & PLAN ===
+    // In production, an LLM would decompose the prompt into an action plan.
+    const proposedAction = prompt; // Simplified: the prompt IS the action for now.
+    console.log(`[PLAN] Proposed action: "${proposedAction.substring(0, 80)}"`);
+
+    // === PHASE 4: SIMULATE ===
+    const simulationResult = await SimulationEngine.simulate(task, agent, proposedAction, dna);
+    console.log(`[SIMULATE] Risk=${simulationResult.riskLevel}, PassesPolicy=${simulationResult.passesPolicy}`);
+
+    // === PHASE 5: EVALUATE RISK & APPROVAL ===
+    if (simulationResult.requiresApproval) {
+      const policyResult = await this.enforcePolicy(userId, task, simulationResult.simulation.id, simulationResult.riskLevel);
+      console.log(`[POLICY] Execution BLOCKED. Awaiting human authorization.`);
+      return {
+        status: "PENDING_APPROVAL",
+        task,
+        simulation: simulationResult.simulation,
+        message: policyResult.reason
+      };
+    }
+
+    // === PHASE 6: EXECUTE ===
+    console.log(`[EXECUTE] Authorized. Dispatching to Execution Engine...`);
+    const completedTask = await this.execute(task, agent, proposedAction, "Passed simulation and policy checks.");
+
+    // === PHASE 7: VERIFY & REPORT ===
+    console.log(`[VERIFY] Task ${completedTask.id} completed with status: ${completedTask.status}`);
+    console.log(`[NEURAL CORE] Pipeline complete.\n`);
+
+    return {
+      status: completedTask.status,
+      task: completedTask,
+      simulation: simulationResult.simulation
+    };
+  }
+
+  /**
    * 1. OBSERVE & UNDERSTAND
-   * Receives a request or an event, and retrieves the Company DNA to understand the boundaries.
+   * Receives a request, validates the Company DNA exists, and registers the task.
    */
   static async ingestRequest(userId: string, agentId: string, prompt: string) {
     const dna = await db.companyDNA.findUnique({ where: { userId } });
@@ -43,69 +103,45 @@ export class NeuralCoreOrchestrator {
    * Pulls relevant context from the Knowledge Graph to build the context window.
    */
   static async retrieveContextWindow(userId: string, taskPrompt: string) {
-    // Concept: Use embedding search to find closest KnowledgeNodes.
-    // For now, we return a mock context string built from the Graph.
-    return "Company is in growth phase. Prioritize customer acquisition over cost cutting.";
-  }
-
-  /**
-   * 3. PLAN & SIMULATE
-   * Breaks the task into steps and runs a simulation to predict outcomes and risks.
-   */
-  static async simulateExecution(task: FlowTask, agent: FlowAgent, proposedAction: string) {
-    // Generate a simulation record
-    // Mock simulation logic: normally an LLM would evaluate this.
-    const riskScore = proposedAction.includes("transfer") ? 0.8 : 0.2;
-    const successProbability = 0.95;
-
-    const simulation = await db.simulationRecord.create({
-      data: {
-        taskId: task.id,
-        agentId: agent.id,
-        proposedAction,
-        successProbability,
-        financialImpactKes: proposedAction.includes("transfer") ? 50000 : 0,
-        riskScore,
-        predictedOutcome: "Action likely to succeed with minimal operational friction.",
-        status: "PENDING_EXECUTION"
-      }
+    // Fetch knowledge nodes related to this user's company
+    const nodes = await db.knowledgeNode.findMany({
+      where: { userId },
+      take: 10,
+      orderBy: { updatedAt: "desc" }
     });
 
-    return simulation;
+    if (nodes.length === 0) {
+      return "No prior knowledge. Operating with default company parameters.";
+    }
+
+    // Build a context string from the knowledge graph
+    const contextParts = nodes.map(n => `[${n.nodeType}] ${n.label}`);
+    return `Active intelligence nodes: ${contextParts.join(", ")}. Company is operational.`;
   }
 
   /**
    * 4. EVALUATE RISK & REQUIRE APPROVAL
-   * Checks the Simulation against Company DNA's risk appetite.
+   * Uses the simulation result to determine if human approval is needed.
    */
-  static async enforcePolicy(userId: string, task: FlowTask, simulationId: string, riskScore: number) {
-    let riskLevel = "LOW";
-    if (riskScore > 0.7) riskLevel = "CRITICAL";
-    else if (riskScore > 0.4) riskLevel = "HIGH";
-    else if (riskScore > 0.2) riskLevel = "MEDIUM";
+  static async enforcePolicy(userId: string, task: FlowTask, simulationId: string, riskLevel: string) {
+    // Pause task and request human approval
+    await db.flowTask.update({
+      where: { id: task.id },
+      data: { status: "PENDING_APPROVAL", approvalRequired: true }
+    });
 
-    if (riskLevel === "HIGH" || riskLevel === "CRITICAL") {
-      // Pause task and request human approval
-      await db.flowTask.update({
-        where: { id: task.id },
-        data: { status: "PENDING_APPROVAL", approvalRequired: true }
-      });
+    await db.approvalRequest.create({
+      data: {
+        taskId: task.id,
+        userId: userId,
+        agentId: task.agentId,
+        action: `${riskLevel} Risk Action Detected by Neural Core Simulation Engine`,
+        riskLevel,
+        status: "PENDING"
+      }
+    });
 
-      await db.approvalRequest.create({
-        data: {
-          taskId: task.id,
-          userId: userId,
-          agentId: task.agentId,
-          action: "High Risk Action Detected by Neural Core",
-          riskLevel,
-          status: "PENDING"
-        }
-      });
-
-      return { approved: false, reason: "Requires human authorization" };
-    }
-
-    return { approved: true };
+    return { approved: false, reason: `${riskLevel} risk detected. Requires human CEO authorization.` };
   }
 
   /**
@@ -119,15 +155,72 @@ export class NeuralCoreOrchestrator {
       data: { status: "RUNNING" }
     });
 
-    // Generate a mock execution plan based on the action
-    // In production, the reasoning engine LLM would output this JSON array.
-    const planSteps = [
-      { action: "Initialize Protocol", tool: "workflow_orchestrator", params: {} },
-      // The second step might fail if unauthorized (Zero-Trust Test)
-      { action: "Execute Core Task", tool: actionTaken.includes("finance") ? "mpesa_api_access" : "generic_tool", params: {} }
-    ];
+    // Generate execution plan based on the action and agent type
+    const planSteps = this.generateExecutionPlan(agent, actionTaken);
 
-    // Hand off to the execution engine which will handle Tool Routing and Learning
+    // Hand off to the execution engine which handles Tool Routing and Learning
     return await ExecutionEngine.executeAuthorizedPlan(task, agent, planSteps);
+  }
+
+  /**
+   * Generates an execution plan based on agent type and action context.
+   */
+  private static generateExecutionPlan(agent: FlowAgent, action: string): { action: string, tool: string, params: any }[] {
+    const lowerAction = action.toLowerCase();
+
+    // Executive agents orchestrate workflows
+    if (agent.type === "executive") {
+      return [
+        { action: "Orchestrate Workflow", tool: "workflow_orchestrator", params: { depth: 2 } },
+        { action: "Generate Executive Summary", tool: "financial_dashboard_access", params: {} }
+      ];
+    }
+
+    // Finance agents handle money
+    if (agent.type === "finance") {
+      const steps: { action: string, tool: string, params: any }[] = [];
+      if (lowerAction.includes("payment") || lowerAction.includes("mpesa") || lowerAction.includes("transfer")) {
+        steps.push({ action: "Process Payment", tool: "mpesa_api_access", params: {} });
+      }
+      if (lowerAction.includes("invoice") || lowerAction.includes("reconcil")) {
+        steps.push({ action: "Reconcile Payments", tool: "reconciliation_engine", params: {} });
+      }
+      if (lowerAction.includes("parse") || lowerAction.includes("scan")) {
+        steps.push({ action: "Parse Invoice", tool: "invoice_parser", params: {} });
+      }
+      if (steps.length === 0) {
+        steps.push({ action: "Financial Analysis", tool: "reconciliation_engine", params: {} });
+      }
+      return steps;
+    }
+
+    // Sales agents handle CRM
+    if (agent.type === "sales") {
+      return [
+        { action: "Access CRM", tool: "crm_access", params: {} },
+        { action: "Execute Outreach", tool: "email_outreach_tool", params: {} }
+      ];
+    }
+
+    // Support agents handle tickets
+    if (agent.type === "support") {
+      return [
+        { action: "Search Knowledge Base", tool: "knowledge_base_search", params: {} },
+        { action: "Update Ticket", tool: "ticketing_system_access", params: {} }
+      ];
+    }
+
+    // Legal agents handle compliance
+    if (agent.type === "legal") {
+      return [
+        { action: "Analyze Contract", tool: "contract_analyzer", params: {} },
+        { action: "Check Compliance", tool: "compliance_checker", params: {} }
+      ];
+    }
+
+    // Default fallback
+    return [
+      { action: "Execute Task", tool: "workflow_orchestrator", params: {} }
+    ];
   }
 }
