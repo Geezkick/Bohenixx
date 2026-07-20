@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { FlowAgent, FlowTask } from "@prisma/client";
+import { ExecutionEngine } from "./execution-engine";
 
 /**
  * BOHENIX NEURAL CORE ORCHESTRATOR
@@ -109,7 +110,7 @@ export class NeuralCoreOrchestrator {
 
   /**
    * 5. EXECUTE & VERIFY
-   * Actually fires the tools and executes the decision. Logs to DecisionLog.
+   * Hands off the authorized execution to the Execution Engine.
    */
   static async execute(task: FlowTask, agent: FlowAgent, actionTaken: string, reasoning: string) {
     // Mark as executing
@@ -118,27 +119,15 @@ export class NeuralCoreOrchestrator {
       data: { status: "RUNNING" }
     });
 
-    // Record the Decision Log
-    await db.decisionLog.create({
-      data: {
-        taskId: task.id,
-        agentId: agent.id,
-        actionTaken,
-        reasoning,
-        confidenceScore: 0.92,
-      }
-    });
+    // Generate a mock execution plan based on the action
+    // In production, the reasoning engine LLM would output this JSON array.
+    const planSteps = [
+      { action: "Initialize Protocol", tool: "workflow_orchestrator", params: {} },
+      // The second step might fail if unauthorized (Zero-Trust Test)
+      { action: "Execute Core Task", tool: actionTaken.includes("finance") ? "mpesa_api_access" : "generic_tool", params: {} }
+    ];
 
-    // Mock Execution completion
-    const completedTask = await db.flowTask.update({
-      where: { id: task.id },
-      data: { 
-        status: "COMPLETED",
-        result: `Successfully executed: ${actionTaken}`,
-        completedAt: new Date()
-      }
-    });
-
-    return completedTask;
+    // Hand off to the execution engine which will handle Tool Routing and Learning
+    return await ExecutionEngine.executeAuthorizedPlan(task, agent, planSteps);
   }
 }
