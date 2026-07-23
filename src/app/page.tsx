@@ -268,7 +268,7 @@ export default function CorporateLandingPage() {
           >
 
             <h1 className={styles.title}>
-              Build an Entire Company <br />
+              Build an Entire Company{' '}
               <span style={{ color: '#9CA3AF' }}>That Runs Itself.</span>
             </h1>
             <p className={styles.subtitle}>
