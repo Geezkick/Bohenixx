@@ -268,10 +268,10 @@ export default function CorporateLandingPage() {
           >
 
             <h1 className={styles.title}>
-              Build an Entire Company{' '}
-              <span style={{ color: '#9CA3AF' }}>That Runs Itself.</span>
+              Build an Entire Company That{" "}
+              <span style={{ color: '#9CA3AF' }}>Runs Itself.</span>
             </h1>
-            <p className={styles.subtitle}>
+            <p className={styles.subtitle} style={{ textAlign: 'center', margin: '0 auto 48px' }}>
               Hire AI Employees That Never Sleep. Create an entire digital workforce that manages operations, sales, finance, customer support, and HR.
             </p>
             <div className={styles.ctaGroup}>
