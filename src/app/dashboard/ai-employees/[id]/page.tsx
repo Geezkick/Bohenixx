@@ -87,11 +87,34 @@ export default function AIEmployeeWorkspace() {
   }, [id]);
 
   if (loading) {
-    return <div style={{ padding: "2rem", color: "rgba(255,255,255,0.4)" }}>Loading workspace...</div>;
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", flexDirection: "column", gap: "1rem" }}>
+        <div style={{ width: "40px", height: "40px", border: "2px solid rgba(167,139,250,0.3)", borderTopColor: "#A78BFA", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+        <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.9rem" }}>Loading workspace...</div>
+      </div>
+    );
   }
 
   if (!agent) {
-    return <div style={{ padding: "2rem", color: "rgba(255,255,255,0.4)" }}>Agent not found.</div>;
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", flexDirection: "column", gap: "1.5rem", textAlign: "center" }}>
+        <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>
+          🤖
+        </div>
+        <div>
+          <div style={{ fontSize: "1.25rem", fontWeight: 600, color: "rgba(255,255,255,0.9)", marginBottom: "0.5rem" }}>Agent Not Found</div>
+          <div style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.4)", maxWidth: "320px" }}>
+            This agent may have been deleted or doesn&apos;t belong to your account.
+          </div>
+        </div>
+        <button
+          onClick={() => router.push("/dashboard/ai-employees")}
+          style={{ display: "flex", alignItems: "center", gap: "8px", padding: "0.6rem 1.25rem", borderRadius: "8px", background: "rgba(167,139,250,0.15)", border: "1px solid rgba(167,139,250,0.3)", color: "#A78BFA", cursor: "pointer", fontSize: "0.875rem", fontWeight: 600 }}
+        >
+          ← Back to AI Workforce
+        </button>
+      </div>
+    );
   }
 
   const role = agent.type || "assistant";
