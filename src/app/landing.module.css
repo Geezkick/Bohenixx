@@ -184,12 +184,13 @@
 }
 
 .title {
-  font-size: 88px;
-  line-height: 1.05;
+  font-size: clamp(44px, 5.5vw, 84px);
+  line-height: 1.08;
   font-weight: 600;
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
   letter-spacing: -0.04em;
   color: var(--text-primary);
+  text-align: center;
   text-wrap: balance;
 }
 
