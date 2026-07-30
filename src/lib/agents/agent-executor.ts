@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { MemoryStore } from "./memory-store";
 import { getTool, getGeminiToolDeclarations, AgentToolContext } from "./tool-registry";
 import { AgentBus } from "./agent-bus";
+import { writeTaskKnowledge } from "@/lib/knowledge-writer";
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -164,6 +165,17 @@ export const AgentExecutor = {
             completedAt: new Date()
           }
         });
+
+    // 6. Write knowledge nodes and edges to Knowledge Graph automatically
+    await writeTaskKnowledge({
+      userId: params.userId,
+      agentId: agent.id,
+      agentName: agent.name,
+      agentType: agent.type,
+      taskId: task.id,
+      prompt: lastMessage,
+      result: finalResponse,
+    });
 
     return {
       text: finalResponse,
