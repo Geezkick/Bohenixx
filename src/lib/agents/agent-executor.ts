@@ -70,6 +70,7 @@ export const AgentExecutor = {
     const MAX_ITERATIONS = 5; // Prevent infinite loops
     
     let currentInput: any = lastMessage;
+    let lastResponseText = "";
 
     // 4. ReAct Loop
     while (!isFinished && iterationCount < MAX_ITERATIONS) {
@@ -77,6 +78,7 @@ export const AgentExecutor = {
       
       const result = await chat.sendMessage(currentInput);
       const response = result.response;
+      lastResponseText = response.text() || "";
       
       const functionCalls = response.functionCalls();
       
@@ -140,7 +142,7 @@ export const AgentExecutor = {
     }
 
     if (!isFinished) {
-      finalResponse = "Error: I reached the maximum number of iterations while trying to complete this task. Here is what I was doing last: " + response.text();
+      finalResponse = "Error: I reached the maximum number of iterations while trying to complete this task. Here is what I was doing last: " + lastResponseText;
     }
 
     // 5. Record the Task and Messages
