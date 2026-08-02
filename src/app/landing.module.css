@@ -160,7 +160,7 @@
 }
 
 .heroContent {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -184,23 +184,42 @@
 }
 
 .title {
-  font-size: clamp(44px, 5.5vw, 84px);
-  line-height: 1.08;
+  font-size: clamp(28px, 5vw, 76px);
+  line-height: 1.1;
   font-weight: 600;
   margin: 0 auto 32px;
   letter-spacing: -0.04em;
   color: var(--text-primary);
   text-align: center;
   text-wrap: balance;
+  max-width: 1200px;
+}
+
+.titleLine1,
+.titleLine2 {
+  display: block;
+  white-space: nowrap;
+}
+
+.titleLine2 {
+  color: #9CA3AF;
+}
+
+@media (max-width: 480px) {
+  .titleLine1,
+  .titleLine2 {
+    white-space: normal;
+  }
 }
 
 .subtitle {
   font-size: 20px;
   color: var(--text-secondary);
-  max-width: 600px;
+  max-width: 680px;
   margin-bottom: 48px;
   line-height: 1.6;
   font-weight: 400;
+  text-wrap: balance;
 }
 
 .ctaGroup {
