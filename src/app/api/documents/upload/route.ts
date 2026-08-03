@@ -6,6 +6,27 @@ import { OcrEngine } from "@/lib/documents/ocr-engine";
 import fs from "fs/promises";
 import path from "path";
 
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = (session.user as any).id;
+
+    const documents = await db.documentScan.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: { agent: true }
+    });
+
+    return NextResponse.json({ success: true, documents });
+  } catch (error: any) {
+    console.error("Error fetching documents:", error);
+    return NextResponse.json({ error: error.message || "Failed to fetch documents" }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -27,11 +48,11 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(bytes);
 
     // Save locally to public/uploads/documents
-    const fileName = `${Date.now()}-${file.name.replace(/\\s+/g, "_")}`;
+    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
     const uploadDir = path.join(process.cwd(), "public/uploads/documents");
     const filePath = path.join(uploadDir, fileName);
     
-    // Ensure dir exists (it should, but just in case)
+    // Ensure dir exists
     await fs.mkdir(uploadDir, { recursive: true });
     await fs.writeFile(filePath, buffer);
 
