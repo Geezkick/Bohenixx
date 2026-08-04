@@ -62,7 +62,6 @@ const WORKFORCE_ROSTER = [
     role: "Operations Specialist",
     code: "AGENT-OPS",
     icon: Zap,
-    color: "#7B2DFF",
     desc: "Autonomous workflow orchestration, multi-system synchronization & process automation.",
     metrics: "99.9% Autonomous",
     tasks: "14,890 tasks/mo"
@@ -71,7 +70,6 @@ const WORKFORCE_ROSTER = [
     role: "Sales & Growth Lead",
     code: "AGENT-SALES",
     icon: TrendingUp,
-    color: "#00F0FF",
     desc: "Inbound lead scoring, automated outreach sequences, pipeline revenue forecasting.",
     metrics: "3.4x Conv. Rate",
     tasks: "8,920 deal briefs"
@@ -80,7 +78,6 @@ const WORKFORCE_ROSTER = [
     role: "Finance & M-Pesa Agent",
     code: "AGENT-FIN",
     icon: Briefcase,
-    color: "#22c55e",
     desc: "Instant KES invoice reconciliation, Daraja STK Push processing & audit trail logging.",
     metrics: "0.04s Reconcile",
     tasks: "KES 42M processed"
@@ -89,7 +86,6 @@ const WORKFORCE_ROSTER = [
     role: "Customer Support Specialist",
     code: "AGENT-SUPP",
     icon: Headphones,
-    color: "#eab308",
     desc: "Instant resolution across Web, Email & WhatsApp, 0ms queue times, 24/7 uptime.",
     metrics: "99.4% CSAT",
     tasks: "31,400 tickets"
@@ -98,7 +94,6 @@ const WORKFORCE_ROSTER = [
     role: "HR & Executive CEO",
     code: "AGENT-EXEC",
     icon: Shield,
-    color: "#a855f7",
     desc: "Company DNA rule enforcement, department agent oversight, daily strategic briefings.",
     metrics: "Policy Guardrail",
     tasks: "Continuous Governance"
@@ -329,48 +324,105 @@ export default function CorporateLandingPage() {
         </div>
       </motion.section>
 
-      {/* AI Workforce Roster Grid */}
+      {/* AI Workforce Roster — Premium Monochrome */}
       <section id="workforce-roster" className={styles.section} style={{ padding: '80px 2rem 120px' }}>
         <div className={styles.contentContainer}>
-          <div className={styles.sectionHeader} style={{ textAlign: 'center', margin: '0 auto 64px' }}>
-            <span style={{ color: '#7B2DFF', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Digital Workforce Fleet</span>
-            <h2 style={{ fontSize: '48px', marginTop: '8px' }}>Autonomous AI Roster</h2>
-            <p>Deploy specialized AI agents tailored to every enterprise department in 1-click.</p>
+
+          {/* Section header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '64px', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: '12px' }}>Digital Workforce Fleet</div>
+              <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 600, letterSpacing: '-0.04em', color: '#FAFAFA', margin: 0, lineHeight: 1.1 }}>Autonomous AI Roster</h2>
+            </div>
+            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.45)', maxWidth: '340px', lineHeight: 1.6, margin: 0, textAlign: 'right' }}>
+              Deploy specialized AI agents tailored to every enterprise department in 1-click.
+            </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+          {/* Roster rows */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {WORKFORCE_ROSTER.map((agent, idx) => {
               const IconComp = agent.icon;
               return (
-                <PremiumCard key={idx} style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ width: 44, height: 44, borderRadius: 12, background: `rgba(123, 45, 255, 0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${agent.color}` }}>
-                      <IconComp size={22} color={agent.color} />
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.5, delay: idx * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '40px 1fr auto',
+                    gap: '0 2rem',
+                    alignItems: 'center',
+                    padding: '28px 0',
+                    borderTop: '1px solid rgba(255,255,255,0.07)',
+                    cursor: 'default',
+                    transition: 'background 0.2s',
+                  }}
+                  whileHover={{ backgroundColor: 'rgba(255,255,255,0.02)' }}
+                >
+                  {/* Index number */}
+                  <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.2)', fontWeight: 700, paddingRight: '8px' }}>
+                    0{idx + 1}
+                  </span>
+
+                  {/* Main content */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'clamp(200px, 28%, 300px) 1fr clamp(120px, 20%, 200px)', gap: '0 2rem', alignItems: 'center' }}>
+                    {/* Role + code */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <IconComp size={18} color="#FAFAFA" />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '15px', fontWeight: 600, color: '#FAFAFA', letterSpacing: '-0.01em' }}>{agent.role}</div>
+                        <div style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.3)', marginTop: '2px', letterSpacing: '0.06em' }}>{agent.code}</div>
+                      </div>
                     </div>
-                    <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: agent.color, background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.6rem', borderRadius: 12 }}>
-                      {agent.code}
-                    </span>
+
+                    {/* Description */}
+                    <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, margin: 0 }}>
+                      {agent.desc}
+                    </p>
+
+                    {/* Metrics */}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#FAFAFA', letterSpacing: '-0.02em' }}>{agent.metrics}</div>
+                      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginTop: '3px' }}>{agent.tasks}</div>
+                    </div>
                   </div>
 
-                  <div>
-                    <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#FAFAFA', margin: '0 0 8px' }}>{agent.role}</h3>
-                    <p style={{ fontSize: '14px', color: '#9CA3AF', lineHeight: 1.6, margin: 0 }}>{agent.desc}</p>
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '0.8rem' }}>
-                    <span style={{ color: '#22c55e', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <CheckCircle size={14} /> {agent.metrics}
-                    </span>
-                    <span style={{ color: '#9CA3AF' }}>{agent.tasks}</span>
-                  </div>
-
-                  <Link href="/dashboard/onboarding" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '0.6rem 1rem', borderRadius: 8, textAlign: 'center', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none', transition: 'all 0.2s' }}>
-                    Deploy {agent.role.split(" ")[0]} Agent →
+                  {/* Deploy CTA */}
+                  <Link
+                    href="/dashboard/onboarding"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      color: 'rgba(255,255,255,0.55)',
+                      textDecoration: 'none',
+                      padding: '0.55rem 1.1rem',
+                      border: '1px solid rgba(255,255,255,0.12)',
+                      borderRadius: '999px',
+                      whiteSpace: 'nowrap',
+                      transition: 'all 0.2s',
+                      letterSpacing: '0.01em',
+                      background: 'transparent',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#fff'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.4)'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.04)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.55)'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.12)'; (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; }}
+                  >
+                    Deploy <ArrowRightIcon size={13} />
                   </Link>
-                </PremiumCard>
+                </motion.div>
               );
             })}
+            {/* Bottom border */}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }} />
           </div>
+
         </div>
       </section>
 
