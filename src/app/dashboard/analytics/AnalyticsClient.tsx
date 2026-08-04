@@ -2,26 +2,25 @@
 
 import React, { useState, useEffect } from "react";
 import { 
-  AreaChart, Area, BarChart, Bar, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
+  AreaChart, Area, LineChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from "recharts";
 
 /* ─── Design Tokens ─── */
 const T = {
-  bg: "#05030A",
-  bgCard: "rgba(255,255,255,0.025)",
+  bg: "#030303",
+  bgCard: "rgba(255,255,255,0.02)",
   bgCardHover: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.06)",
-  borderHover: "rgba(255,255,255,0.12)",
-  purple: "#7B2DFF",
-  cyan: "#00E5FF",
-  emerald: "#10B981",
-  amber: "#F59E0B",
-  red: "#EF4444",
+  border: "rgba(255,255,255,0.07)",
+  borderHover: "rgba(255,255,255,0.2)",
+  white: "#FFFFFF",
+  silver: "#D4D4D8",
+  zinc: "#A1A1AA",
   textPrimary: "#FFFFFF",
-  textSecondary: "rgba(255,255,255,0.5)",
-  textMuted: "rgba(255,255,255,0.3)",
+  textSecondary: "rgba(255,255,255,0.6)",
+  textMuted: "rgba(255,255,255,0.4)",
   font: "'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+  monoFont: "monospace",
 };
 
 /* ─── Helper: animated counter ─── */
@@ -42,7 +41,7 @@ function useCountUp(target: number, duration: number = 1500) {
 }
 
 /* ─── KPI Card ─── */
-function KpiCard({ icon, label, value, sub, accentColor, delay }: any) {
+function KpiCard({ icon, label, value, sub, delay }: any) {
   const [visible, setVisible] = useState(false);
   const [hovered, setHovered] = useState(false);
   useEffect(() => { const t = setTimeout(() => setVisible(true), delay); return () => clearTimeout(t); }, [delay]);
@@ -53,36 +52,29 @@ function KpiCard({ icon, label, value, sub, accentColor, delay }: any) {
       onMouseLeave={() => setHovered(false)}
       style={{
         background: hovered ? T.bgCardHover : T.bgCard,
-        border: `1px solid ${hovered ? accentColor + "50" : T.border}`,
-        borderRadius: "24px",
-        padding: "2rem",
+        border: `1px solid ${hovered ? T.borderHover : T.border}`,
+        borderRadius: "20px",
+        padding: "1.75rem",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         position: "relative",
         overflow: "hidden",
-        transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+        transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(16px)",
         cursor: "default",
       }}
     >
-      {/* Glow */}
-      <div style={{
-        position: "absolute", top: -30, right: -30, width: 120, height: 120,
-        background: accentColor, borderRadius: "50%", filter: "blur(60px)",
-        opacity: hovered ? 0.18 : 0.08, transition: "opacity 0.4s",
-      }} />
-
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "1.25rem" }}>
         <div style={{
-          padding: "10px", borderRadius: "12px",
-          background: accentColor + "15", border: `1px solid ${accentColor}30`,
-          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "8px", borderRadius: "10px",
+          background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
+          display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF"
         }}>
           {icon}
         </div>
-        <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: accentColor + "CC" }}>
-          {label}
+        <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.6)", fontFamily: T.monoFont }}>
+          [ {label} ]
         </span>
       </div>
 
@@ -98,16 +90,16 @@ function ChartCard({ title, subtitle, children, style = {} }: any) {
     <div style={{
       background: T.bgCard,
       border: `1px solid ${T.border}`,
-      borderRadius: "24px",
-      padding: "2rem",
+      borderRadius: "20px",
+      padding: "1.75rem",
       backdropFilter: "blur(20px)",
       WebkitBackdropFilter: "blur(20px)",
       transition: "border-color 0.3s",
       ...style
     }}>
-      <div style={{ marginBottom: "1.75rem" }}>
-        <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 500, color: T.textPrimary, fontFamily: T.font }}>{title}</h3>
-        {subtitle && <p style={{ margin: "6px 0 0", fontSize: "13px", color: T.textSecondary, fontFamily: T.font }}>{subtitle}</p>}
+      <div style={{ marginBottom: "1.5rem" }}>
+        <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 600, color: T.textPrimary, fontFamily: T.font, letterSpacing: "-0.01em" }}>{title}</h3>
+        {subtitle && <p style={{ margin: "4px 0 0", fontSize: "12px", color: T.textMuted, fontFamily: T.font }}>{subtitle}</p>}
       </div>
       {children}
     </div>
@@ -119,13 +111,13 @@ function CustomTooltip({ active, payload, label, format }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: "rgba(8,6,18,0.96)", border: "1px solid rgba(255,255,255,0.12)",
-      borderRadius: "12px", padding: "12px 16px", backdropFilter: "blur(20px)",
-      boxShadow: "0 16px 48px rgba(0,0,0,0.5)", fontFamily: T.font,
+      background: "rgba(10,10,12,0.95)", border: "1px solid rgba(255,255,255,0.15)",
+      borderRadius: "10px", padding: "10px 14px", backdropFilter: "blur(20px)",
+      boxShadow: "0 16px 48px rgba(0,0,0,0.8)", fontFamily: T.monoFont,
     }}>
-      <p style={{ margin: "0 0 8px", fontSize: "12px", color: T.textSecondary }}>{label}</p>
+      <p style={{ margin: "0 0 6px", fontSize: "11px", color: T.textMuted }}>{label}</p>
       {payload.map((p: any, i: number) => (
-        <p key={i} style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: p.color || T.cyan }}>
+        <p key={i} style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#FFFFFF" }}>
           {format ? format(p.value) : p.value.toLocaleString()}
         </p>
       ))}
@@ -138,30 +130,26 @@ function AnomalyCard({ anomaly, delay }: any) {
   const [visible, setVisible] = useState(false);
   useEffect(() => { const t = setTimeout(() => setVisible(true), delay); return () => clearTimeout(t); }, [delay]);
 
-  const isHigh = anomaly.severity === "HIGH";
-  const isMedium = anomaly.severity === "MEDIUM";
-  const color = isHigh ? T.red : isMedium ? T.amber : T.emerald;
-
   return (
     <div style={{
-      background: color + "08", border: `1px solid ${color}25`,
-      borderRadius: "16px", padding: "1.25rem",
+      background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)",
+      borderRadius: "14px", padding: "1.1rem",
       opacity: visible ? 1 : 0, transform: visible ? "translateX(0)" : "translateX(16px)",
-      transition: "all 0.5s cubic-bezier(0.16,1,0.3,1)",
+      transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-        <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, boxShadow: `0 0 8px ${color}` }} />
-        <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color, fontFamily: T.font }}>
-          {anomaly.type.replace(/_/g, " ")}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#FFFFFF", boxShadow: "0 0 6px #FFFFFF" }} />
+        <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#FFFFFF", fontFamily: T.monoFont }}>
+          [ {anomaly.type.replace(/_/g, " ")} ]
         </span>
-        <span style={{ marginLeft: "auto", fontSize: "10px", background: color + "20", color, padding: "2px 8px", borderRadius: "100px", fontWeight: 600 }}>
+        <span style={{ marginLeft: "auto", fontSize: "10px", fontFamily: T.monoFont, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "#FFFFFF", padding: "2px 8px", borderRadius: "4px", fontWeight: 700 }}>
           {anomaly.severity}
         </span>
       </div>
-      <p style={{ margin: "0 0 10px", fontSize: "13px", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, fontFamily: T.font }}>{anomaly.message}</p>
+      <p style={{ margin: "0 0 8px", fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: 1.5, fontFamily: T.font }}>{anomaly.message}</p>
       {anomaly.suggestedAction !== "None" && (
-        <div style={{ paddingTop: "10px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "8px", alignItems: "flex-start" }}>
-          <span style={{ color: T.textMuted, fontSize: "13px" }}>→</span>
+        <div style={{ paddingTop: "8px", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", gap: "6px", alignItems: "flex-start" }}>
+          <span style={{ color: T.textMuted, fontSize: "12px" }}>→</span>
           <p style={{ margin: 0, fontSize: "12px", color: T.textMuted, fontFamily: T.font }}>
             {anomaly.suggestedAction}
           </p>
@@ -172,24 +160,23 @@ function AnomalyCard({ anomaly, delay }: any) {
 }
 
 /* ─── SVG Icons ─── */
-const IconTrend = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
-const IconClock = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
-const IconTarget = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B2DFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
-const IconActivity = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
-const IconZap = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+const IconTrend = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+const IconClock = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const IconTarget = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const IconActivity = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
 
 /* ─── Circular Progress Ring ─── */
-function RingProgress({ value, color, size = 80 }: { value: number; color: string; size?: number }) {
+function RingProgress({ value, size = 72 }: { value: number; size?: number }) {
   const radius = (size - 10) / 2;
   const circumference = 2 * Math.PI * radius;
   const filled = (value / 100) * circumference;
 
   return (
     <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-      <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={8} />
+      <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={6} />
       <circle
         cx={size/2} cy={size/2} r={radius} fill="none"
-        stroke={color} strokeWidth={8}
+        stroke="#FFFFFF" strokeWidth={6}
         strokeDasharray={`${filled} ${circumference - filled}`}
         strokeLinecap="round"
         style={{ transition: "stroke-dasharray 1s cubic-bezier(0.16,1,0.3,1)" }}
@@ -208,18 +195,18 @@ function AgentRow({ agent, maxTasks, index }: any) {
     <div style={{ marginBottom: "1.25rem", opacity: visible ? 1 : 0, transform: visible ? "translateX(0)" : "translateX(-12px)", transition: "all 0.5s cubic-bezier(0.16,1,0.3,1)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
         <div>
-          <span style={{ fontSize: "14px", fontWeight: 500, color: T.textPrimary, fontFamily: T.font }}>{agent.name}</span>
-          <span style={{ marginLeft: "8px", fontSize: "11px", color: T.textMuted, background: "rgba(255,255,255,0.06)", padding: "2px 8px", borderRadius: "100px" }}>{agent.department}</span>
+          <span style={{ fontSize: "14px", fontWeight: 600, color: T.textPrimary, fontFamily: T.font }}>{agent.name}</span>
+          <span style={{ marginLeft: "8px", fontSize: "10px", fontFamily: T.monoFont, color: T.textMuted, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", padding: "2px 8px", borderRadius: "4px" }}>{agent.department}</span>
         </div>
         <div style={{ textAlign: "right" }}>
-          <span style={{ fontSize: "14px", fontWeight: 600, color: T.cyan }}>{agent.tasksCompleted}</span>
+          <span style={{ fontSize: "14px", fontWeight: 700, color: "#FFFFFF", fontFamily: T.monoFont }}>{agent.tasksCompleted}</span>
           <span style={{ fontSize: "12px", color: T.textMuted }}> tasks</span>
         </div>
       </div>
-      <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "100px", height: "6px", overflow: "hidden" }}>
+      <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "100px", height: "5px", overflow: "hidden" }}>
         <div style={{
           height: "100%", width: visible ? `${pct}%` : "0%",
-          background: `linear-gradient(90deg, ${T.purple}, ${T.cyan})`,
+          background: "linear-gradient(90deg, rgba(255,255,255,0.4), #FFFFFF)",
           borderRadius: "100px", transition: "width 1s cubic-bezier(0.16,1,0.3,1)",
         }} />
       </div>
@@ -249,56 +236,49 @@ export default function AnalyticsClient({
       fontFamily: T.font, WebkitFontSmoothing: "antialiased",
       position: "relative", overflow: "hidden", paddingBottom: "4rem"
     }}>
-      {/* Ambient background glows */}
-      <div style={{ position: "absolute", top: "-15%", left: "-10%", width: "50%", height: "50%", background: `radial-gradient(ellipse, ${T.purple}18 0%, transparent 70%)`, pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: "-15%", right: "-10%", width: "45%", height: "45%", background: `radial-gradient(ellipse, ${T.cyan}0D 0%, transparent 70%)`, pointerEvents: "none" }} />
-
-      <div style={{ position: "relative", zIndex: 1, maxWidth: "1300px", margin: "0 auto", padding: "2.5rem 2rem" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "1300px", margin: "0 auto", padding: "2rem 0" }}>
 
         {/* ── Header ── */}
         <header style={{
           display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "flex-end",
-          justifyContent: "space-between", paddingBottom: "2.5rem",
-          borderBottom: "1px solid rgba(255,255,255,0.05)", marginBottom: "2.5rem",
+          justifyContent: "space-between", paddingBottom: "2rem",
+          borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: "2.5rem",
           opacity: headerVisible ? 1 : 0, transform: headerVisible ? "translateY(0)" : "translateY(-12px)",
-          transition: "all 0.7s cubic-bezier(0.16,1,0.3,1)",
+          transition: "all 0.6s cubic-bezier(0.16,1,0.3,1)",
         }}>
           <div>
             <div style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
-              padding: "6px 14px", borderRadius: "100px",
-              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+              padding: "4px 12px", borderRadius: "100px",
+              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
               fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
-              color: T.cyan, marginBottom: "1.25rem",
+              color: "#FFFFFF", fontFamily: T.monoFont, marginBottom: "1rem",
             }}>
               <span style={{ display: "flex" }}><IconActivity /></span>
               Telemetry Active
             </div>
-            <h1 style={{ margin: "0 0 0.5rem", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 300, letterSpacing: "-0.03em", lineHeight: 1.1 }}>
-              Mission{" "}
-              <span style={{ fontWeight: 700, background: `linear-gradient(135deg, ${T.purple}, ${T.cyan})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                Analytics
-              </span>
+            <h1 style={{ margin: "0 0 0.5rem", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#FFFFFF" }}>
+              Mission Analytics
             </h1>
-            <p style={{ margin: 0, fontSize: "15px", color: T.textSecondary, maxWidth: "480px", lineHeight: 1.6 }}>
+            <p style={{ margin: 0, fontSize: "14px", color: T.textSecondary, maxWidth: "520px", lineHeight: 1.6 }}>
               Autonomous workforce intelligence — mapping AI output against projected human-equivalent operational cost.
             </p>
           </div>
 
           {/* Live stat pill */}
           <div style={{
-            display: "flex", gap: "1.5rem", padding: "1.25rem 1.75rem",
-            background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: "20px", backdropFilter: "blur(20px)",
+            display: "flex", gap: "1.5rem", padding: "1rem 1.5rem",
+            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "16px", backdropFilter: "blur(20px)",
           }}>
             <div>
-              <p style={{ margin: "0 0 4px", fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMuted }}>Active Agents</p>
-              <p style={{ margin: 0, fontSize: "1.75rem", fontWeight: 600, color: T.textPrimary }}>{agentPerformance.length}</p>
+              <p style={{ margin: "0 0 4px", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMuted, fontFamily: T.monoFont }}>ACTIVE AGENTS</p>
+              <p style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700, color: T.textPrimary, fontFamily: T.monoFont }}>{agentPerformance.length}</p>
             </div>
             <div style={{ width: "1px", background: "rgba(255,255,255,0.08)" }} />
             <div>
-              <p style={{ margin: "0 0 4px", fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMuted }}>Tasks Executed</p>
-              <p style={{ margin: 0, fontSize: "1.75rem", fontWeight: 600, color: T.cyan }}>{platformRoi.completedTasks.toLocaleString()}</p>
+              <p style={{ margin: "0 0 4px", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMuted, fontFamily: T.monoFont }}>TASKS EXECUTED</p>
+              <p style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700, color: "#FFFFFF", fontFamily: T.monoFont }}>{platformRoi.completedTasks.toLocaleString()}</p>
             </div>
           </div>
         </header>
@@ -308,12 +288,11 @@ export default function AnalyticsClient({
           <KpiCard
             icon={<IconTrend />}
             label="Net Savings"
-            accentColor={T.emerald}
             delay={200}
             value={
               <div>
-                <span style={{ fontSize: "12px", fontWeight: 500, color: T.textMuted, verticalAlign: "super", marginRight: "4px", fontFamily: T.font }}>KES</span>
-                <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.75rem)", fontWeight: 200, letterSpacing: "-0.04em", color: T.textPrimary, fontFamily: T.font }}>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: T.textMuted, verticalAlign: "super", marginRight: "4px", fontFamily: T.monoFont }}>KES</span>
+                <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 600, letterSpacing: "-0.03em", color: T.textPrimary, fontFamily: T.monoFont }}>
                   {netSavingsCount.toLocaleString()}
                 </span>
               </div>
@@ -323,14 +302,13 @@ export default function AnalyticsClient({
           <KpiCard
             icon={<IconClock />}
             label="Hours Reclaimed"
-            accentColor={T.cyan}
             delay={350}
             value={
               <div>
-                <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.75rem)", fontWeight: 200, letterSpacing: "-0.04em", color: T.textPrimary, fontFamily: T.font }}>
+                <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 600, letterSpacing: "-0.03em", color: T.textPrimary, fontFamily: T.monoFont }}>
                   {hoursSavedCount.toFixed(1)}
                 </span>
-                <span style={{ fontSize: "1.2rem", color: T.textMuted, fontWeight: 400, marginLeft: "8px" }}>hrs</span>
+                <span style={{ fontSize: "1.1rem", color: T.textMuted, fontWeight: 500, marginLeft: "6px" }}>hrs</span>
               </div>
             }
             sub="Freed for strategic executive decisions"
@@ -338,16 +316,15 @@ export default function AnalyticsClient({
           <KpiCard
             icon={<IconTarget />}
             label="Automation Index"
-            accentColor={T.purple}
             delay={500}
             value={
               <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                <RingProgress value={automationCount} color={T.purple} size={72} />
+                <RingProgress value={automationCount} size={64} />
                 <div>
-                  <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.75rem)", fontWeight: 200, letterSpacing: "-0.04em", color: T.textPrimary, fontFamily: T.font }}>
+                  <span style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 600, letterSpacing: "-0.03em", color: T.textPrimary, fontFamily: T.monoFont }}>
                     {automationCount.toFixed(1)}
                   </span>
-                  <span style={{ fontSize: "1.5rem", color: T.purple, fontWeight: 500 }}>%</span>
+                  <span style={{ fontSize: "1.3rem", color: "#FFFFFF", fontWeight: 600 }}>%</span>
                 </div>
               </div>
             }
@@ -360,20 +337,20 @@ export default function AnalyticsClient({
           
           {/* ROI Trend Chart */}
           <ChartCard title="Value Generation Trend" subtitle="30-day trailing savings analysis">
-            <div style={{ height: "300px" }}>
+            <div style={{ height: "280px" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={timeSeries} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gradientSavings" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={T.purple} stopOpacity={0.4} />
-                      <stop offset="95%" stopColor={T.cyan} stopOpacity={0.02} />
+                      <stop offset="5%" stopColor="#FFFFFF" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.01} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} minTickGap={20} fontFamily={T.font} />
-                  <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} fontFamily={T.font} tickFormatter={(v) => `KES ${(v / 1000).toFixed(0)}k`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={10} tickLine={false} axisLine={false} tickMargin={10} minTickGap={20} fontFamily={T.monoFont} />
+                  <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} tickLine={false} axisLine={false} fontFamily={T.monoFont} tickFormatter={(v) => `KES ${(v / 1000).toFixed(0)}k`} />
                   <Tooltip content={<CustomTooltip format={(v: number) => `KES ${v.toLocaleString()}`} />} />
-                  <Area type="monotone" dataKey="savings" stroke={T.purple} strokeWidth={2.5} fillOpacity={1} fill="url(#gradientSavings)" dot={false} activeDot={{ r: 5, fill: T.purple, strokeWidth: 2, stroke: "rgba(255,255,255,0.3)" }} />
+                  <Area type="monotone" dataKey="savings" stroke="#FFFFFF" strokeWidth={2} fillOpacity={1} fill="url(#gradientSavings)" dot={false} activeDot={{ r: 4, fill: "#FFFFFF", strokeWidth: 2, stroke: "rgba(255,255,255,0.5)" }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -381,7 +358,7 @@ export default function AnalyticsClient({
 
           {/* Anomalies */}
           <ChartCard title="System Anomalies" subtitle="AI-driven pattern detection">
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxHeight: "280px", overflowY: "auto" }}>
               {anomalies.map((anomaly: any, i: number) => (
                 <AnomalyCard key={i} anomaly={anomaly} delay={600 + i * 100} />
               ))}
@@ -410,18 +387,18 @@ export default function AnalyticsClient({
             {cashFlowForecast.every((d: any) => d.projectedRevenueKes === 0) ? (
               <EmptyState label="No invoice data to forecast" cta="Create invoices to enable revenue projection →" />
             ) : (
-              <div style={{ height: "260px" }}>
+              <div style={{ height: "240px" }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={cashFlowForecast} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                    <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} fontFamily={T.font}
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                    <XAxis dataKey="date" stroke="rgba(255,255,255,0.3)" fontSize={10} tickLine={false} axisLine={false} fontFamily={T.monoFont}
                       tickFormatter={(t) => { const p = t.split("-"); return `${p[1]}/${p[2]}`; }}
                     />
-                    <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} fontFamily={T.font} tickFormatter={(v) => `${v/1000}k`} />
+                    <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} tickLine={false} axisLine={false} fontFamily={T.monoFont} tickFormatter={(v) => `${v/1000}k`} />
                     <Tooltip content={<CustomTooltip format={(v: number) => `KES ${v.toLocaleString()}`} />} />
-                    <Line type="monotone" dataKey="projectedRevenueKes" stroke={T.cyan} strokeWidth={2.5}
-                      dot={{ fill: T.cyan, r: 4, strokeWidth: 0 }}
-                      activeDot={{ r: 6, fill: "#fff", stroke: T.cyan, strokeWidth: 2 }}
+                    <Line type="monotone" dataKey="projectedRevenueKes" stroke="#FFFFFF" strokeWidth={2}
+                      dot={{ fill: "#FFFFFF", r: 3, strokeWidth: 0 }}
+                      activeDot={{ r: 5, fill: "#000000", stroke: "#FFFFFF", strokeWidth: 2 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -440,21 +417,22 @@ function EmptyState({ label, cta }: { label: string; cta: string }) {
   return (
     <div style={{
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      height: "260px", textAlign: "center",
+      height: "240px", textAlign: "center",
     }}>
       <div style={{
-        width: "56px", height: "56px", borderRadius: "16px",
-        background: "rgba(123,45,255,0.1)", border: "1px solid rgba(123,45,255,0.2)",
+        width: "48px", height: "48px", borderRadius: "12px",
+        background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        marginBottom: "1rem", color: "#7B2DFF",
+        marginBottom: "1rem", color: "#FFFFFF",
       }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
         </svg>
       </div>
-      <p style={{ margin: "0 0 8px", fontSize: "15px", fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>{label}</p>
-      <p style={{ margin: 0, fontSize: "13px", color: "rgba(255,255,255,0.3)", maxWidth: "240px", lineHeight: 1.6 }}>{cta}</p>
+      <p style={{ margin: "0 0 6px", fontSize: "14px", fontWeight: 500, color: "rgba(255,255,255,0.8)" }}>{label}</p>
+      <p style={{ margin: 0, fontSize: "12px", color: "rgba(255,255,255,0.4)", maxWidth: "240px", lineHeight: 1.5 }}>{cta}</p>
     </div>
   );
 }
+
