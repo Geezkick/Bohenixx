@@ -42,9 +42,11 @@ const capabilities = [
 ];
 
 const ecosystem = [
-  { icon: <Briefcase size={28} color="rgba(255,255,255,0.8)" />, name: "Mboka AI", desc: "Recruitment & Talent" }, 
-  { icon: <Truck size={28} color="rgba(255,255,255,0.8)" />, name: "NjiaSafe", desc: "Logistics & Routing" },
-  { icon: <Cloud size={28} color="rgba(255,255,255,0.8)" />, name: "Bohenix Cloud", desc: "Data & Storage" },
+  { logo: "/mboka.png", name: "Mboka AI", desc: "Recruitment & Talent" }, 
+  { logo: "/njiasafee.png", name: "NjiaSafe", desc: "Logistics & Routing" },
+  { logo: "/bohenixx.png", name: "Bohenix Cloud", desc: "Data & Storage" },
+  { logo: "/fixxo.png", name: "Fixxo", desc: "Field Services & Maintenance" },
+  { logo: "/vuna.png", name: "Vuna", desc: "Agri-Tech & Yield AI" },
 ];
 
 export default function FlowAIPage() {
@@ -259,12 +261,45 @@ export default function FlowAIPage() {
             <h2 className={s.sectionTitle} style={{margin:'0 auto 1.5rem'}}>The Intelligent Hub</h2>
             <p className={s.sectionDesc} style={{margin:'0 auto'}}>Flow AI connects securely across all Bohenix applications, breaking down silos and enabling true cross-platform automation.</p>
           </motion.div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap', marginTop: '4rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap', marginTop: '3.5rem' }}>
             {ecosystem.map((sys,i) => (
-              <motion.div key={i} style={{ background: '#111114', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '24px', padding: '2rem', width: '260px', display: 'flex', flexDirection: 'column', alignItems: 'center' }} initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-                <div style={{ marginBottom: '1.5rem' }}>{sys.icon}</div>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem' }}>{sys.name}</h4>
-                <p style={{ color: '#B3B3B8', fontSize: '0.9rem', margin: 0 }}>{sys.desc}</p>
+              <motion.div 
+                key={i} 
+                style={{ 
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)', 
+                  border: '1px solid rgba(255,255,255,0.08)', 
+                  borderRadius: '24px', 
+                  padding: '2rem 1.5rem', 
+                  width: '210px', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                }} 
+                whileHover={{ borderColor: 'rgba(255,255,255,0.25)', translateY: -4 }}
+                initial="hidden" 
+                whileInView="show" 
+                viewport={{once:true}} 
+                variants={fade}
+              >
+                <div style={{ 
+                  width: '60px', 
+                  height: '60px', 
+                  borderRadius: '16px', 
+                  background: 'rgba(255,255,255,0.04)', 
+                  border: '1px solid rgba(255,255,255,0.1)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  marginBottom: '1.25rem',
+                  overflow: 'hidden',
+                  padding: '8px'
+                }}>
+                  <Image src={sys.logo} alt={sys.name} width={42} height={42} style={{ objectFit: 'contain' }} />
+                </div>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#FAFAFA', marginBottom: '0.35rem' }}>{sys.name}</h4>
+                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.82rem', margin: 0, textAlign: 'center', lineHeight: 1.4 }}>{sys.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -272,12 +307,64 @@ export default function FlowAIPage() {
       </section>
 
       {/* Final CTA */}
-      <section id="contact" className={s.finalCta}>
-        <motion.div initial="hidden" whileInView="show" viewport={{once:true}} variants={fade}>
-          <h2 className={s.finalCtaTitle}>The Future Vision is <span className={s.heroGradient}>Now</span></h2>
-          <p className={s.finalCtaDesc}>Imagine walking into your office. You don't hire 20 people. You hire 200 AI employees. They work 24/7. Never forget. Never sleep. Never miss deadlines.</p>
+      <section id="contact" className={s.finalCta} style={{ padding: '120px 2rem 140px', textAlign: 'center', position: 'relative' }}>
+        <motion.div 
+          initial="hidden" 
+          whileInView="show" 
+          viewport={{once:true}} 
+          variants={fade}
+          style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+          <span style={{ 
+            fontSize: '0.75rem', 
+            fontFamily: 'monospace', 
+            fontWeight: 700, 
+            letterSpacing: '0.18em', 
+            textTransform: 'uppercase', 
+            color: 'rgba(255,255,255,0.4)', 
+            background: 'rgba(255,255,255,0.04)', 
+            border: '1px solid rgba(255,255,255,0.08)', 
+            padding: '0.4rem 1rem', 
+            borderRadius: '999px',
+            marginBottom: '20px'
+          }}>
+            THE FUTURE VISION IS NOW
+          </span>
+
+          <h2 style={{ 
+            fontSize: 'clamp(36px, 5vw, 60px)', 
+            fontWeight: 700, 
+            letterSpacing: '-0.03em', 
+            color: '#FAFAFA', 
+            margin: '0 0 20px', 
+            lineHeight: 1.1 
+          }}>
+            Build a Digital Enterprise <br />
+            That <span className={s.heroGradient}>Never Sleeps.</span>
+          </h2>
+
+          <p style={{ 
+            fontSize: '17px', 
+            color: 'rgba(255,255,255,0.5)', 
+            maxWidth: '640px', 
+            margin: '0 auto 32px', 
+            lineHeight: 1.7 
+          }}>
+            Imagine walking into your office. You don't just hire 20 people — you deploy 200 autonomous AI employees tailored to your exact workflows.
+          </p>
+
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
+            {['24/7 Continuous Operations', 'Zero Memory Loss', 'Policy Enforced', 'Instant Task Execution'].map(highlight => (
+              <span key={highlight} style={{ fontSize: '0.8rem', fontFamily: 'monospace', padding: '0.4rem 0.85rem', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.65)' }}>
+                • {highlight}
+              </span>
+            ))}
+          </div>
+
           <div className={s.heroCtas}>
-            <button onClick={goToPlans} className={s.ctaPrimary} style={{ cursor: "pointer" }}>Deploy Your AI Workforce <ArrowRightIcon size={18}/></button>
+            <button onClick={goToPlans} className={s.ctaPrimary} style={{ cursor: "pointer", padding: '1rem 2.5rem', fontSize: '16px' }}>
+              Deploy Your AI Workforce <ArrowRightIcon size={18}/>
+            </button>
           </div>
         </motion.div>
       </section>
