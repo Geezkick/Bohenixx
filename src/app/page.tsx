@@ -690,9 +690,27 @@ export default function CorporateLandingPage() {
         </div>
         <div className={styles.footerBottom}>
           <div>&copy; {new Date().getFullYear()} Bohenix Technologies. All rights reserved.</div>
-          <div style={{ display: 'flex', gap: '24px' }}>
-            <a href="https://x.com/bohenix_solutio" target="_blank" style={{ color: '#9CA3AF', textDecoration: 'none' }}>X (Twitter)</a>
-            <a href="https://www.linkedin.com/in/brian-nyarienya-35892925b/" target="_blank" style={{ color: '#9CA3AF', textDecoration: 'none' }}>LinkedIn</a>
+          <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+            <a href="https://x.com/bohenix_solutio" target="_blank" rel="noopener noreferrer" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
+              X (Twitter)
+            </a>
+            <a href="https://www.linkedin.com/in/brian-nyarienya-35892925b/" target="_blank" rel="noopener noreferrer" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
+              LinkedIn
+            </a>
+            <a href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
+              WhatsApp
+            </a>
+            <a href="https://www.instagram.com/bohenix" target="_blank" rel="noopener noreferrer" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
+              Instagram
+            </a>
           </div>
         </div>
       </footer>
