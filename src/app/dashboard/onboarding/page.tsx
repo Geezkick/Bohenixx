@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./onboarding.module.css";
-import { Briefcase, Building2, UserCog, TrendingUp, Headphones, Scale, ArrowLeft, Loader2, Crown, Check } from "lucide-react";
+import { Briefcase, Building2, UserCog, TrendingUp, Headphones, Scale, ArrowLeft, Loader2, Crown, Check, ShieldAlert, DollarSign, Target } from "lucide-react";
 import ParticlesBackground from "@/components/ParticlesBackground";
 
-type Step = "select_company_type" | "new_company_hire" | "existing_company_gap" | "provisioning";
+type Step = "select_company_type" | "dna_config" | "new_company_hire" | "existing_company_gap" | "provisioning";
 type CompanyType = "new" | "existing" | null;
 type Department = "finance" | "sales" | "support" | "legal" | null;
 
@@ -18,13 +18,37 @@ export default function OnboardingPage() {
   const [agentName, setAgentName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Company DNA State
+  const [mission, setMission] = useState("");
+  const [riskAppetite, setRiskAppetite] = useState<"CONSERVATIVE" | "MODERATE" | "AGGRESSIVE">("MODERATE");
+  const [budgetKes, setBudgetKes] = useState("100000");
+
   // Terminal animation state
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [terminalComplete, setTerminalComplete] = useState(false);
 
   const handleSelectType = (type: "new" | "existing") => {
     setCompanyType(type);
-    if (type === "new") {
+    setStep("dna_config");
+  };
+
+  const handleSaveDNAAndProceed = async () => {
+    try {
+      // Save DNA state to backend API
+      await fetch("/api/dna", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mission,
+          riskAppetite,
+          budgetLimitsKes: parseFloat(budgetKes) || 100000
+        })
+      });
+    } catch (e) {
+      console.error("DNA save error", e);
+    }
+
+    if (companyType === "new") {
       setStep("new_company_hire");
     } else {
       setStep("existing_company_gap");
@@ -38,23 +62,23 @@ export default function OnboardingPage() {
     const lines = type === "executive" ? [
       "Authenticating executive clearance...",
       "Allocating Neural Core resources for Executive CEO...",
+      `Injecting Company DNA Directive: Risk [${riskAppetite}] & Monthly Limit [KES ${parseInt(budgetKes).toLocaleString()}]...`,
       `Equipping ${finalName} with [workflow_orchestrator] tool...`,
       `Equipping ${finalName} with [financial_dashboard_access] tool...`,
-      "Injecting foundational corporate directives into Agent Memory...",
       "Generating automated workflow: 'CEO Daily Briefing'...",
       "Syncing with Bohenix Cloud datastores...",
       "Provisioning complete. Executive systems online."
     ] : [
       `Authenticating department clearance for ${type.toUpperCase()}...`,
       `Allocating Neural Core resources for Specialist Agent...`,
+      `Injecting Company DNA Directive: Risk [${riskAppetite}] into Agent Memory...`,
       `Equipping ${finalName} with specialized department tools...`,
-      "Injecting departmental gap parameters into Agent Memory...",
       `Generating automated operational workflow for ${type}...`,
       "Syncing with existing corporate infrastructure...",
       "Provisioning complete. Specialist systems online."
     ];
 
-    let delay = 800;
+    let delay = 700;
     lines.forEach((line, index) => {
       setTimeout(() => {
         setTerminalLines(prev => [...prev, line]);
@@ -62,7 +86,7 @@ export default function OnboardingPage() {
           setTimeout(() => setTerminalComplete(true), 1500);
         }
       }, delay);
-      delay += Math.random() * 800 + 400; // random delay between 400ms and 1200ms
+      delay += Math.random() * 700 + 400;
     });
   };
 
@@ -70,7 +94,6 @@ export default function OnboardingPage() {
     setIsSubmitting(true);
     const finalName = presetName || agentName || (type === "executive" ? "Alex (CEO)" : `Agent (${type})`);
     
-    // Start visual animation immediately
     runProvisioningAnimation(type, finalName);
 
     try {
@@ -87,7 +110,6 @@ export default function OnboardingPage() {
       if (!res.ok) {
         console.error("Failed to provision ecosystem");
       }
-      // We don't redirect immediately, we wait for the animation to finish
     } catch (err) {
       console.error(err);
     }
@@ -109,7 +131,9 @@ export default function OnboardingPage() {
           <div className={styles.stepIndicator}>
             <div className={`${styles.stepDot} ${styles.active}`} title="Step 1: Corporate Structure"></div>
             <div className={styles.stepLine}></div>
-            <div className={`${styles.stepDot} ${step !== "select_company_type" ? styles.active : ""}`} title="Step 2: Appoint Agent"></div>
+            <div className={`${styles.stepDot} ${step !== "select_company_type" ? styles.active : ""}`} title="Step 2: Company DNA"></div>
+            <div className={styles.stepLine}></div>
+            <div className={`${styles.stepDot} ${step === "new_company_hire" || step === "existing_company_gap" ? styles.active : ""}`} title="Step 3: Appoint Agent"></div>
           </div>
         )}
 
@@ -144,6 +168,71 @@ export default function OnboardingPage() {
               </div>
             </div>
           </>
+        )}
+
+        {step === "dna_config" && (
+          <div className={styles.hireForm}>
+            <div className={styles.hierarchyIndicator}>
+              <Target size={22} color="#00F0FF" />
+              <span className={styles.hierarchyText}>Company DNA & Governance Policy</span>
+            </div>
+            
+            <h2 className={styles.title} style={{ fontSize: "2rem", marginBottom: "0.5rem", textAlign: "center" }}>
+              Define Governance Rules
+            </h2>
+            <p className={styles.subtitle} style={{ marginBottom: "2rem", textAlign: "center", fontSize: "1rem" }}>
+              Set risk parameters and financial limits that your AI workforce must respect.
+            </p>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Corporate Mission / Core Directives</label>
+              <textarea 
+                className={styles.input} 
+                style={{ minHeight: "70px", resize: "vertical" }}
+                placeholder="e.g. Expand autonomous financial services across Kenya with 100% compliance..." 
+                value={mission}
+                onChange={(e) => setMission(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Risk Appetite Standard</label>
+              <select 
+                className={styles.input} 
+                value={riskAppetite} 
+                onChange={(e) => setRiskAppetite(e.target.value as any)}
+              >
+                <option value="CONSERVATIVE">Conservative — Require Human Approval for all actions</option>
+                <option value="MODERATE">Moderate — Auto-approve low-risk transactions & queries</option>
+                <option value="AGGRESSIVE">Aggressive — Maximum AI autonomy & high transaction limits</option>
+              </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Monthly Autonomous Budget Limit (KES)</label>
+              <input 
+                type="number" 
+                className={styles.input} 
+                placeholder="100000" 
+                value={budgetKes}
+                onChange={(e) => setBudgetKes(e.target.value)}
+              />
+            </div>
+
+            <button 
+              className={styles.btnPrimary} 
+              onClick={handleSaveDNAAndProceed}
+            >
+              Continue to Agent Appointment
+            </button>
+            
+            <button 
+              className={styles.btnSecondary} 
+              onClick={() => { setStep("select_company_type"); }}
+            >
+              <ArrowLeft size={18} style={{ marginRight: '6px' }} /> Go Back
+            </button>
+          </div>
         )}
 
         {step === "new_company_hire" && (
@@ -182,7 +271,7 @@ export default function OnboardingPage() {
             
             <button 
               className={styles.btnSecondary} 
-              onClick={() => { setStep("select_company_type"); setAgentName(""); }}
+              onClick={() => { setStep("dna_config"); setAgentName(""); }}
               disabled={isSubmitting}
             >
               <ArrowLeft size={18} style={{ marginRight: '6px' }} /> Go Back
@@ -252,7 +341,7 @@ export default function OnboardingPage() {
 
             <button 
               className={styles.btnSecondary} 
-              onClick={() => { setStep("select_company_type"); setDepartment(null); setAgentName(""); }}
+              onClick={() => { setStep("dna_config"); setDepartment(null); setAgentName(""); }}
               disabled={isSubmitting}
             >
               <ArrowLeft size={18} style={{ marginRight: '6px' }} /> Go Back

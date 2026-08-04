@@ -9,8 +9,9 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.bohenix.africa"),
-  title: { default: "Bohenix | Your Business on Autopilot", template: "%s | Bohenix" },
-  description: "Bohenix is the AI Workforce Operating System. Hire autonomous AI agents that execute complete business workflows — from sales and marketing to finance and operations — so your business runs on autopilot.",
+  title: { default: "Bohenix | AI Workforce Operating System & Autonomous Agents", template: "%s | Bohenix AI" },
+  description: "Bohenix is the premier AI Workforce Operating System for emerging markets. Hire autonomous AI agents for sales, finance, M-Pesa reconciliations, and operations with full human-in-the-loop governance.",
+  keywords: ["AI Workforce", "Autonomous AI Agents", "Next.js AI OS", "M-Pesa Automation", "African Enterprise AI", "Bohenix Flow", "Neural Core AI"],
   authors: [{ name: "Brian Nyarienya", url: "https://www.bohenix.africa" }],
   creator: "Brian Nyarienya",
   publisher: "Bohenix Technologies",
@@ -19,15 +20,15 @@ export const metadata: Metadata = {
     title: "Bohenix | Your AI Workforce. Your Business on Autopilot.",
     description: "Bohenix Flow AI allows you to delegate entire business operations to intelligent AI agents that think, plan, execute, and continuously improve workflows.",
     url: "https://www.bohenix.africa",
-    siteName: "Bohenix",
+    siteName: "Bohenix AI OS",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/bohenixx.png", width: 512, height: 512, alt: "Bohenix Flow AI" }],
+    images: [{ url: "/bohenixx.png", width: 512, height: 512, alt: "Bohenix Flow AI Operating System" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bohenix | Your Business on Autopilot",
-    description: "Delegate entire business operations to intelligent AI agents.",
+    title: "Bohenix | Autonomous AI Workforce Operating System",
+    description: "Delegate business operations to intelligent AI agents with built-in M-Pesa & financial infrastructure.",
     creator: "@bohenix_solutio",
     images: ["/bohenixx.png"],
   },
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#7B2DFF",
   width: "device-width",
   initialScale: 1,
 };
@@ -80,13 +81,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Bohenix",
+              "@type": "SoftwareApplication",
+              name: "Bohenix AI Workforce Operating System",
+              operatingSystem: "Web-based Platform",
+              applicationCategory: "BusinessApplication",
               url: "https://www.bohenix.africa",
               logo: "https://www.bohenix.africa/bohenixx.png",
               description:
-                "Bohenix is the AI Workforce Operating System. Hire autonomous AI agents that execute complete business workflows — from sales and marketing to finance and operations — so your business runs on autopilot.",
-              founder: {
+                "Bohenix is the AI Workforce Operating System. Hire autonomous AI agents that execute complete business workflows — from sales and marketing to finance and operations.",
+              author: {
                 "@type": "Person",
                 name: "Brian Nyarienya",
                 jobTitle: "Founder & Visionary",
