@@ -1,228 +1,412 @@
+/* ═══════════════════════════════════════════════════════════
+   BOHENIX — Agent Playground — Premium Monochrome Terminal
+   ═══════════════════════════════════════════════════════════ */
+
 .container {
-  background: rgba(15, 15, 26, 0.75);
-  backdrop-filter: blur(16px);
+  background: #080810;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1.5rem;
-  color: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 24px 64px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-.header {
+/* ── Title bar (macOS-style) ── */
+.titleBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 1rem;
+  padding: 0.9rem 1.5rem;
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
-.titleGroup {
+.titleBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.windowDots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dotRed   { background: rgba(255,95,87,0.8);  }
+.dotYellow{ background: rgba(255,189,46,0.8); }
+.dotGreen { background: rgba(40,200,64,0.8);  }
+
+.titleBarTitle {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.06em;
+}
+
+.titleBarRight {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.title {
-  font-size: 1.25rem;
+.livePill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
   font-weight: 600;
-  color: #ffffff;
-  margin: 0;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.badge {
-  background: rgba(123, 45, 255, 0.15);
-  border: 1px solid rgba(123, 45, 255, 0.4);
-  color: #a78bfa;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 20px;
-  font-weight: 500;
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 2s infinite;
 }
 
-.controlsGrid {
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.8); }
+}
+
+.governanceBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.04em;
+}
+
+/* ── Body layout ── */
+.body {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 1rem;
+  grid-template-columns: 260px 1fr;
+  min-height: 420px;
 }
 
-@media (max-width: 768px) {
-  .controlsGrid {
+@media (max-width: 800px) {
+  .body {
     grid-template-columns: 1fr;
   }
 }
 
-.agentSelector {
+/* ── Left panel ── */
+.leftPanel {
+  border-right: 1px solid rgba(255,255,255,0.07);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  padding: 1.25rem;
+  gap: 1.25rem;
+  background: rgba(255,255,255,0.015);
 }
 
-.label {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 500;
+.panelLabel {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.25);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.select {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  color: #ffffff;
+.agentList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.agentBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  outline: none;
-  transition: all 0.2s ease;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  font-family: inherit;
+  width: 100%;
 }
 
-.select:focus {
-  border-color: #7B2DFF;
-  box-shadow: 0 0 10px rgba(123, 45, 255, 0.3);
+.agentBtn:hover {
+  background: rgba(255,255,255,0.04);
 }
 
-.promptInputGroup {
+.agentBtnActive {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+.agentIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.agentName {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.2;
+}
+
+.agentCode {
+  font-family: monospace;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.25);
+  margin-top: 1px;
+  letter-spacing: 0.06em;
+}
+
+.agentBtnActive .agentName {
+  color: #fff;
+}
+
+/* ── Right panel ── */
+.rightPanel {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+}
+
+.promptSection {
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.promptLabel {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.25);
 }
 
 .promptTextarea {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
   border-radius: 10px;
-  color: #ffffff;
-  padding: 0.75rem;
-  font-size: 0.9rem;
-  min-height: 80px;
-  resize: vertical;
-  outline: none;
+  color: #fff;
+  padding: 0.85rem 1rem;
+  font-size: 0.88rem;
   font-family: inherit;
+  min-height: 72px;
+  resize: none;
+  outline: none;
+  line-height: 1.6;
   transition: border-color 0.2s;
 }
 
 .promptTextarea:focus {
-  border-color: #7B2DFF;
+  border-color: rgba(255,255,255,0.25);
 }
 
-.presetChips {
+.presets {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
+  gap: 6px;
 }
 
-.chip {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.75rem;
-  padding: 0.25rem 0.65rem;
+.preset {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.72rem;
+  padding: 0.3rem 0.75rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-family: inherit;
+  transition: all 0.15s;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.chip:hover {
-  background: rgba(123, 45, 255, 0.2);
-  border-color: rgba(123, 45, 255, 0.4);
-  color: #ffffff;
+.preset:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border-color: rgba(255,255,255,0.18);
 }
 
-.actionRow {
+.preset:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Run button row ── */
+.runRow {
   display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 .runBtn {
-  background: linear-gradient(135deg, #7B2DFF 0%, #00F0FF 100%);
-  border: none;
-  border-radius: 8px;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0.65rem 1.5rem;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: opacity 0.2s, transform 0.1s;
+  gap: 8px;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s, transform 0.1s;
 }
 
 .runBtn:hover:not(:disabled) {
-  opacity: 0.9;
+  opacity: 0.88;
   transform: translateY(-1px);
 }
 
 .runBtn:disabled {
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
-.executionPanel {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.sectionHeader {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #00F0FF;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.stepList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.stepItem {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.85rem;
-  padding: 0.5rem 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 6px;
-  border-left: 3px solid rgba(255, 255, 255, 0.2);
-}
-
-.stepCompleted {
-  border-left-color: #22c55e;
-}
-
-.stepRunning {
-  border-left-color: #7B2DFF;
-}
-
-.toolBadge {
+.runHint {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.2);
   font-family: monospace;
-  font-size: 0.75rem;
-  background: rgba(0, 240, 255, 0.1);
-  color: #00F0FF;
-  padding: 0.15rem 0.4rem;
+}
+
+/* ── Terminal / execution panel ── */
+.terminal {
+  flex: 1;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: #05050e;
+  min-height: 180px;
+}
+
+.terminalEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 0.5rem;
+  opacity: 0.2;
+  pointer-events: none;
+  min-height: 120px;
+}
+
+.terminalEmptyIcon {
+  font-size: 2rem;
+}
+
+.terminalEmptyText {
+  font-size: 0.78rem;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.5);
+}
+
+.stepRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.2s;
+}
+
+.stepRowPending { color: rgba(255,255,255,0.2); }
+.stepRowRunning { color: rgba(255,255,255,0.85); }
+.stepRowDone    { color: rgba(255,255,255,0.5);  }
+
+.stepIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+}
+
+.toolTag {
+  margin-left: auto;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.2);
+  font-family: monospace;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.1rem 0.4rem;
   border-radius: 4px;
 }
 
-.outputBox {
-  background: rgba(15, 15, 26, 0.9);
-  border: 1px solid rgba(123, 45, 255, 0.3);
-  border-radius: 8px;
+/* ── Output box ── */
+.output {
+  margin-top: 0.75rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
   padding: 1rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #e2e8f0;
+  font-size: 0.82rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.75);
   white-space: pre-wrap;
+}
+
+.outputHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
