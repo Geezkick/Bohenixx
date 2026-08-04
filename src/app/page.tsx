@@ -438,69 +438,120 @@ export default function CorporateLandingPage() {
       </section>
 
       {/* Showcase / Product Section */}
-      <section id="products" className={styles.section}>
+      <section id="products" className={styles.section} style={{ padding: '80px 2rem 120px' }}>
         <div className={styles.contentContainer}>
           <motion.div 
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={springConfig}
             className={styles.sectionHeader}
-            style={{ textAlign: 'center', margin: '0 auto 80px' }}
+            style={{ textAlign: 'center', margin: '0 auto 64px' }}
           >
-            <h2>Engineered Ecosystem</h2>
-            <p>From autonomous AI agents to industry-specific platforms, discover the tools powering the next generation of business.</p>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: '12px', display: 'block' }}>Engineered Ecosystem</span>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 600, letterSpacing: '-0.03em', color: '#FAFAFA', margin: '0 0 16px' }}>Product & Services</h2>
+            <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.45)', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>From autonomous AI agent platforms to custom enterprise engineering, explore our core ecosystem capabilities.</p>
           </motion.div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '32px' }}>
 
             {/* Flow AI Card */}
-            <PremiumCard style={{ padding: '48px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Image src="/bohenixx.png" alt="Bohenix Flow AI" width={28} height={28} />
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              style={{
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '24px',
+                padding: '44px 40px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '28px',
+                position: 'relative',
+                boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}
+              whileHover={{ borderColor: 'rgba(255,255,255,0.2)', translateY: -4 }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src="/bohenixx.png" alt="Bohenix Flow AI" width={26} height={26} />
                 </div>
-                <div>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: '4px' }}>Product</div>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, letterSpacing: '-0.02em' }}>Bohenix Flow AI</h3>
-                </div>
+                <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.35rem 0.75rem', borderRadius: '999px' }}>
+                  PRODUCT
+                </span>
               </div>
-              <p style={{ fontSize: '15px', color: '#9CA3AF', lineHeight: 1.7, margin: 0, flex: 1 }}>
-                An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents — managing projects, invoices, customer follow-ups, and performance analytics.
-              </p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '24px' }}>
+
+              <div>
+                <h3 style={{ fontSize: '26px', fontWeight: 600, color: '#FAFAFA', margin: '0 0 12px', letterSpacing: '-0.02em' }}>Bohenix Flow AI</h3>
+                <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, margin: 0 }}>
+                  An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents — managing projects, invoices, customer follow-ups, and performance analytics.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto' }}>
                 {['24/7 Autonomous', 'M-Pesa Native', 'RBAC Governance'].map(tag => (
-                  <span key={tag} style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>{tag}</span>
+                  <span key={tag} style={{ fontSize: '0.78rem', fontFamily: 'monospace', padding: '0.35rem 0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.6)' }}>
+                    • {tag}
+                  </span>
                 ))}
               </div>
-              <PremiumButton href="/dashboard/onboarding" variant="primary">
+
+              <PremiumButton href="/dashboard/onboarding" variant="primary" className="w-full justify-center">
                 Deploy AI Workforce <ArrowRightIcon size={15} />
               </PremiumButton>
-            </PremiumCard>
+            </motion.div>
 
             {/* Enterprise Engineering / Services Card */}
-            <PremiumCard style={{ padding: '48px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Code size={24} color="rgba(255,255,255,0.8)" />
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              style={{
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '24px',
+                padding: '44px 40px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '28px',
+                position: 'relative',
+                boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}
+              whileHover={{ borderColor: 'rgba(255,255,255,0.2)', translateY: -4 }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Code size={22} color="#FAFAFA" />
                 </div>
-                <div>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: '4px' }}>Services</div>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, letterSpacing: '-0.02em' }}>Enterprise Engineering</h3>
-                </div>
+                <span style={{ fontSize: '0.7rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.35rem 0.75rem', borderRadius: '999px' }}>
+                  SERVICES
+                </span>
               </div>
-              <p style={{ fontSize: '15px', color: '#9CA3AF', lineHeight: 1.7, margin: 0, flex: 1 }}>
-                Bespoke AI system design, Neural Core integrations, and custom agent architectures for enterprise teams. We build the infrastructure that powers your autonomous operations at scale.
-              </p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '24px' }}>
+
+              <div>
+                <h3 style={{ fontSize: '26px', fontWeight: 600, color: '#FAFAFA', margin: '0 0 12px', letterSpacing: '-0.02em' }}>Enterprise Engineering</h3>
+                <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, margin: 0 }}>
+                  Bespoke AI system design, Neural Core integrations, and custom agent architectures for enterprise teams. We build the infrastructure that powers your autonomous operations at scale.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto' }}>
                 {['Custom Agents', 'API Integrations', 'SLA Support'].map(tag => (
-                  <span key={tag} style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>{tag}</span>
+                  <span key={tag} style={{ fontSize: '0.78rem', fontFamily: 'monospace', padding: '0.35rem 0.75rem', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.6)' }}>
+                    • {tag}
+                  </span>
                 ))}
               </div>
-              <PremiumButton href="/services" variant="secondary">
+
+              <PremiumButton href="/services" variant="secondary" className="w-full justify-center">
                 View Services <ArrowRightIcon size={15} />
               </PremiumButton>
-            </PremiumCard>
+            </motion.div>
 
           </div>
         </div>
