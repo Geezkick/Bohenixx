@@ -12,6 +12,7 @@ import {
   Cloud, MessageCircle, Mail, Paperclip, GitBranch, Video, CreditCard, Bot, Settings, ChevronRight, Mic, Users2, Check as CheckIcon
 } from "lucide-react";
 import s from "./flowai.module.css";
+import LiveDemoShowcase from "@/components/LiveDemoShowcase";
 
 const fade = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.7 } } };
 
@@ -65,6 +66,7 @@ export default function FlowAIPage() {
           </Link>
           <div className={s.navLinks}>
             <Link href="#overview" className={s.navLink}>Overview</Link>
+            <Link href="#demo" className={s.navLink}>Live Demo</Link>
             <Link href="#employees" className={s.navLink}>AI Employees</Link>
             <Link href="#departments" className={s.navLink}>Departments</Link>
             <Link href="#core" className={s.navLink}>Neural Core</Link>
@@ -81,9 +83,16 @@ export default function FlowAIPage() {
           <motion.p variants={fade} className={s.heroSub}>Whether you are starting from scratch by appointing an AI Executive or expanding an existing enterprise, build a structured, hierarchical digital workforce that manages operations, sales, finance, and customer support autonomously.</motion.p>
           <motion.div variants={fade} className={s.heroCtas}>
             <button onClick={goToPlans} className={s.ctaPrimary} style={{ cursor: "pointer" }}>Hire AI Workforce <ArrowRightIcon size={18}/></button>
-            <Link href="#demo" className={s.ctaSecondary}>Watch Demo</Link>
+            <Link href="#demo" className={s.ctaSecondary}>Watch Live Demo</Link>
           </motion.div>
         </motion.div>
+      </section>
+
+      {/* Interactive Pitch & ROI Simulator Section */}
+      <section id="demo" className={s.section} style={{ padding: "60px 2rem 80px" }}>
+        <div className={s.contentWrap}>
+          <LiveDemoShowcase />
+        </div>
       </section>
 
       {/* Corporate Hierarchy Onboarding */}
