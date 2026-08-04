@@ -38,7 +38,9 @@ export default function TestimonialWall() {
       const res = await fetch('/api/testimonials');
       if (res.ok) {
         const data = await res.json();
-        setTestimonials(data);
+        // API returns { success, testimonials: [...] } or a plain array
+        const list = Array.isArray(data) ? data : (data.testimonials ?? []);
+        setTestimonials(list);
       }
     } catch (error) {
       console.error("Failed to fetch testimonials", error);

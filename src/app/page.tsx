@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, animate, useSpring } from "framer-motion";
-import { ArrowRightIcon, Shield, Database, Cloud, Code, BrainCircuit, Bot, Sparkles, TrendingUp, Headphones, Scale, Briefcase, Zap, CheckCircle, Radio } from "lucide-react";
+import { ArrowRightIcon, Shield, Database, Cloud, Code, BrainCircuit, Bot, Sparkles, TrendingUp, Headphones, Scale, Briefcase, Zap, CheckCircle } from "lucide-react";
 import styles from "./landing.module.css";
 import dynamic from "next/dynamic";
 
@@ -310,25 +310,19 @@ export default function CorporateLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className={styles.heroLabel}>
-              <Radio size={14} color="#00F0FF" className="animate-pulse" />
-              <span>Next-Gen Autonomous AI Workforce OS</span>
-            </div>
-
             <h1 className={styles.title}>
-              <span className={styles.titleLine1}>Hire AI Employees</span>
-              <span className={styles.titleLine2} style={{ color: '#00F0FF' }}>That Never Sleep.</span>
+              <span className={styles.titleLine1}>Build an Entire Company</span>
+              <span className={styles.titleLine2}>That Runs Itself.</span>
             </h1>
-            <p className={styles.subtitle} style={{ textAlign: 'center', margin: '0 auto 36px', maxWidth: '780px' }}>
-              Create an entire digital workforce that manages operations, sales, finance, customer support, and HR with 24/7 autonomous precision and built-in human governance.
+            <p className={styles.subtitle} style={{ textAlign: 'center', margin: '0 auto 48px' }}>
+              Hire AI Employees That Never Sleep. Create an entire digital workforce that manages operations, sales, finance, customer support, and HR.
             </p>
-
             <div className={styles.ctaGroup}>
-              <PremiumButton href="/dashboard/onboarding" variant="primary">
+              <PremiumButton href="/flow-ai" variant="primary">
                 Deploy AI Workforce <ArrowRightIcon size={16} />
               </PremiumButton>
-              <PremiumButton href="#workforce-roster" variant="secondary">
-                View Agent Roster
+              <PremiumButton href="/flow-ai#demo" variant="secondary">
+                View Architecture
               </PremiumButton>
             </div>
           </motion.div>
