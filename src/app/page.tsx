@@ -452,23 +452,56 @@ export default function CorporateLandingPage() {
             <p>From autonomous AI agents to industry-specific platforms, discover the tools powering the next generation of business.</p>
           </motion.div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }}>
-            <PremiumCard style={{ padding: '64px 48px', textAlign: 'center' }}>
-              <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-                  <Image src="/bohenixx.png" alt="Bohenix Flow AI" width={64} height={64} style={{ filter: 'drop-shadow(0 0 20px rgba(124, 58, 237, 0.4))' }} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '24px' }}>
+
+            {/* Flow AI Card */}
+            <PremiumCard style={{ padding: '48px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Image src="/bohenixx.png" alt="Bohenix Flow AI" width={28} height={28} />
                 </div>
-                <h3 style={{ fontSize: '40px', fontWeight: 600, marginBottom: '16px', letterSpacing: '-0.03em' }}>Bohenix Flow AI</h3>
-                <p style={{ fontSize: '18px', color: '#9CA3AF', marginBottom: '40px', lineHeight: 1.6 }}>
-                  An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents. Hire AI employees to manage projects, generate invoices, follow up with customers, and analyze performance.
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
-                  <PremiumButton href="/dashboard/onboarding" variant="primary">
-                    Deploy AI Workforce
-                  </PremiumButton>
+                <div>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: '4px' }}>Product</div>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, letterSpacing: '-0.02em' }}>Bohenix Flow AI</h3>
                 </div>
               </div>
+              <p style={{ fontSize: '15px', color: '#9CA3AF', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents — managing projects, invoices, customer follow-ups, and performance analytics.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '24px' }}>
+                {['24/7 Autonomous', 'M-Pesa Native', 'RBAC Governance'].map(tag => (
+                  <span key={tag} style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>{tag}</span>
+                ))}
+              </div>
+              <PremiumButton href="/dashboard/onboarding" variant="primary">
+                Deploy AI Workforce <ArrowRightIcon size={15} />
+              </PremiumButton>
             </PremiumCard>
+
+            {/* Enterprise Engineering / Services Card */}
+            <PremiumCard style={{ padding: '48px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Code size={24} color="rgba(255,255,255,0.8)" />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: '4px' }}>Services</div>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, letterSpacing: '-0.02em' }}>Enterprise Engineering</h3>
+                </div>
+              </div>
+              <p style={{ fontSize: '15px', color: '#9CA3AF', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                Bespoke AI system design, Neural Core integrations, and custom agent architectures for enterprise teams. We build the infrastructure that powers your autonomous operations at scale.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '24px' }}>
+                {['Custom Agents', 'API Integrations', 'SLA Support'].map(tag => (
+                  <span key={tag} style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>{tag}</span>
+                ))}
+              </div>
+              <PremiumButton href="/services" variant="secondary">
+                View Services <ArrowRightIcon size={15} />
+              </PremiumButton>
+            </PremiumCard>
+
           </div>
         </div>
       </section>
