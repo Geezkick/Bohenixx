@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, animate, useSpring } from "framer-motion";
-import { ArrowRightIcon, Shield, Database, Cloud, Code, BrainCircuit } from "lucide-react";
+import { ArrowRightIcon, Shield, Database, Cloud, Code, BrainCircuit, Bot, Sparkles, TrendingUp, Headphones, Scale, Briefcase, Zap, CheckCircle, Radio } from "lucide-react";
 import styles from "./landing.module.css";
 import dynamic from "next/dynamic";
 
@@ -12,6 +12,7 @@ import CinematicBackground from "@/components/CinematicBackground";
 import PremiumCard from "@/components/PremiumCard";
 import PremiumButton from "@/components/PremiumButton";
 import WebGLErrorBoundary from "@/components/WebGLErrorBoundary";
+import AgentPlayground from "@/components/AgentPlayground";
 
 const TestimonialWall = dynamic(() => import("@/components/TestimonialWall"), { ssr: false });
 const LaunchTimer = dynamic(() => import("@/components/LaunchTimer"), { ssr: false });
@@ -21,7 +22,6 @@ const CobeGlobe = dynamic(() => import("@/components/CobeGlobe"), { ssr: false }
 import { useAuth } from "@/context/AuthContext";
 import { useNotification } from "@/context/NotificationContext";
 
-// Utility component for animated numbers
 function AnimatedNumber({ value }: { value: number }) {
   const nodeRef = useRef<HTMLSpanElement>(null);
   const [inView, setInView] = useState(false);
@@ -57,11 +57,58 @@ function AnimatedNumber({ value }: { value: number }) {
   return <span ref={nodeRef}>0</span>;
 }
 
+const WORKFORCE_ROSTER = [
+  {
+    role: "Operations Specialist",
+    code: "AGENT-OPS",
+    icon: Zap,
+    color: "#7B2DFF",
+    desc: "Autonomous workflow orchestration, multi-system synchronization & process automation.",
+    metrics: "99.9% Autonomous",
+    tasks: "14,890 tasks/mo"
+  },
+  {
+    role: "Sales & Growth Lead",
+    code: "AGENT-SALES",
+    icon: TrendingUp,
+    color: "#00F0FF",
+    desc: "Inbound lead scoring, automated outreach sequences, pipeline revenue forecasting.",
+    metrics: "3.4x Conv. Rate",
+    tasks: "8,920 deal briefs"
+  },
+  {
+    role: "Finance & M-Pesa Agent",
+    code: "AGENT-FIN",
+    icon: Briefcase,
+    color: "#22c55e",
+    desc: "Instant KES invoice reconciliation, Daraja STK Push processing & audit trail logging.",
+    metrics: "0.04s Reconcile",
+    tasks: "KES 42M processed"
+  },
+  {
+    role: "Customer Support Specialist",
+    code: "AGENT-SUPP",
+    icon: Headphones,
+    color: "#eab308",
+    desc: "Instant resolution across Web, Email & WhatsApp, 0ms queue times, 24/7 uptime.",
+    metrics: "99.4% CSAT",
+    tasks: "31,400 tickets"
+  },
+  {
+    role: "HR & Executive CEO",
+    code: "AGENT-EXEC",
+    icon: Shield,
+    color: "#a855f7",
+    desc: "Company DNA rule enforcement, department agent oversight, daily strategic briefings.",
+    metrics: "Policy Guardrail",
+    tasks: "Continuous Governance"
+  }
+];
+
 export default function CorporateLandingPage() {
   const { user } = useAuth();
   const { showNotification } = useNotification();
   
-  // Scrolled state for Navbar
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
   
@@ -72,7 +119,6 @@ export default function CorporateLandingPage() {
     return () => unsubscribe();
   }, [scrollY]);
 
-  // Scroll animations for sections
   const heroRef = useRef(null);
   const { scrollYProgress: heroProgress } = useScroll({
     target: heroRef,
@@ -83,7 +129,6 @@ export default function CorporateLandingPage() {
   const heroScale = useTransform(heroProgress, [0, 1], [1, 0.9]);
   const heroY = useTransform(heroProgress, [0, 1], [0, 100]);
 
-  // Live Analytics Data
   const [visitors, setVisitors] = useState<number>(0);
   const [stats, setStats] = useState({ products: 0, users: 0, countries: 0 });
 
@@ -109,7 +154,6 @@ export default function CorporateLandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Contact Form Logic (Preserved exactly)
   const [inquiryEmail, setInquiryEmail] = useState("");
   const [inquiryMsg, setInquiryMsg] = useState("");
   const [inquiryName, setInquiryName] = useState("");
@@ -266,25 +310,86 @@ export default function CorporateLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
+            <div className={styles.heroLabel}>
+              <Radio size={14} color="#00F0FF" className="animate-pulse" />
+              <span>Next-Gen Autonomous AI Workforce OS</span>
+            </div>
 
             <h1 className={styles.title}>
-              <span className={styles.titleLine1}>Build an Entire Company</span>
-              <span className={styles.titleLine2}>That Runs Itself.</span>
+              <span className={styles.titleLine1}>Hire AI Employees</span>
+              <span className={styles.titleLine2} style={{ color: '#00F0FF' }}>That Never Sleep.</span>
             </h1>
-            <p className={styles.subtitle} style={{ textAlign: 'center', margin: '0 auto 48px' }}>
-              Hire AI Employees That Never Sleep. Create an entire digital workforce that manages operations, sales, finance, customer support, and HR.
+            <p className={styles.subtitle} style={{ textAlign: 'center', margin: '0 auto 36px', maxWidth: '780px' }}>
+              Create an entire digital workforce that manages operations, sales, finance, customer support, and HR with 24/7 autonomous precision and built-in human governance.
             </p>
+
             <div className={styles.ctaGroup}>
-              <PremiumButton href="/flow-ai" variant="primary">
+              <PremiumButton href="/dashboard/onboarding" variant="primary">
                 Deploy AI Workforce <ArrowRightIcon size={16} />
               </PremiumButton>
-              <PremiumButton href="/flow-ai#demo" variant="secondary">
-                View Architecture
+              <PremiumButton href="#workforce-roster" variant="secondary">
+                View Agent Roster
               </PremiumButton>
             </div>
           </motion.div>
         </div>
       </motion.section>
+
+      {/* AI Workforce Roster Grid */}
+      <section id="workforce-roster" className={styles.section} style={{ padding: '80px 2rem 120px' }}>
+        <div className={styles.contentContainer}>
+          <div className={styles.sectionHeader} style={{ textAlign: 'center', margin: '0 auto 64px' }}>
+            <span style={{ color: '#7B2DFF', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Digital Workforce Fleet</span>
+            <h2 style={{ fontSize: '48px', marginTop: '8px' }}>Autonomous AI Roster</h2>
+            <p>Deploy specialized AI agents tailored to every enterprise department in 1-click.</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+            {WORKFORCE_ROSTER.map((agent, idx) => {
+              const IconComp = agent.icon;
+              return (
+                <PremiumCard key={idx} style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: `rgba(123, 45, 255, 0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${agent.color}` }}>
+                      <IconComp size={22} color={agent.color} />
+                    </div>
+                    <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: agent.color, background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.6rem', borderRadius: 12 }}>
+                      {agent.code}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#FAFAFA', margin: '0 0 8px' }}>{agent.role}</h3>
+                    <p style={{ fontSize: '14px', color: '#9CA3AF', lineHeight: 1.6, margin: 0 }}>{agent.desc}</p>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '0.8rem' }}>
+                    <span style={{ color: '#22c55e', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <CheckCircle size={14} /> {agent.metrics}
+                    </span>
+                    <span style={{ color: '#9CA3AF' }}>{agent.tasks}</span>
+                  </div>
+
+                  <Link href="/dashboard/onboarding" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '0.6rem 1rem', borderRadius: 8, textAlign: 'center', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none', transition: 'all 0.2s' }}>
+                    Deploy {agent.role.split(" ")[0]} Agent →
+                  </Link>
+                </PremiumCard>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive AI Agent Sandbox Section */}
+      <section className={styles.section} style={{ padding: '0 2rem 120px' }}>
+        <div className={styles.contentContainer}>
+          <div className={styles.sectionHeader} style={{ textAlign: 'center', margin: '0 auto 48px' }}>
+            <h2>Live AI Sandbox Simulator</h2>
+            <p>Test agent reasoning loops, tool calls, and financial governance before deploying to production.</p>
+          </div>
+          <AgentPlayground />
+        </div>
+      </section>
 
       {/* Showcase / Product Section */}
       <section id="products" className={styles.section}>
@@ -302,7 +407,6 @@ export default function CorporateLandingPage() {
           </motion.div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }}>
-            {/* Flow AI Card */}
             <PremiumCard style={{ padding: '64px 48px', textAlign: 'center' }}>
               <div style={{ maxWidth: '700px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
@@ -313,28 +417,8 @@ export default function CorporateLandingPage() {
                   An AI-first SaaS platform that enables businesses to delegate complete workflows to autonomous AI agents. Hire AI employees to manage projects, generate invoices, follow up with customers, and analyze performance.
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
-                  <PremiumButton href="/flow-ai" variant="primary">
-                    Explore Flow AI
-                  </PremiumButton>
-                </div>
-              </div>
-            </PremiumCard>
-
-            {/* Custom Engineering Card */}
-            <PremiumCard style={{ padding: '64px 48px', textAlign: 'center' }}>
-              <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-                  <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <Code size={32} color="#FAFAFA" />
-                  </div>
-                </div>
-                <h3 style={{ fontSize: '32px', fontWeight: 600, marginBottom: '16px', letterSpacing: '-0.02em' }}>Enterprise Engineering</h3>
-                <p style={{ fontSize: '18px', color: '#9CA3AF', marginBottom: '40px', lineHeight: 1.6 }}>
-                  Beyond our flagship, we build world-class custom software. From complex enterprise ERP systems and intelligent mobile applications to secure cloud infrastructures.
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
-                  <PremiumButton onClick={() => openContactModal('services@bohenix.africa')} variant="secondary">
-                    Request Services
+                  <PremiumButton href="/dashboard/onboarding" variant="primary">
+                    Deploy AI Workforce
                   </PremiumButton>
                 </div>
               </div>
@@ -393,7 +477,6 @@ export default function CorporateLandingPage() {
             </PremiumCard>
           </div>
 
-          {/* Founder Profile */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '64px', alignItems: 'center' }}>
             <div style={{ flex: 1, minWidth: '300px', display: 'flex', justifyContent: 'center' }}>
               <PremiumCard style={{ padding: '0', width: '100%', maxWidth: '350px', aspectRatio: '3/4' }}>
@@ -419,12 +502,10 @@ export default function CorporateLandingPage() {
         </div>
       </section>
 
-      {/* Ask Bohenix AI */}
       <Suspense fallback={null}>
         <AskBohenix />
       </Suspense>
 
-      {/* Testimonials */}
       <section className={styles.section} style={{ padding: '80px 2rem' }}>
         <Suspense fallback={<div style={{ textAlign: 'center', color: '#9CA3AF', padding: '40px' }}>Loading testimonials...</div>}>
           <TestimonialWall />
@@ -435,7 +516,6 @@ export default function CorporateLandingPage() {
         <LaunchTimer />
       </Suspense>
 
-      {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.footerGrid}>
           <div className={styles.footerBrand}>
@@ -449,7 +529,7 @@ export default function CorporateLandingPage() {
             <h4>Platform</h4>
             <ul>
               <li><Link href="/flow-ai">Flow AI</Link></li>
-              <li><Link href="/flow-ai#agents">Neural Core</Link></li>
+              <li><Link href="/dashboard/onboarding">Deploy AI Workforce</Link></li>
               <li><Link href="/pricing">Pricing</Link></li>
             </ul>
           </div>
