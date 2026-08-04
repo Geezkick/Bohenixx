@@ -172,32 +172,32 @@ export default function PricingPage() {
   const planKeys: PlanKey[] = ["Starter", "Professional", "Enterprise"];
 
   return (
-    <div style={{ background: "#050505", minHeight: "100vh", color: "#fff", fontFamily: "'Outfit', 'Inter', sans-serif" }}>
+    <div style={{ background: "#030303", minHeight: "100vh", color: "#fff", fontFamily: "'Outfit', 'Inter', sans-serif" }}>
 
       {/* ── Navigation ────────────────────────────────────────────────────── */}
       <nav style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "1.25rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.05)",
-        background: "rgba(5,5,5,0.9)", backdropFilter: "blur(12px)",
+        padding: "1.25rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(3,3,3,0.9)", backdropFilter: "blur(16px)",
         position: "sticky", top: 0, zIndex: 50,
       }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "#fff" }}>
           <Image src="/bohenixx.png" alt="Bohenix" width={28} height={28} />
-          <span style={{ fontSize: "1.1rem", fontWeight: 700, letterSpacing: "-0.02em" }}>Bohenix</span>
+          <span style={{ fontSize: "1.1rem", fontWeight: 700, letterSpacing: "-0.02em", fontFamily: "monospace" }}>BOHENIX OS</span>
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           {/* Currency toggle */}
-          <div style={{ display: "flex", background: "rgba(255,255,255,0.06)", borderRadius: "8px", padding: "3px" }}>
+          <div style={{ display: "flex", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "3px" }}>
             {(["USD", "KES"] as const).map((c) => (
               <button
                 key={c}
                 onClick={() => setCurrency(c)}
                 style={{
                   padding: "4px 12px", borderRadius: "6px", border: "none", cursor: "pointer",
-                  fontSize: "0.8rem", fontWeight: 600,
-                  background: currency === c ? "rgba(123,45,255,0.8)" : "transparent",
-                  color: currency === c ? "#fff" : "rgba(255,255,255,0.5)",
+                  fontSize: "0.75rem", fontWeight: 700, fontFamily: "monospace",
+                  background: currency === c ? "#FFFFFF" : "transparent",
+                  color: currency === c ? "#000000" : "rgba(255,255,255,0.5)",
                   transition: "all 0.2s",
                 }}
               >
@@ -208,22 +208,23 @@ export default function PricingPage() {
 
           {isLoading ? null : isAuthenticated ? (
             <Link href="/dashboard" style={{
-              padding: "0.45rem 1rem", background: "#7B2DFF", color: "#fff",
-              borderRadius: "8px", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem",
+              padding: "0.45rem 1rem", background: "#FFFFFF", color: "#000000",
+              borderRadius: "8px", textDecoration: "none", fontWeight: 700, fontSize: "0.85rem",
+              fontFamily: "monospace",
             }}>
               Dashboard
             </Link>
           ) : (
             <>
               <Link href="/sign-in" style={{
-                padding: "0.45rem 1rem", background: "rgba(255,255,255,0.08)", color: "#fff",
-                borderRadius: "8px", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem",
+                padding: "0.45rem 1rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff",
+                borderRadius: "8px", textDecoration: "none", fontWeight: 600, fontSize: "0.85rem",
               }}>
                 Sign In
               </Link>
               <Link href="/sign-in?mode=signup" style={{
-                padding: "0.45rem 1rem", background: "#7B2DFF", color: "#fff",
-                borderRadius: "8px", textDecoration: "none", fontWeight: 600, fontSize: "0.875rem",
+                padding: "0.45rem 1rem", background: "#FFFFFF", color: "#000000",
+                borderRadius: "8px", textDecoration: "none", fontWeight: 700, fontSize: "0.85rem",
               }}>
                 Get Started
               </Link>
@@ -238,8 +239,8 @@ export default function PricingPage() {
         {/* Header */}
         <div className={s.planHeader}>
           <span className={s.planHeaderLabel}>
-            <Sparkles size={14} />
-            Subscription Plans
+            <Sparkles size={13} color="#FFFFFF" />
+            [ SUBSCRIPTION PLANS ]
           </span>
           <h1 className={s.planTitle}>
             Deploy Your{" "}
@@ -263,7 +264,7 @@ export default function PricingPage() {
             <span className={`${s.toggleLabel} ${isAnnual ? s.toggleLabelActive : ""}`}>
               Annual
             </span>
-            {isAnnual && <span className={s.saveBadge}>Save 17%</span>}
+            {isAnnual && <span className={s.saveBadge}>SAVE 17%</span>}
           </div>
         </div>
 
@@ -275,9 +276,9 @@ export default function PricingPage() {
             const isCurrentPlan = currentPlan?.toLowerCase().includes(key.toLowerCase());
             const isLoadingThis = loadingPlan === key;
             const icon =
-              key === "Starter" ? <Zap size={20} color="#7B2DFF" /> :
-              key === "Professional" ? <Crown size={20} color="#7B2DFF" /> :
-              <Building2 size={20} color="#00E5FF" />;
+              key === "Starter" ? <Zap size={18} color="#FFFFFF" /> :
+              key === "Professional" ? <Crown size={18} color="#FFFFFF" /> :
+              <Building2 size={18} color="#FFFFFF" />;
 
             return (
               <div
@@ -293,7 +294,13 @@ export default function PricingPage() {
                 )}
 
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "0.5rem" }}>
-                  {icon}
+                  <div style={{
+                    padding: "6px", borderRadius: "8px",
+                    background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center"
+                  }}>
+                    {icon}
+                  </div>
                   <h3 className={s.planName}>{plan.name}</h3>
                 </div>
                 <p className={s.planDesc}>{plan.desc}</p>
@@ -349,10 +356,10 @@ export default function PricingPage() {
 
         {/* Trust Bar */}
         <div className={s.trustBar}>
-          <div className={s.trustItem}><Shield size={16} color="#22c55e" />SSL Encrypted</div>
-          <div className={s.trustItem}><Lock size={16} color="#22c55e" />SOC 2 Compliant</div>
-          <div className={s.trustItem}><CreditCard size={16} color="#22c55e" />Secure Payments</div>
-          <div className={s.trustItem}><RefreshCw size={16} color="#22c55e" />Cancel Anytime</div>
+          <div className={s.trustItem}><Shield size={15} color="#FFFFFF" />SSL Encrypted</div>
+          <div className={s.trustItem}><Lock size={15} color="#FFFFFF" />SOC 2 Compliant</div>
+          <div className={s.trustItem}><CreditCard size={15} color="#FFFFFF" />Secure Payments</div>
+          <div className={s.trustItem}><RefreshCw size={15} color="#FFFFFF" />Cancel Anytime</div>
         </div>
 
         {/* FAQ */}
