@@ -17,34 +17,34 @@ import LiveDemoShowcase from "@/components/LiveDemoShowcase";
 const fade = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.7 } } };
 
 const employees = [
-  { icon: <ClipboardList size={24} color="#7B2DFF" />, name: "Sophia", role: "AI Project Manager", skills: ["Plans projects", "Assigns tasks", "Runs standups", "Generates reports", "Tracks deadlines"], stats: { performance: "98%", tasks: 412 }, avatar: "/avatars/sophia.png" },
-  { icon: <Calculator size={24} color="#7B2DFF" />, name: "Alex", role: "AI Accountant", skills: ["Invoices", "Payroll", "Taxes", "Forecasts", "Expenses", "Revenue"], stats: { performance: "99%", tasks: 856 }, avatar: "/avatars/alex.png" },
-  { icon: <Users size={24} color="#7B2DFF" />, name: "Maya", role: "AI HR Manager", skills: ["Hiring", "Leave", "Contracts", "Training", "Reviews"], stats: { performance: "97%", tasks: 231 }, avatar: "/avatars/maya.png" },
-  { icon: <DollarSign size={24} color="#7B2DFF" />, name: "Ethan", role: "Sales Director", skills: ["Leads", "Follow-ups", "CRM", "Deals", "Negotiations", "Emails"], stats: { performance: "95%", tasks: 1204 }, avatar: "/avatars/ethan.png" },
+  { icon: <ClipboardList size={24} color="rgba(255,255,255,0.8)" />, name: "Sophia", role: "AI Project Manager", skills: ["Plans projects", "Assigns tasks", "Runs standups", "Generates reports", "Tracks deadlines"], stats: { performance: "98%", tasks: 412 }, avatar: "/avatars/sophia.png" },
+  { icon: <Calculator size={24} color="rgba(255,255,255,0.8)" />, name: "Alex", role: "AI Accountant", skills: ["Invoices", "Payroll", "Taxes", "Forecasts", "Expenses", "Revenue"], stats: { performance: "99%", tasks: 856 }, avatar: "/avatars/alex.png" },
+  { icon: <Users size={24} color="rgba(255,255,255,0.8)" />, name: "Maya", role: "AI HR Manager", skills: ["Hiring", "Leave", "Contracts", "Training", "Reviews"], stats: { performance: "97%", tasks: 231 }, avatar: "/avatars/maya.png" },
+  { icon: <DollarSign size={24} color="rgba(255,255,255,0.8)" />, name: "Ethan", role: "Sales Director", skills: ["Leads", "Follow-ups", "CRM", "Deals", "Negotiations", "Emails"], stats: { performance: "95%", tasks: 1204 }, avatar: "/avatars/ethan.png" },
 ];
 
 const departments = [
-  { name: "Sales Department", icon: <TrendingUp size={24} color="#00E5FF" />, employees: ["Sales Director AI", "Lead Generator AI", "Proposal Writer AI", "Follow-up AI", "Closing AI"] },
-  { name: "Finance Department", icon: <Landmark size={24} color="#00E5FF" />, employees: ["Bookkeeper", "Payroll", "Auditor", "Forecasting", "Invoice Manager", "Tax Assistant"] },
-  { name: "Marketing Department", icon: <Megaphone size={24} color="#00E5FF" />, employees: ["Social Media AI", "SEO AI", "Ads Manager", "Content Writer", "Designer", "Video Creator", "Analytics"] },
-  { name: "Customer Success", icon: <HeartPulse size={24} color="#00E5FF" />, employees: ["Support", "Email", "WhatsApp", "Live Chat", "CRM", "Retention", "Surveys"] },
+  { name: "Sales Department", icon: <TrendingUp size={24} color="rgba(255,255,255,0.8)" />, employees: ["Sales Director AI", "Lead Generator AI", "Proposal Writer AI", "Follow-up AI", "Closing AI"] },
+  { name: "Finance Department", icon: <Landmark size={24} color="rgba(255,255,255,0.8)" />, employees: ["Bookkeeper", "Payroll", "Auditor", "Forecasting", "Invoice Manager", "Tax Assistant"] },
+  { name: "Marketing Department", icon: <Megaphone size={24} color="rgba(255,255,255,0.8)" />, employees: ["Social Media AI", "SEO AI", "Ads Manager", "Content Writer", "Designer", "Video Creator", "Analytics"] },
+  { name: "Customer Success", icon: <HeartPulse size={24} color="rgba(255,255,255,0.8)" />, employees: ["Support", "Email", "WhatsApp", "Live Chat", "CRM", "Retention", "Surveys"] },
 ];
 
 const capabilities = [
-  { icon: <BrainCircuit size={24} color="#7B2DFF" />, title: "Bohenix Neural Core", desc: "Shared memory, knowledge graph, and reasoning engine that powers every AI employee." },
-  { icon: <Blocks size={24} color="#7B2DFF" />, title: "Flow Canvas", desc: "Drag and drop employees, departments, and workflows into a visual board to build your company." },
-  { icon: <ShoppingCart size={24} color="#7B2DFF" />, title: "AI Marketplace", desc: "Install entire departments (e.g., 'Restaurant Department') with a single click." },
-  { icon: <Activity size={24} color="#7B2DFF" />, title: "AI Digital Twin", desc: "Simulate business decisions. Predict revenue, churn, cash flow, and stock demands." },
-  { icon: <LayoutDashboard size={24} color="#7B2DFF" />, title: "CEO Command Center", desc: "Beautiful 3D dashboard showing business health, AI activity, and predictive alerts." },
-  { icon: <Mic size={24} color="#7B2DFF" />, title: "Voice Operating System", desc: "Just say 'Flow, prepare payroll.' Your AI executes complex tasks without a single click." },
-  { icon: <Users2 size={24} color="#7B2DFF" />, title: "AI Meeting Room", desc: "Virtual boardroom where your AI executives discuss the company and generate recommendations." },
-  { icon: <Zap size={24} color="#7B2DFF" />, title: "Autonomous Mode", desc: "Switch to AUTO. Flow checks emails, CRM, invoices, and marketing every minute to run your company." },
+  { icon: <BrainCircuit size={24} color="rgba(255,255,255,0.8)" />, title: "Bohenix Neural Core", desc: "Shared memory, knowledge graph, and reasoning engine that powers every AI employee." },
+  { icon: <Blocks size={24} color="rgba(255,255,255,0.8)" />, title: "Flow Canvas", desc: "Drag and drop employees, departments, and workflows into a visual board to build your company." },
+  { icon: <ShoppingCart size={24} color="rgba(255,255,255,0.8)" />, title: "AI Marketplace", desc: "Install entire departments (e.g., 'Restaurant Department') with a single click." },
+  { icon: <Activity size={24} color="rgba(255,255,255,0.8)" />, title: "AI Digital Twin", desc: "Simulate business decisions. Predict revenue, churn, cash flow, and stock demands." },
+  { icon: <LayoutDashboard size={24} color="rgba(255,255,255,0.8)" />, title: "CEO Command Center", desc: "Beautiful 3D dashboard showing business health, AI activity, and predictive alerts." },
+  { icon: <Mic size={24} color="rgba(255,255,255,0.8)" />, title: "Voice Operating System", desc: "Just say 'Flow, prepare payroll.' Your AI executes complex tasks without a single click." },
+  { icon: <Users2 size={24} color="rgba(255,255,255,0.8)" />, title: "AI Meeting Room", desc: "Virtual boardroom where your AI executives discuss the company and generate recommendations." },
+  { icon: <Zap size={24} color="rgba(255,255,255,0.8)" />, title: "Autonomous Mode", desc: "Switch to AUTO. Flow checks emails, CRM, invoices, and marketing every minute to run your company." },
 ];
 
 const ecosystem = [
-  { icon: <Briefcase size={32} color="#7B2DFF" />, name: "Mboka AI", desc: "Recruitment & Talent" }, 
-  { icon: <Truck size={32} color="#7B2DFF" />, name: "NjiaSafe", desc: "Logistics & Routing" },
-  { icon: <Cloud size={32} color="#7B2DFF" />, name: "Bohenix Cloud", desc: "Data & Storage" },
+  { icon: <Briefcase size={28} color="rgba(255,255,255,0.8)" />, name: "Mboka AI", desc: "Recruitment & Talent" }, 
+  { icon: <Truck size={28} color="rgba(255,255,255,0.8)" />, name: "NjiaSafe", desc: "Logistics & Routing" },
+  { icon: <Cloud size={28} color="rgba(255,255,255,0.8)" />, name: "Bohenix Cloud", desc: "Data & Storage" },
 ];
 
 export default function FlowAIPage() {
