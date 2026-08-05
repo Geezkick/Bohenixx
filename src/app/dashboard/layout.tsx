@@ -96,6 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout, isLoading } = useAuth();
+  const { showNotification } = useNotification();
   const { t } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -263,12 +264,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
 
             <div className={styles.headerRight}>
-              <button className={styles.headerIconButton} aria-label="Search">
-                <Search size={18} />
-                <span className={styles.searchHint}>⌘K</span>
-              </button>
+              <div 
+                className={styles.headerSearchBar} 
+                onClick={() => window.dispatchEvent(new CustomEvent("open-command-palette"))}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent("open-command-palette"));
+                  }
+                }}
+              >
+                <Search size={15} className={styles.searchIconHeader} />
+                <span className={styles.searchPlaceholder}>Search dashboard, agents, workflows...</span>
+                <kbd className={styles.searchHint}>⌘K</kbd>
+              </div>
 
-              <button className={styles.headerIconButton} aria-label="Notifications">
+              <button className={styles.headerIconButton} aria-label="Notifications" onClick={() => showNotification({ title: "System Operational", message: "All autonomous agent workflows are running smoothly.", type: "info" })}>
                 <Bell size={18} />
               </button>
 

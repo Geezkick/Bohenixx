@@ -204,6 +204,51 @@
   gap: 1rem;
 }
 
+.headerSearchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.45rem 0.85rem;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 280px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.headerSearchBar:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(123, 45, 255, 0.35);
+  color: #FFFFFF;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.searchIconHeader {
+  color: rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+}
+
+.headerSearchBar:hover .searchIconHeader {
+  color: #00E5FF;
+}
+
+.searchPlaceholder {
+  font-size: 0.825rem;
+  font-weight: 400;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.headerSearchBar:hover .searchPlaceholder {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .headerIconButton {
   display: flex;
   align-items: center;
@@ -223,12 +268,14 @@
 }
 
 .searchHint {
-  font-size: 0.7rem;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 2px 6px;
   border-radius: 4px;
   color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-mono, monospace);
 }
 
 .userProfile {
