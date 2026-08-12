@@ -39,47 +39,59 @@ export const sendEmail = async ({
       console.log(`Subject: ${subject}`);
       console.log('=================================');
       
+      try {
+        // Save log in DB
+        await db.emailLog.create({
+          data: {
+            to,
+            from: mailOptions.from,
+            subject,
+            status: 'SIMULATED (No SMTP Config)',
+            type
+          }
+        });
+      } catch (dbError) {
+        console.error('Failed to write mock email log to DB:', dbError);
+      }
+      return { success: true, simulated: true };
+    }
+
+    const info = await transporter.sendMail(mailOptions);
+    
+    try {
       // Save log in DB
       await db.emailLog.create({
         data: {
           to,
           from: mailOptions.from,
           subject,
-          status: 'SIMULATED (No SMTP Config)',
+          status: 'SENT',
           type
         }
       });
-      return { success: true, simulated: true };
+    } catch (dbError) {
+      console.error('Failed to write email log to DB:', dbError);
     }
-
-    const info = await transporter.sendMail(mailOptions);
-    
-    // Save log in DB
-    await db.emailLog.create({
-      data: {
-        to,
-        from: mailOptions.from,
-        subject,
-        status: 'SENT',
-        type
-      }
-    });
 
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Email send failed:', error);
     
-    // Save failed log
-    await db.emailLog.create({
-      data: {
-        to,
-        from: process.env.EMAIL_FROM || 'noreply@bohenix.com',
-        subject,
-        status: 'FAILED',
-        type,
-        error: String(error)
-      }
-    });
+    try {
+      // Save failed log
+      await db.emailLog.create({
+        data: {
+          to,
+          from: process.env.EMAIL_FROM || 'noreply@bohenix.com',
+          subject,
+          status: 'FAILED',
+          type,
+          error: String(error)
+        }
+      });
+    } catch (dbError) {
+      console.error('Failed to write failed email log to DB:', dbError);
+    }
 
     return { success: false, error };
   }
