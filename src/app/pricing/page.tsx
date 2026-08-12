@@ -139,13 +139,14 @@ export default function PricingPage() {
 
   const handleSelectPlan = async (planKey: PlanKey) => {
     if (planKey === "Enterprise") {
-      window.location.href = "mailto:sales@bohenix.com?subject=Enterprise%20Plan%20Inquiry";
+      // Open contact modal pattern — redirect to correct email
+      window.location.href = "mailto:sales@bohenix.africa?subject=Enterprise%20Plan%20Inquiry%20%E2%80%94%20Bohenix%20OS";
       return;
     }
 
-    // If not signed in, send them to sign-in and come back here
+    // If not signed in, send to signup tab (not login) with plan pre-selected
     if (!isAuthenticated) {
-      router.push("/sign-in?callbackUrl=/pricing");
+      router.push(`/sign-in?mode=signup&callbackUrl=/pricing&plan=${planKey}`);
       return;
     }
 

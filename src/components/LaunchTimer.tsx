@@ -42,6 +42,28 @@ export default function LaunchTimer() {
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
   const [mounted, setMounted] = useState(false);
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!waitlistEmail.trim() || waitlistStatus === 'loading') return;
+    setWaitlistStatus('loading');
+    try {
+      const res = await fetch('/api/labs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: waitlistEmail }),
+      });
+      if (res.ok) {
+        setWaitlistStatus('success');
+      } else {
+        setWaitlistStatus('error');
+      }
+    } catch {
+      setWaitlistStatus('error');
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -119,6 +141,37 @@ export default function LaunchTimer() {
               </motion.div>
             </React.Fragment>
           ))}
+        </div>
+
+        {/* Email Capture */}
+        <div className={styles.waitlistSection}>
+          {waitlistStatus === 'success' ? (
+            <div className={styles.waitlistSuccess}>
+              <span>✓</span> You&apos;re on the list. We&apos;ll notify you at launch.
+            </div>
+          ) : (
+            <form onSubmit={handleWaitlistSubmit} className={styles.waitlistForm}>
+              <input
+                type="email"
+                value={waitlistEmail}
+                onChange={e => setWaitlistEmail(e.target.value)}
+                placeholder="Enter your email for launch updates"
+                className={styles.waitlistInput}
+                disabled={waitlistStatus === 'loading'}
+                required
+              />
+              <button
+                type="submit"
+                className={styles.waitlistBtn}
+                disabled={waitlistStatus === 'loading'}
+              >
+                {waitlistStatus === 'loading' ? 'Joining...' : 'Notify Me'}
+              </button>
+            </form>
+          )}
+          {waitlistStatus === 'error' && (
+            <p className={styles.waitlistError}>Something went wrong. Try again.</p>
+          )}
         </div>
 
         {/* Monochromatic Footer Badge */}

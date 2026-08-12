@@ -430,3 +430,86 @@
   }
 }
 
+/* ─── Waitlist Email Capture ─────────────────────────────────── */
+.waitlistSection {
+  margin-top: 2.5rem;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.waitlistForm {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 420px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.waitlistInput {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #FAFAFA;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.waitlistInput:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.waitlistInput::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.waitlistBtn {
+  background: #FAFAFA;
+  color: #050505;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.waitlistBtn:hover { opacity: 0.9; }
+.waitlistBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.waitlistSuccess {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.waitlistSuccess span {
+  color: #22c55e;
+  font-weight: 700;
+}
+
+.waitlistError {
+  font-size: 12px;
+  color: rgba(255, 100, 100, 0.8);
+  margin: 0;
+}
+
+

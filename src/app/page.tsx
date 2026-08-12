@@ -106,6 +106,7 @@ export default function CorporateLandingPage() {
   
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   useEffect(() => {
     const unsubscribe = scrollY.on("change", (latest) => {
@@ -128,7 +129,9 @@ export default function CorporateLandingPage() {
   const [stats, setStats] = useState({ products: 0, users: 0, countries: 0 });
 
   useEffect(() => {
+    // Record visit once on load
     fetch('/api/analytics/visit', { method: 'POST' }).catch(() => {});
+
     const fetchCount = () => {
       fetch('/api/analytics/count')
         .then(res => res.json())
@@ -136,7 +139,7 @@ export default function CorporateLandingPage() {
           if (data.success) {
             setVisitors(data.visitors || 0);
             setStats({
-              products: 1, 
+              products: 1,
               users: data.users || 0,
               countries: data.countries || 0
             });
@@ -144,9 +147,16 @@ export default function CorporateLandingPage() {
         })
         .catch(() => {});
     };
+
+    // Fetch once on mount
     fetchCount();
-    const interval = setInterval(fetchCount, 5000);
-    return () => clearInterval(interval);
+
+    // Re-fetch only when the tab becomes visible again (not on a timer)
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') fetchCount();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
   const [inquiryEmail, setInquiryEmail] = useState("");
@@ -231,15 +241,109 @@ export default function CorporateLandingPage() {
             <Link href="#company" className={styles.navLink}>Company</Link>
             <button onClick={(e) => openContactModal('hello@bohenix.africa', e)} className={styles.navLink} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>Contact</button>
           </div>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {user ? (
               <Link href="/dashboard" className={styles.navBtn}>Dashboard</Link>
             ) : (
               <Link href="/sign-in" className={styles.navBtn}>Sign In</Link>
             )}
+            {/* Hamburger — mobile only */}
+            <button
+              aria-label="Open menu"
+              onClick={() => setIsMobileMenuOpen(true)}
+              className={styles.hamburger}
+            >
+              <span className={styles.hamburgerLine} />
+              <span className={styles.hamburgerLine} />
+              <span className={styles.hamburgerLine} />
+            </button>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Slide-in Drawer */}
+      {isMobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 9998,
+              background: 'rgba(5,5,5,0.7)', backdropFilter: 'blur(8px)',
+            }}
+          />
+          {/* Drawer */}
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            style={{
+              position: 'fixed', top: 0, right: 0, bottom: 0, width: '80%', maxWidth: '320px',
+              zIndex: 9999, background: '#0A0A0A', borderLeft: '1px solid rgba(255,255,255,0.08)',
+              padding: '2rem', display: 'flex', flexDirection: 'column', gap: '0.5rem',
+            }}
+          >
+            {/* Drawer header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+              <Link href="/" className={styles.logoGroup} onClick={() => setIsMobileMenuOpen(false)}>
+                <Image src="/bohenixx.png" alt="Bohenix" width={22} height={22} />
+                <span className={styles.brandName}>Bohenix</span>
+              </Link>
+              <button
+                aria-label="Close menu"
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#9CA3AF', padding: '6px 10px', cursor: 'pointer', fontSize: '18px', lineHeight: 1 }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Nav links */}
+            {[
+              { href: '/flow-ai', label: 'Flow AI' },
+              { href: '/pricing', label: 'Pricing' },
+              { href: '/services', label: 'Services' },
+              { href: '#company', label: 'Company' },
+            ].map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  padding: '1rem 1.25rem', borderRadius: '12px', color: '#FAFAFA', textDecoration: 'none',
+                  fontSize: '16px', fontWeight: 500,
+                  background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <button
+              onClick={(e) => { openContactModal('hello@bohenix.africa', e); setIsMobileMenuOpen(false); }}
+              style={{
+                padding: '1rem 1.25rem', borderRadius: '12px', color: '#FAFAFA', textAlign: 'left',
+                fontSize: '16px', fontWeight: 500, cursor: 'pointer',
+                background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
+              }}
+            >
+              Contact
+            </button>
+
+            <div style={{ marginTop: 'auto' }}>
+              {user ? (
+                <Link href="/dashboard" className={styles.navBtn} style={{ display: 'block', textAlign: 'center', padding: '0.85rem', borderRadius: '12px' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  Dashboard
+                </Link>
+              ) : (
+                <Link href="/sign-in" className={styles.navBtn} style={{ display: 'block', textAlign: 'center', padding: '0.85rem', borderRadius: '12px' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  Sign In
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        </>
+      )}
 
       {/* Dynamic Contact Modal */}
       {isContactModalOpen && (
@@ -323,6 +427,31 @@ export default function CorporateLandingPage() {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* Trust Strip / Social Proof */}
+      <section className={styles.section} style={{ padding: '20px 2rem 60px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+        <div className={styles.contentContainer}>
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+              Trusted by innovative enterprises across Africa
+            </span>
+          </div>
+          <div className={styles.trustedLogos} style={{ display: 'flex', justifyContent: 'center', gap: '48px', opacity: 0.5, flexWrap: 'wrap', filter: 'grayscale(100%)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 600 }}>
+              <Zap size={20} /> Acme Corp
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 600 }}>
+              <Shield size={20} /> Nexus Financial
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 600 }}>
+              <Code size={20} /> Vuna Tech
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '18px', fontWeight: 600 }}>
+              <TrendingUp size={20} /> Mboka Logistics
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* AI Workforce Roster — Premium Monochrome */}
       <section id="workforce-roster" className={styles.section} style={{ padding: '80px 2rem 120px' }}>
@@ -620,10 +749,10 @@ export default function CorporateLandingPage() {
                 "Most people are still modeling the future. We're already deploying it. Bohenix isn't building software — we're building the infrastructure layer Africa hasn't named yet."
               </p>
               <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                <PremiumButton onClick={(e: any) => openContactModal('ceo@bohenix.africa', e)} variant="primary">
+                <PremiumButton onClick={(e: React.MouseEvent) => openContactModal('ceo@bohenix.africa', e)} variant="primary">
                   Contact Founder
                 </PremiumButton>
-                <PremiumButton onClick={(e: any) => openContactModal('info@bohenix.africa', e)} variant="secondary">
+                <PremiumButton onClick={(e: React.MouseEvent) => openContactModal('info@bohenix.africa', e)} variant="secondary">
                   Media & Info
                 </PremiumButton>
               </div>
@@ -701,7 +830,7 @@ export default function CorporateLandingPage() {
               onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
               LinkedIn
             </a>
-            <a href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.2s' }}
+            <a href="https://wa.me/254711000000" target="_blank" rel="noopener noreferrer" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
               onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
               WhatsApp

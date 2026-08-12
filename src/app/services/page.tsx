@@ -104,9 +104,44 @@ export default function ServicesPage() {
   const totalDaysMin = Math.max(3, baseDays + Math.floor(extraScopeDays * 0.7));
   const totalDaysMax = totalDaysMin + 4;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!requestForm.email || !requestForm.companyName) return;
+
+    setSubmitted(false);
+    const selectedTierName = SERVICE_TIERS.find(t => t.id === selectedTier)?.name || selectedTier;
+    const scopeLabels = selectedScopes.map(id => SCOPE_OPTIONS.find(s => s.id === id)?.label).filter(Boolean).join(', ');
+
+    const payload = {
+      email: requestForm.email,
+      targetEmail: 'services@bohenix.africa',
+      subject: `Custom Service Request — ${selectedTierName}`,
+      message: [
+        `Company: ${requestForm.companyName}`,
+        `Service Tier: ${selectedTierName} (${totalDaysMin}–${totalDaysMax} day delivery)`,
+        `Agent Fleet Size: ${agentCount} agents`,
+        `Integration Modules: ${scopeLabels || 'None selected'}`,
+        '',
+        'Custom Engineering Notes:',
+        requestForm.customNotes || '(None provided)',
+      ].join('\n'),
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSubmitted(true);
+      } else {
+        alert(data.error || 'Failed to submit request. Please email services@bohenix.africa directly.');
+      }
+    } catch {
+      alert('Network error. Please email services@bohenix.africa directly.');
+    }
   };
 
   return (
