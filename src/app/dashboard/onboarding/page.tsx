@@ -149,7 +149,7 @@ export default function OnboardingPage() {
             <div className={styles.optionsGrid}>
               <div className={styles.optionCard} onClick={() => handleSelectType("new")}>
                 <div className={`${styles.iconWrapper} ${styles.glowPrimary}`}>
-                  <Briefcase size={36} color="#7B2DFF" />
+                  <Briefcase size={36} color="#FAFAFA" />
                 </div>
                 <h3 className={styles.optionTitle}>I'm Starting a New Company</h3>
                 <p className={styles.optionDesc}>
@@ -159,7 +159,7 @@ export default function OnboardingPage() {
 
               <div className={styles.optionCard} onClick={() => handleSelectType("existing")}>
                 <div className={`${styles.iconWrapper} ${styles.glowSuccess}`}>
-                  <Building2 size={36} color="#22c55e" />
+                  <Building2 size={36} color="#FAFAFA" />
                 </div>
                 <h3 className={styles.optionTitle}>I Have an Existing Business</h3>
                 <p className={styles.optionDesc}>
@@ -173,7 +173,7 @@ export default function OnboardingPage() {
         {step === "dna_config" && (
           <div className={styles.hireForm}>
             <div className={styles.hierarchyIndicator}>
-              <Target size={22} color="#00F0FF" />
+              <Target size={22} color="#FAFAFA" />
               <span className={styles.hierarchyText}>Company DNA & Governance Policy</span>
             </div>
             
@@ -238,7 +238,7 @@ export default function OnboardingPage() {
         {step === "new_company_hire" && (
           <div className={styles.hireForm}>
             <div className={styles.hierarchyIndicator}>
-              <Crown size={22} color="#7B2DFF" />
+              <Crown size={22} color="#FAFAFA" />
               <span className={styles.hierarchyText}>Corporate Hierarchy: Appoint Chief Executive</span>
             </div>
             
@@ -293,28 +293,28 @@ export default function OnboardingPage() {
                 className={`${styles.deptCard} ${department === "finance" ? styles.selected : ""}`}
                 onClick={() => setDepartment("finance")}
               >
-                <TrendingUp size={28} color={department === "finance" ? "#7B2DFF" : "rgba(255,255,255,0.4)"} />
+                <TrendingUp size={28} color={department === "finance" ? "#FAFAFA" : "rgba(255,255,255,0.4)"} />
                 <span style={{ color: department === "finance" ? "#fff" : "rgba(255,255,255,0.7)", fontWeight: 500 }}>Finance Dept</span>
               </div>
               <div 
                 className={`${styles.deptCard} ${department === "sales" ? styles.selected : ""}`}
                 onClick={() => setDepartment("sales")}
               >
-                <TrendingUp size={28} color={department === "sales" ? "#7B2DFF" : "rgba(255,255,255,0.4)"} />
+                <TrendingUp size={28} color={department === "sales" ? "#FAFAFA" : "rgba(255,255,255,0.4)"} />
                 <span style={{ color: department === "sales" ? "#fff" : "rgba(255,255,255,0.7)", fontWeight: 500 }}>Sales Dept</span>
               </div>
               <div 
                 className={`${styles.deptCard} ${department === "support" ? styles.selected : ""}`}
                 onClick={() => setDepartment("support")}
               >
-                <Headphones size={28} color={department === "support" ? "#7B2DFF" : "rgba(255,255,255,0.4)"} />
+                <Headphones size={28} color={department === "support" ? "#FAFAFA" : "rgba(255,255,255,0.4)"} />
                 <span style={{ color: department === "support" ? "#fff" : "rgba(255,255,255,0.7)", fontWeight: 500 }}>Support Dept</span>
               </div>
               <div 
                 className={`${styles.deptCard} ${department === "legal" ? styles.selected : ""}`}
                 onClick={() => setDepartment("legal")}
               >
-                <Scale size={28} color={department === "legal" ? "#7B2DFF" : "rgba(255,255,255,0.4)"} />
+                <Scale size={28} color={department === "legal" ? "#FAFAFA" : "rgba(255,255,255,0.4)"} />
                 <span style={{ color: department === "legal" ? "#fff" : "rgba(255,255,255,0.7)", fontWeight: 500 }}>Legal Dept</span>
               </div>
             </div>
@@ -360,19 +360,19 @@ export default function OnboardingPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {terminalLines.map((line, i) => (
                 <div key={i} className={styles.terminalLine}>
-                  <span style={{ color: '#7B2DFF' }}>&gt;</span> 
+                  <span style={{ color: '#FAFAFA' }}>&gt;</span> 
                   <span className={
                     line.includes("complete") ? styles.terminalSuccess : 
                     line.includes("Equipping") ? styles.terminalHighlight : ""
                   }>
                     {line}
                   </span>
-                  {line.includes("complete") && <Check size={14} color="#22c55e" style={{ marginLeft: 'auto' }} />}
+                  {line.includes("complete") && <Check size={14} color="#FAFAFA" style={{ marginLeft: 'auto' }} />}
                 </div>
               ))}
               {!terminalComplete && (
                 <div className={styles.terminalLine}>
-                  <span style={{ color: '#7B2DFF' }}>&gt;</span>
+                  <span style={{ color: '#FAFAFA' }}>&gt;</span>
                   <div className={styles.spinner}></div>
                 </div>
               )}
