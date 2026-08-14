@@ -32,12 +32,15 @@ interface PlanConfig {
   btnStyle: string;
 }
 
+// Annual discount: 2 months free = pay 10 months, save ~17%
+const ANNUAL_DISCOUNT = 10 / 12; // multiplier: 0.8333...
+
 const PLANS: Record<PlanKey, PlanConfig> = {
   Starter: {
     name: "Starter",
     desc: "For small teams getting started with AI automation.",
-    monthlyUsd: 19,
-    monthlyKes: 2450,
+    monthlyUsd: 79,
+    monthlyKes: 10_500,  // ~KES 133/USD
     features: [
       "3 AI Employees",
       "1,000 tasks / month",
@@ -52,8 +55,8 @@ const PLANS: Record<PlanKey, PlanConfig> = {
   Professional: {
     name: "Professional",
     desc: "For growing businesses scaling autonomous operations.",
-    monthlyUsd: 49,
-    monthlyKes: 6350,
+    monthlyUsd: 199,
+    monthlyKes: 26_500,  // ~KES 133/USD
     features: [
       "15 AI Employees",
       "10,000 tasks / month",
@@ -71,8 +74,8 @@ const PLANS: Record<PlanKey, PlanConfig> = {
   Enterprise: {
     name: "Enterprise",
     desc: "For organizations building a full AI workforce.",
-    monthlyUsd: 199,
-    monthlyKes: 25700,
+    monthlyUsd: 599,
+    monthlyKes: 79_000,  // ~KES 132/USD
     features: [
       "Unlimited AI Employees",
       "Unlimited tasks",
@@ -132,9 +135,18 @@ export default function PricingPage() {
       .catch(() => {});
   }, [isAuthenticated]);
 
-  const getPrice = (plan: PlanConfig) => {
+  /** Returns the displayed per-month price (monthly or annual-discounted). */
+  const getDisplayMonthlyPrice = (plan: PlanConfig): number => {
     const monthly = currency === "KES" ? plan.monthlyKes : plan.monthlyUsd;
-    return isAnnual ? Math.round(monthly * 10) : monthly;
+    if (!isAnnual) return monthly;
+    // Annual: charge 10 months, spread across 12 → discounted monthly rate
+    return Math.round(monthly * ANNUAL_DISCOUNT);
+  };
+
+  /** Total charged upfront when billing annually. */
+  const getAnnualTotal = (plan: PlanConfig): number => {
+    const monthly = currency === "KES" ? plan.monthlyKes : plan.monthlyUsd;
+    return Math.round(monthly * 10); // 10 months = 2 free
   };
 
   const handleSelectPlan = async (planKey: PlanKey) => {
@@ -273,7 +285,9 @@ export default function PricingPage() {
         <div className={s.plansGrid}>
           {planKeys.map((key) => {
             const plan = PLANS[key];
-            const price = getPrice(plan);
+            const displayMonthly = getDisplayMonthlyPrice(plan);
+            const annualTotal = getAnnualTotal(plan);
+            const sym = currency === "KES" ? "KES " : "$";
             const isCurrentPlan = currentPlan?.toLowerCase().includes(key.toLowerCase());
             const isLoadingThis = loadingPlan === key;
             const icon =
@@ -309,16 +323,16 @@ export default function PricingPage() {
                 <div className={s.priceRow}>
                   <span className={s.priceCurrency}>{currency === "KES" ? "KES" : "$"}</span>
                   <span className={s.priceAmount}>
-                    {key === "Enterprise" ? "Custom" : price.toLocaleString()}
+                    {key === "Enterprise" ? "Custom" : displayMonthly.toLocaleString()}
                   </span>
                   {key !== "Enterprise" && (
-                    <span className={s.pricePeriod}>/{isAnnual ? "year" : "mo"}</span>
+                    <span className={s.pricePeriod}>/mo</span>
                   )}
                 </div>
                 {key !== "Enterprise" && (
                   <p className={s.priceSubtext}>
                     {isAnnual
-                      ? `${currency === "KES" ? "KES " : "$"}${(currency === "KES" ? plan.monthlyKes : plan.monthlyUsd).toLocaleString()}/mo billed annually`
+                      ? `Billed annually — ${sym}${annualTotal.toLocaleString()}/yr (2 months free)`
                       : "Billed monthly, cancel anytime"}
                   </p>
                 )}
